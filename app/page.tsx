@@ -2,8 +2,8 @@
 
 export default function Home() {
   return (
-    <div className="max-w-lg mx-auto">
-      <h1>this is home page</h1>
+    <div>
+      <h1 className="text-muted-foreground">this is home page</h1>
     </div>
   );
 }

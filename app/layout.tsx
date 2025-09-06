@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lato } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const lato = Lato({ weight: "400", subsets: ["latin"] });
+import Nav from "@/components/navigation/nav";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const interFont = Inter({
+  variable: "--font-inter-mono",
   subsets: ["latin"],
 });
 
@@ -27,9 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${lato.className} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${interFont.className} ${geistMono.variable} antialiased`}
+        style={{ fontVariantNumeric: "tabular-nums" }}
+      >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="px-4 py-8">{children}</div>
+          <div className="p-4 mx-auto max-w-8xl">
+            <Nav />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

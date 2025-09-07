@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -10,6 +9,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import AuthButtons from "./auth-buttons";
+import Link from "next/link";
 
 export default function AuthCard({
   children,
@@ -24,8 +24,6 @@ export default function AuthCard({
   pageLink: string;
   linkText: string;
 }) {
-  const router = useRouter();
-
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
@@ -34,8 +32,8 @@ export default function AuthCard({
       </CardHeader>
       <CardContent className="flex flex-col">
         {children}
-        <Button variant={"link"} onClick={() => router.push(pageLink)}>
-          {linkText}
+        <Button variant={"link"}>
+          <Link href={pageLink}>{linkText}</Link>
         </Button>
         <AuthButtons />
       </CardContent>

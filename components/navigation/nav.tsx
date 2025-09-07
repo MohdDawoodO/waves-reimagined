@@ -6,7 +6,7 @@ export default async function Nav() {
   const session = await auth();
 
   return (
-    <nav className="w-full flex items-center justify-between py-4">
+    <nav className="w-full flex items-center justify-between py-8">
       <Logo />
       <UserButton session={session} />
     </nav>

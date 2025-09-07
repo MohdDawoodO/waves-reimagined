@@ -4,11 +4,9 @@ import { LogIn, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ({ session }: { session?: Session | null }) {
-  const router = useRouter();
-
   if (session) {
     return (
       <Button className="group" onClick={() => signOut()}>
@@ -19,9 +17,11 @@ export default function ({ session }: { session?: Session | null }) {
   }
 
   return (
-    <Button className="group" onClick={() => router.push("/auth/login")}>
-      <LogIn className="group-hover:scale-90 group-hover:translate-x-1 transition-all duration-200" />
-      Log In
-    </Button>
+    <Link href={"/auth/login"}>
+      <Button className="group scale-95 sm:scale-100">
+        <LogIn className="group-hover:scale-90 group-hover:translate-x-1 transition-all duration-200" />
+        Log In
+      </Button>
+    </Link>
   );
 }

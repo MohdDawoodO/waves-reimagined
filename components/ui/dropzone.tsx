@@ -6,6 +6,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
+import { Slider } from "./slider";
 
 export function Dropzone({
   fileType,
@@ -170,17 +171,15 @@ function FileDisplay({
           </p>
           <div className="flex items-center gap-4 w-full">
             <p className="text-xs">{timeFormat(currentTime)}</p>
-            <input
-              type="range"
+            <Slider
               className="accent-primary w-full"
               min={0}
               step={0.1}
               max={duration}
-              value={currentTime}
-              onChange={(e) => {
-                if (audioRef.current)
-                  audioRef.current.currentTime = Number(e.target.value);
-                setCurrentTime(Number(e.target.value));
+              value={[currentTime]}
+              onValueChange={(value) => {
+                if (audioRef.current) audioRef.current.currentTime = value[0];
+                setCurrentTime(value[0]);
               }}
             />
             <p className="text-xs">{timeFormat(duration)}</p>

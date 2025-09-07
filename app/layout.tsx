@@ -3,6 +3,7 @@ import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Nav from "@/components/navigation/nav";
+import { SessionProvider } from "next-auth/react";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -31,9 +32,9 @@ export default function RootLayout({
         style={{ fontVariantNumeric: "tabular-nums" }}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="p-4 mx-auto max-w-8xl">
+          <div className="px-6 md:px-12 mx-auto max-w-8xl">
             <Nav />
-            {children}
+            <SessionProvider>{children}</SessionProvider>
           </div>
         </ThemeProvider>
       </body>

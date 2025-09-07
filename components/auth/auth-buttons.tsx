@@ -5,20 +5,18 @@ import { signIn } from "next-auth/react";
 
 export default function AuthButtons() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex gap-4">
       <Button
-        size={"icon"}
         variant={"outline"}
-        className="w-full"
+        className="flex-1"
         onClick={() => signIn("google")}
       >
         Google
         <FcGoogle />
       </Button>
       <Button
-        size={"icon"}
         variant={"outline"}
-        className="w-full"
+        className="flex-1"
         onClick={() => signIn("github")}
       >
         Github

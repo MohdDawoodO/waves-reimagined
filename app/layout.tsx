@@ -32,7 +32,7 @@ export default function RootLayout({
         style={{ fontVariantNumeric: "tabular-nums" }}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="px-6 md:px-12 mx-auto max-w-8xl">
+          <div className="px-6 md:px-12 lg:px-16 mx-auto max-w-8xl">
             <Nav />
             <SessionProvider>{children}</SessionProvider>
           </div>

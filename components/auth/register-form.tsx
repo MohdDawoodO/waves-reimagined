@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import AuthCard from "./auth-card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/types/login-schema";
 import z from "zod";
 import {
   Form,
@@ -15,32 +14,48 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import { RegisterSchema } from "@/types/register-schema";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const form = useForm({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
     mode: "onChange",
   });
 
-  function onSubmit(values: z.infer<typeof LoginSchema>) {
+  function onSubmit(values: z.infer<typeof RegisterSchema>) {
+    if (values.password !== values.confirmPassword) return;
     console.log(values);
   }
 
   return (
     <AuthCard
-      title="Welcome back"
+      title="Register"
       description="Please enter your details."
-      linkText="Not registered? Get started."
-      pageLink="/auth/register"
+      linkText="Already have an account? Log in."
+      pageLink="/auth/login"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -76,11 +91,29 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <Button variant={"link"} className="w-fit p-0">
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="********"
+                      type="password"
+                      autoComplete={"new-password"}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <Button variant={"link"} className="w-fit p-0">
               <Link href={"/auth/reset"}>Forgot your password?</Link>
-            </Button>
+            </Button> */}
 
-            <Button>Login</Button>
+            <Button>Register</Button>
           </div>
         </form>
       </Form>

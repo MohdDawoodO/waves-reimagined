@@ -1,6 +1,5 @@
 "use client";
 
-import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import {
@@ -10,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { FaGithub } from "react-icons/fa";
+import AuthButtons from "./auth-buttons";
 
 export default function AuthCard({
   children,
@@ -28,7 +27,7 @@ export default function AuthCard({
   const router = useRouter();
 
   return (
-    <Card>
+    <Card className="max-w-xl mx-auto">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -38,14 +37,7 @@ export default function AuthCard({
         <Button variant={"link"} onClick={() => router.push(pageLink)}>
           {linkText}
         </Button>
-        <div className="flex gap-4">
-          <Button size={"icon"} variant={"outline"}>
-            <FcGoogle />
-          </Button>
-          <Button size={"icon"} variant={"outline"}>
-            <FaGithub />
-          </Button>
-        </div>
+        <AuthButtons />
       </CardContent>
     </Card>
   );

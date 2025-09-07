@@ -1,9 +1,13 @@
-"use client";
-
+import { auth } from "@/server/auth";
 import { Input } from "../ui/input";
 import AuthCard from "./auth-card";
+import { redirect } from "next/navigation";
 
-export default function LoginForm() {
+export default async function LoginForm() {
+  const session = await auth();
+
+  if (session) redirect("/");
+
   return (
     <AuthCard
       title="Welcome back"

@@ -1,3 +1,4 @@
+import { Dropzone } from "@/components/ui/dropzone";
 import { auth } from "@/server/auth";
 import Image from "next/image";
 
@@ -9,14 +10,18 @@ export default async function Home() {
       <h1 className="text-muted-foreground">
         {!session ? "This is home page" : `welcome back ${session.user?.name}`}
       </h1>
-      {session && (
+      {session && session.user && (
         <Image
-          src={session.user?.image!}
+          src={session.user.image!}
           alt="profile pic"
           width={120}
           height={120}
         />
       )}
+
+      <Dropzone className="max-w-lg" fileType="audio" maxFileSize={5}>
+        Upload your Album Cover
+      </Dropzone>
     </div>
   );
 }

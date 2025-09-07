@@ -1,12 +1,20 @@
 "use client";
 
 import { AudioLines, Pause, Play, Upload, XIcon } from "lucide-react";
-import { Card, CardHeader, CardContent, CardDescription } from "./card";
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import { Card, CardContent } from "./card";
+import {
+  ChangeEvent,
+  Children,
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { Slider } from "./slider";
+import { Label } from "./label";
 
 export function Dropzone({
   fileType,
@@ -18,8 +26,8 @@ export function Dropzone({
 }: {
   fileType: "image" | "audio";
   maxFileSize: number;
-  onChange?: Dispatch<SetStateAction<string>>;
-  onError?: Dispatch<SetStateAction<string>>;
+  onChange?: Dispatch<SetStateAction<string>> | undefined;
+  onError?: Dispatch<SetStateAction<string>> | undefined;
   children?: React.ReactNode;
   className?: string;
 }) {
@@ -33,17 +41,17 @@ export function Dropzone({
       const fileSize = file.size / (1024 * 1024);
 
       if (fileType === "image" && !file.type.includes("image")) {
-        setError ? setError(`Please upload an image`) : null;
+        if (setError) setError("Please upload an image");
         return;
       }
 
       if (fileType === "audio" && !file.type.includes("audio")) {
-        setError ? setError(`Please upload an audio`) : null;
+        if (setError) setError(`Please upload an audio`);
         return;
       }
 
       if (fileSize > maxFileSize) {
-        setError ? setError(`Max file size is ${maxFileSize} MB`) : null;
+        if (setError) setError(`Max file size is ${maxFileSize} MB`);
         return;
       }
 
@@ -51,65 +59,63 @@ export function Dropzone({
       setCurrentFileURL(fileURL);
       setCurrentFile(file);
 
-      setValue ? setValue(fileURL) : null;
-      setError ? setError("") : null;
+      if (setValue) setValue(fileURL);
+      if (setError) setError("");
     }
   };
 
   return (
-    <Card className={className}>
-      {children && (
-        <CardHeader>
-          <CardDescription>{children}</CardDescription>
-        </CardHeader>
-      )}
-      <CardContent>
-        <div
-          className={cn(
-            "rounded-md p-4 flex flex-col gap-2 items-center justify-center text-muted-foreground relative",
-            currentFileURL
-              ? "aspect-square"
-              : "aspect-video border-2 border-dashed",
-            fileType === "audio" && currentFileURL
-              ? "border-2 border-dashed aspect-8/7"
-              : null
-          )}
-        >
-          {!currentFileURL && (
-            <>
-              <input
-                type="file"
-                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                onChange={setFileStatus}
-              />
-              <Upload className="w-12 h-12 md:h-16 md:w-16" />
-              <p className="text-xs md:text-sm">
-                Max File Size: {maxFileSize} MB
-              </p>
-            </>
-          )}
-          {currentFileURL && (
-            <>
-              <FileDisplay
-                currentFileURL={currentFileURL}
-                currentFile={currentFile}
-                fileType={fileType}
-              />
-              <Button
-                onClick={() => {
-                  setCurrentFileURL("");
-                  setValue ? setValue("") : null;
-                }}
-                variant={"secondary"}
-                className="absolute -top-1 -right-1 w-6 h-6 rounded-full cursor-pointer bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-500 text-white"
-              >
-                <XIcon size={14} />
-              </Button>
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      {Children && <Label className="mb-2">{children}</Label>}
+      <Card className={className}>
+        <CardContent>
+          <div
+            className={cn(
+              "rounded-md p-4 flex flex-col gap-2 items-center justify-center text-muted-foreground relative",
+              currentFileURL
+                ? "aspect-square"
+                : "aspect-video border-2 border-dashed",
+              fileType === "audio" && currentFileURL
+                ? "border-2 border-dashed aspect-8/7"
+                : null
+            )}
+          >
+            {!currentFileURL && (
+              <>
+                <input
+                  type="file"
+                  className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  onChange={setFileStatus}
+                />
+                <Upload className="w-12 h-12 md:h-16 md:w-16" />
+                <p className="text-xs md:text-sm">
+                  Max File Size: {maxFileSize} MB
+                </p>
+              </>
+            )}
+            {currentFileURL && (
+              <>
+                <FileDisplay
+                  currentFileURL={currentFileURL}
+                  currentFile={currentFile}
+                  fileType={fileType}
+                />
+                <Button
+                  onClick={() => {
+                    setCurrentFileURL("");
+                    if (setValue) setValue("");
+                  }}
+                  variant={"secondary"}
+                  className="absolute -top-1 -right-1 w-6 h-6 rounded-full cursor-pointer bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-500 text-white"
+                >
+                  <XIcon size={14} />
+                </Button>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 
@@ -122,6 +128,11 @@ function FileDisplay({
   currentFile?: File;
   fileType: "image" | "audio";
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+
   if (fileType === "image") {
     return (
       <Image
@@ -135,11 +146,6 @@ function FileDisplay({
   }
 
   if (fileType === "audio") {
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [duration, setDuration] = useState(0);
-
     const playSongHandler = () => {
       if (isPlaying) {
         audioRef.current?.pause();

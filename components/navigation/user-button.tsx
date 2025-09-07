@@ -6,7 +6,7 @@ import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
-export default function ({ session }: { session?: Session | null }) {
+export default function UserButton({ session }: { session?: Session | null }) {
   if (session) {
     return (
       <Button className="group" onClick={() => signOut()}>

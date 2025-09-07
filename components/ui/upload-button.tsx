@@ -11,8 +11,8 @@ export default function UploadButton({
   children,
 }: {
   className?: string;
-  onChange?: Dispatch<SetStateAction<string>>;
-  onError?: Dispatch<SetStateAction<string>>;
+  onChange?: Dispatch<SetStateAction<string>> | undefined;
+  onError?: Dispatch<SetStateAction<string>> | undefined;
   children?: React.ReactNode;
 }) {
   const setFileStatus = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,18 +22,18 @@ export default function UploadButton({
       const fileSize = file.size / (1024 * 1024);
 
       if (!file.type.includes("image")) {
-        setError ? setError(`Please upload an image`) : null;
+        if (setError) setError(`Please upload an image`);
         return;
       }
 
       if (fileSize > 1) {
-        setError ? setError("Max file size is 1 MB") : null;
+        if (setError) setError("Max file size is 1 MB");
         return;
       }
 
       const imageURL = URL.createObjectURL(file);
-      setValue ? setValue(imageURL) : null;
-      setError ? setError("") : null;
+      if (setValue) setValue(imageURL);
+      if (setError) setError("");
     }
   };
 

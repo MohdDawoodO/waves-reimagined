@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import AuthCard from "./auth-card";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "next-safe-action/hooks";
 import z from "zod";
 import {
   Form,
@@ -15,13 +16,16 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { RegisterSchema } from "@/types/register-schema";
-import { Alert, AlertTitle } from "../ui/alert";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import FormSuccess from "./form-success";
+import FormError from "./form-error";
+import { emailRegister } from "@/server/actions/email-register";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
@@ -34,15 +38,31 @@ export default function RegisterForm() {
     mode: "onChange",
   });
 
+  const { execute, status } = useAction(emailRegister, {
+    onSuccess: (data) => {
+      if (data.data?.error) {
+        setError(data.data.error);
+        setSuccess("");
+      }
+      if (data.data?.success) {
+        setSuccess(data.data.success);
+        setError("");
+        setTimeout(() => {
+          router.push("/auth/login");
+        }, 500);
+      }
+    },
+  });
+
   function onSubmit(values: z.infer<typeof RegisterSchema>) {
     if (values.password !== values.confirmPassword) {
       setError("Passwords does not match");
       setSuccess("");
       return;
     }
-    setError("");
-    setSuccess("Email Registered");
-    console.log(values);
+
+    const email = values.email.toLowerCase();
+    execute({ ...values, email });
   }
 
   return (
@@ -128,24 +148,10 @@ export default function RegisterForm() {
               )}
             />
 
-            {error && (
-              <Alert>
-                <AlertTitle className="flex items-center gap-2 text-destructive">
-                  <AlertCircle size={16} />
-                  <span>{error}</span>
-                </AlertTitle>
-              </Alert>
-            )}
+            {error && <FormError error={error} />}
+            {success && <FormSuccess success={success} />}
 
-            {success && (
-              <Alert>
-                <AlertTitle className="flex items-center gap-2 text-green-400">
-                  <CheckCircle2 size={16} />
-                  <span>{success}</span>
-                </AlertTitle>
-              </Alert>
-            )}
-            <Button>Register</Button>
+            <Button disabled={status === "executing"}>Register</Button>
           </div>
         </form>
       </Form>

@@ -1,4 +1,4 @@
-import { Dropzone } from "@/components/ui/dropzone";
+import EmailTemplate from "@/components/other/email-template";
 import { auth } from "@/server/auth";
 import Image from "next/image";
 
@@ -18,10 +18,6 @@ export default async function Home() {
           height={120}
         />
       )}
-
-      <Dropzone className="max-w-lg" fileType="audio" maxFileSize={5}>
-        Upload your Album Cover
-      </Dropzone>
     </div>
   );
 }

@@ -16,8 +16,16 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useAction } from "next-safe-action/hooks";
+import { emailLogin } from "@/server/actions/email-login";
+import { useState } from "react";
+import FormError from "./form-error";
+import FormSuccess from "./form-success";
 
 export default function LoginForm() {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -27,8 +35,22 @@ export default function LoginForm() {
     mode: "onChange",
   });
 
+  const { execute, status } = useAction(emailLogin, {
+    onSuccess: (data) => {
+      if (data.data?.error) {
+        setError(data.data.error);
+        setSuccess("");
+      }
+      if (data.data?.success) {
+        setSuccess(data.data.success);
+        setError("");
+      }
+    },
+  });
+
   function onSubmit(values: z.infer<typeof LoginSchema>) {
-    console.log(values);
+    const email = values.email.toLowerCase();
+    execute({ ...values, email });
   }
 
   return (
@@ -81,7 +103,10 @@ export default function LoginForm() {
               <Link href={"/auth/reset"}>Forgot your password?</Link>
             </Button>
 
-            <Button>Login</Button>
+            {error && <FormError error={error} />}
+            {success && <FormSuccess success={success} />}
+
+            <Button disabled={status === "executing"}>Login</Button>
           </div>
         </form>
       </Form>

@@ -15,8 +15,14 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { RegisterSchema } from "@/types/register-schema";
+import { Alert, AlertTitle } from "../ui/alert";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 
 export default function RegisterForm() {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -29,7 +35,13 @@ export default function RegisterForm() {
   });
 
   function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    if (values.password !== values.confirmPassword) return;
+    if (values.password !== values.confirmPassword) {
+      setError("Passwords does not match");
+      setSuccess("");
+      return;
+    }
+    setError("");
+    setSuccess("Email Registered");
     console.log(values);
   }
 
@@ -50,7 +62,12 @@ export default function RegisterForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" type="text" {...field} />
+                    <Input
+                      placeholder="John Doe"
+                      type="text"
+                      {...field}
+                      autoComplete="username"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -65,6 +82,7 @@ export default function RegisterForm() {
                   <FormControl>
                     <Input
                       placeholder="someone@example.com"
+                      autoComplete="email"
                       type="email"
                       {...field}
                     />
@@ -109,10 +127,24 @@ export default function RegisterForm() {
                 </FormItem>
               )}
             />
-            {/* <Button variant={"link"} className="w-fit p-0">
-              <Link href={"/auth/reset"}>Forgot your password?</Link>
-            </Button> */}
 
+            {error && (
+              <Alert>
+                <AlertTitle className="flex items-center gap-2 text-destructive">
+                  <AlertCircle size={16} />
+                  <span>{error}</span>
+                </AlertTitle>
+              </Alert>
+            )}
+
+            {success && (
+              <Alert>
+                <AlertTitle className="flex items-center gap-2 text-green-400">
+                  <CheckCircle2 size={16} />
+                  <span>{success}</span>
+                </AlertTitle>
+              </Alert>
+            )}
             <Button>Register</Button>
           </div>
         </form>

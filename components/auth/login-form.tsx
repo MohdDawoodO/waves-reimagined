@@ -50,6 +50,7 @@ export default function LoginForm() {
                   <FormControl>
                     <Input
                       placeholder="someone@example.com"
+                      autoComplete="email"
                       type="email"
                       {...field}
                     />

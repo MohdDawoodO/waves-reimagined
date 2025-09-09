@@ -55,12 +55,6 @@ export default function RegisterForm() {
   });
 
   function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    if (values.password !== values.confirmPassword) {
-      setError("Passwords does not match");
-      setSuccess("");
-      return;
-    }
-
     const email = values.email.toLowerCase();
     execute({ ...values, email });
   }

@@ -10,7 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     usersTable: users,
   }),
   session: { strategy: "jwt" },
-  secret: process.env.AUTH_SECRET!,
+  secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
 
   providers: [
     GitHub({

@@ -43,6 +43,13 @@
       "when": 1757345329616,
       "tag": "0005_natural_enchantress",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1757430151566,
+      "tag": "0006_adorable_jack_flag",
+      "breakpoints": true
     }
   ]
 }

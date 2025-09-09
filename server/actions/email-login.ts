@@ -6,7 +6,7 @@ import { db } from "..";
 import { eq } from "drizzle-orm";
 import { users } from "../schema";
 import { compare } from "bcryptjs";
-import { sendEmail } from "./email";
+import { checkVerificationToken } from "./verification-token";
 
 const action = createSafeActionClient();
 
@@ -28,13 +28,7 @@ export const emailLogin = action
       }
 
       if (!existingUser.emailVerified) {
-        sendEmail({
-          email: existingUser.email!,
-          subject: "Waves Music - Verification Email",
-          text: "Your verification code",
-          linkText: "verify your email",
-          tokenLink: "http://localhost:3000/auth/login",
-        });
+        checkVerificationToken(email, existingUser.password!);
         return { success: "We have sent you a verification email" };
       }
     } catch {

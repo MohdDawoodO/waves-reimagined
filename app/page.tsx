@@ -1,4 +1,4 @@
-import EmailTemplate from "@/components/other/email-template";
+import { Dropzone } from "@/components/ui/dropzone";
 import { auth } from "@/server/auth";
 import Image from "next/image";
 

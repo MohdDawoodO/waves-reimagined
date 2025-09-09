@@ -9,8 +9,6 @@ export default function EmailTemplate({
   tokenLink?: string | undefined;
   code?: number | undefined;
 }) {
-  const codeNumbers = code?.toString().split("");
-
   return (
     <div
       style={{
@@ -25,7 +23,6 @@ export default function EmailTemplate({
         <a
           href={tokenLink}
           style={{
-            color: "oklch(0.78 0.13 38.18)",
             fontWeight: "600",
             textDecoration: "underline",
           }}

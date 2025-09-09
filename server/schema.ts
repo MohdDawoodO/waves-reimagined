@@ -4,10 +4,12 @@ import {
   text,
   primaryKey,
   integer,
+  serial,
 } from "drizzle-orm/pg-core";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { AdapterAccountType } from "@auth/core/adapters";
+import { relations } from "drizzle-orm";
 
 const connectionString = process.env.DATABASE_URL!;
 const pool = postgres(connectionString, { max: 1 });
@@ -24,6 +26,14 @@ export const users = pgTable("user", {
   image: text("image"),
   password: text("password"),
 });
+
+export const userRelations = relations(users, ({ one }) => ({
+  verificationToken: one(verificationTokens, {
+    fields: [users.email],
+    references: [verificationTokens.email],
+    relationName: "email_token",
+  }),
+}));
 
 export const accounts = pgTable(
   "account",
@@ -49,4 +59,24 @@ export const accounts = pgTable(
       }),
     },
   ]
+);
+
+export const verificationTokens = pgTable("verification_token", {
+  id: serial("id").primaryKey(),
+  token: text("token").notNull(),
+  email: text("email")
+    .notNull()
+    .references(() => users.email, { onDelete: "cascade" }),
+  expires: timestamp("expires").notNull(),
+});
+
+export const verificationTokenRelations = relations(
+  verificationTokens,
+  ({ one }) => ({
+    verificationToken: one(users, {
+      fields: [verificationTokens.email],
+      references: [users.email],
+      relationName: "email_token",
+    }),
+  })
 );

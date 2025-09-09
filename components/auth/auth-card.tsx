@@ -34,7 +34,7 @@ export default function AuthCard({
         {children}
         <div className="flex flex-col gap-2">
           <AuthButtons />
-          <Button variant={"link"}>
+          <Button variant={"link"} className="w-fit self-center">
             <Link href={pageLink}>{linkText}</Link>
           </Button>
         </div>

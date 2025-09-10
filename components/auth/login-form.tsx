@@ -21,10 +21,13 @@ import { emailLogin } from "@/server/actions/email-login";
 import { useState } from "react";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -44,6 +47,11 @@ export default function LoginForm() {
       if (data.data?.success) {
         setSuccess(data.data.success);
         setError("");
+
+        if (data.data.success === "Log in complete")
+          setTimeout(() => {
+            router.push("/");
+          }, 500);
       }
     },
   });

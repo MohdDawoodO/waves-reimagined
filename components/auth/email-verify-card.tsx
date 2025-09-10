@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { emailLogin } from "@/server/actions/email-login";
 import { verifyEmail } from "@/server/actions/verify-email";
 import { useAction } from "next-safe-action/hooks";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function EmailVerifyCard() {
@@ -14,6 +14,7 @@ export default function EmailVerifyCard() {
   const token = searchParams.get("token");
   const password = searchParams.get("password");
   const email = searchParams.get("email");
+  const router = useRouter();
 
   const missingCredentials = !token || !password || !email;
 
@@ -29,16 +30,22 @@ export default function EmailVerifyCard() {
       if (data.data.success) {
         setSuccess(data.data.success);
         setError("");
+        login({ email: email!, password: password! });
       }
     },
   });
 
-  const { execute: login } = useAction(emailLogin);
+  const { execute: login } = useAction(emailLogin, {
+    onSuccess: () => {
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
+    },
+  });
 
   useEffect(() => {
     execute({ email: email!, token: token! });
-    login({ email: email!, password: password! });
-  }, [execute, login]);
+  }, [execute, email, token]);
 
   return (
     <Card className="max-w-xl mx-auto">

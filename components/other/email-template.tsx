@@ -7,7 +7,7 @@ export default function EmailTemplate({
   text: string;
   linkText?: string | undefined;
   tokenLink?: string | undefined;
-  code?: number | undefined;
+  code?: string | undefined;
 }) {
   return (
     <div

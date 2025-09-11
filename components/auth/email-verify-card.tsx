@@ -2,12 +2,12 @@
 
 import FormError from "@/components/auth/form-error";
 import FormSuccess from "@/components/auth/form-success";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { emailLogin } from "@/server/actions/email-login";
 import { verifyEmail } from "@/server/actions/verify-email";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import AuthCard from "./auth-card";
 
 export default function EmailVerifyCard() {
   const searchParams = useSearchParams();
@@ -44,21 +44,18 @@ export default function EmailVerifyCard() {
   });
 
   useEffect(() => {
-    execute({ email: email!, token: token! });
+    if (!missingCredentials) {
+      execute({ email: email!, token: token! });
+    }
   }, [execute, email, token]);
 
   return (
-    <Card className="max-w-xl mx-auto">
-      <CardHeader>
-        <CardTitle>Verifying your email...</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {missingCredentials && (
-          <FormError error="Invalid link. Please check the URL." />
-        )}
-        {error && <FormError error={error} />}
-        {success && <FormSuccess success={success} />}
-      </CardContent>
-    </Card>
+    <AuthCard title="Verifying your email...">
+      {missingCredentials && (
+        <FormError error="Invalid link. Please check the URL." />
+      )}
+      {error && <FormError error={error} />}
+      {success && <FormSuccess success={success} />}
+    </AuthCard>
   );
 }

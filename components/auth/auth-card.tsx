@@ -12,32 +12,38 @@ import AuthButtons from "./auth-buttons";
 import Link from "next/link";
 
 export default function AuthCard({
-  children,
   title,
+  children,
   description,
   pageLink,
   linkText,
+  withSocials,
 }: {
-  children: React.ReactNode;
   title: string;
-  description: string;
-  pageLink: string;
-  linkText: string;
+  children?: React.ReactNode;
+  description?: string;
+  pageLink?: string;
+  linkText?: string;
+  withSocials?: boolean;
 }) {
   return (
-    <Card className="max-w-xl mx-auto">
-      <CardHeader>
+    <Card className="max-w-xl mx-auto py-4 md:py-6">
+      <CardHeader className="px-4 md:px-6">
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 px-4 md:px-6">
         {children}
-        <div className="flex flex-col gap-2">
-          <AuthButtons />
-          <Button variant={"link"} className="w-fit self-center">
-            <Link href={pageLink}>{linkText}</Link>
-          </Button>
-        </div>
+        {withSocials || pageLink ? (
+          <div className="flex flex-col gap-2">
+            {withSocials && <AuthButtons />}
+            {pageLink && linkText && (
+              <Button variant={"link"} className="w-fit self-center">
+                <Link href={pageLink}>{linkText}</Link>
+              </Button>
+            )}
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

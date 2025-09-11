@@ -23,7 +23,10 @@ export async function generateVerificationToken(email: string) {
   return newToken[0].token;
 }
 
-export async function checkVerificationToken(email: string, password: string) {
+export async function sendVerificationTokenEmail(
+  email: string,
+  password?: string
+) {
   const existingToken = await db.query.verificationTokens.findFirst({
     where: eq(verificationTokens.email, email),
   });
@@ -40,7 +43,7 @@ export async function checkVerificationToken(email: string, password: string) {
       subject: "Waves Music - Verification Email",
       text: "Click the link below to",
       linkText: "Verify your email",
-      tokenLink: `http://localhost:3000/auth/verify?email=${email}&password=${password}&token=${newVerificationToken}`,
+      tokenLink: `http://localhost:3000/auth/${password ? "verify" : "new-password"}?email=${email}${password ? "&password=" + password : ""}&token=${newVerificationToken}`,
     });
     return;
   }
@@ -50,7 +53,7 @@ export async function checkVerificationToken(email: string, password: string) {
     subject: "Waves Music - Verification Email",
     text: "Click the link below to",
     linkText: "Verify your email",
-    tokenLink: `http://localhost:3000/auth/verify?email=${email}&password=${password}&token=${existingToken.token}`,
+    tokenLink: `http://localhost:3000/auth/${password ? "verify" : "new-password"}?email=${email}&password=${password ? "&password=" + password : ""}&token=${existingToken.token}`,
   });
   return;
 }

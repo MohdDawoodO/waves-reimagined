@@ -16,7 +16,7 @@ export async function sendEmail({
   text: string;
   subject: string;
   email: string | "serious_17o@outlook.com";
-  code?: number | undefined;
+  code?: string | undefined;
   linkText?: string | undefined;
   tokenLink?: string | undefined;
 }) {

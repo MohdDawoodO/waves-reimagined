@@ -65,6 +65,7 @@ export default function RegisterForm() {
       description="Please enter your details."
       linkText="Already have an account? Log in."
       pageLink="/auth/login"
+      withSocials
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

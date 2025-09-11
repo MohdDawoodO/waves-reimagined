@@ -6,7 +6,7 @@ import { db } from "..";
 import { eq } from "drizzle-orm";
 import { accounts, users } from "../schema";
 import { compare } from "bcryptjs";
-import { checkVerificationToken } from "./verification-token";
+import { sendVerificationTokenEmail } from "./verification-token";
 import { signIn } from "../auth";
 
 const action = createSafeActionClient();
@@ -40,7 +40,7 @@ export const emailLogin = action
       }
 
       if (!existingUser.emailVerified) {
-        checkVerificationToken(email, password);
+        sendVerificationTokenEmail(email, password);
         return { success: "We have sent you a verification email" };
       }
 

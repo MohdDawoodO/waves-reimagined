@@ -67,6 +67,7 @@ export default function LoginForm() {
       description="Please enter your details."
       linkText="Not registered? Get started."
       pageLink="/auth/register"
+      withSocials
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -114,7 +115,9 @@ export default function LoginForm() {
             {error && <FormError error={error} />}
             {success && <FormSuccess success={success} />}
 
-            <Button disabled={status === "executing"}>Login</Button>
+            <Button disabled={status === "executing"} type="submit">
+              Login
+            </Button>
           </div>
         </form>
       </Form>

@@ -12,9 +12,9 @@ import type { AdapterAccountType } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
 
 const connectionString = process.env.DATABASE_URL!;
-const pool = postgres(connectionString, { max: 1 });
+const sql = postgres(connectionString);
 
-export const db = drizzle(pool);
+export const db = drizzle(sql);
 
 export const users = pgTable("user", {
   id: text("id")
@@ -32,6 +32,11 @@ export const userRelations = relations(users, ({ one }) => ({
     fields: [users.email],
     references: [verificationTokens.email],
     relationName: "email_token",
+  }),
+  verificationCode: one(verificationCodes, {
+    fields: [users.email],
+    references: [verificationCodes.email],
+    relationName: "verification_token",
   }),
 }));
 
@@ -77,6 +82,26 @@ export const verificationTokenRelations = relations(
       fields: [verificationTokens.email],
       references: [users.email],
       relationName: "email_token",
+    }),
+  })
+);
+
+export const verificationCodes = pgTable("verification_code", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull(),
+  email: text("email")
+    .notNull()
+    .references(() => users.email, { onDelete: "cascade" }),
+  expires: timestamp("expires").notNull(),
+});
+
+export const verificationCodeRelations = relations(
+  verificationCodes,
+  ({ one }) => ({
+    verificationToken: one(users, {
+      fields: [verificationCodes.email],
+      references: [users.email],
+      relationName: "verification_code",
     }),
   })
 );

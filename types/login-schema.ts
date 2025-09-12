@@ -6,4 +6,5 @@ export const LoginSchema = z.object({
     error: "Password must be at least 8 characters long",
   }),
   twoFactorCode: z.string().optional(),
+  firstLogin: z.boolean().optional(),
 });

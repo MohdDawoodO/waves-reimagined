@@ -7,8 +7,8 @@ export default function FormError({ error }: { error: string }) {
   return (
     <Alert>
       <AlertTitle className="flex items-center gap-2 text-destructive">
-        <AlertCircle className="w-[14px] h-[14px] sm:w-4 sm:h-4" />
-        <span className="text-xs sm:text-sm">{error}</span>
+        <AlertCircle className="w-4 h-4 flex-1" />
+        <span className="text-sm flex-20">{error}</span>
       </AlertTitle>
     </Alert>
   );

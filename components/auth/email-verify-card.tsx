@@ -30,16 +30,25 @@ export default function EmailVerifyCard() {
       if (data.data.success) {
         setSuccess(data.data.success);
         setError("");
-        login({ email: email!, password: password! });
+        login({ email: email!, password: password!, firstLogin: true });
       }
     },
   });
 
   const { execute: login } = useAction(emailLogin, {
-    onSuccess: () => {
-      setTimeout(() => {
-        router.push("/");
-      }, 500);
+    onSuccess: (data) => {
+      if (data.data.success) {
+        setTimeout(() => {
+          router.push("/");
+          router.refresh();
+        }, 500);
+      }
+      if (data.data.error) {
+        console.log(data.data.error);
+      }
+      if (data.data.verification) {
+        console.log(data.data.verification);
+      }
     },
   });
 

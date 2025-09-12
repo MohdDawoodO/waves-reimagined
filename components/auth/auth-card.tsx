@@ -38,9 +38,9 @@ export default function AuthCard({
           <div className="flex flex-col gap-2">
             {withSocials && <AuthButtons />}
             {pageLink && linkText && (
-              <Button variant={"link"} className="w-fit self-center">
-                <Link href={pageLink}>{linkText}</Link>
-              </Button>
+              <Link href={pageLink} className="w-fit self-center">
+                <Button variant={"link"}>{linkText}</Button>
+              </Link>
             )}
           </div>
         ) : null}

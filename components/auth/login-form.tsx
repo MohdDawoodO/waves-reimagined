@@ -143,9 +143,11 @@ export default function LoginForm() {
                     </FormItem>
                   )}
                 />
-                <Button variant={"link"} className="w-fit p-0">
-                  <Link href={"/auth/reset"}>Forgot your password?</Link>
-                </Button>
+                <Link href={"/auth/reset"} className="w-fit">
+                  <Button variant={"link"} className="p-0" type="button">
+                    Forgot your password?
+                  </Button>
+                </Link>
               </>
             )}
 

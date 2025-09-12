@@ -33,7 +33,7 @@ export const userRelations = relations(users, ({ one }) => ({
     references: [verificationTokens.email],
     relationName: "email_token",
   }),
-  verificationCode: one(twoFactorCodes, {
+  twoFactorCode: one(twoFactorCodes, {
     fields: [users.email],
     references: [twoFactorCodes.email],
     relationName: "two_factor_code",
@@ -96,7 +96,7 @@ export const twoFactorCodes = pgTable("two_factor_codes", {
 });
 
 export const twoFactorCodeRelations = relations(twoFactorCodes, ({ one }) => ({
-  verificationToken: one(users, {
+  twoFactorCode: one(users, {
     fields: [twoFactorCodes.email],
     references: [users.email],
     relationName: "two_factor_code",

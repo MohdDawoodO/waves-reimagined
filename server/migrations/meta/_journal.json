@@ -57,6 +57,13 @@
       "when": 1757528007406,
       "tag": "0007_happy_scream",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1757673327730,
+      "tag": "0008_chubby_black_bird",
+      "breakpoints": true
     }
   ]
 }

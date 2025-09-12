@@ -19,7 +19,7 @@ export default async function Home() {
       )}
 
       {session && !session.user?.image && (
-        <div className="p-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/25 font-bold text-white/90">
+        <div className="p-1 w-8 h-8 flex items-center justify-center rounded-full bg-primary/25 font-bold text-white/75">
           {session.user?.name?.charAt(0).toUpperCase()}
         </div>
       )}

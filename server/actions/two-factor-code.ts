@@ -2,19 +2,17 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "..";
-import { verificationCodes } from "../schema";
+import { twoFactorCodes } from "../schema";
 import { sendEmail } from "./email";
 
 export async function generateVerificationCode(email: string) {
-  const code = Math.floor(
-    Math.random() * (999999 - 100000) + 100000
-  ).toString();
+  const code = Math.floor(Math.random() * 899999 + 100000).toString();
   const date = new Date();
-  date.setHours(date.getMinutes() + 1);
+  date.setMinutes(date.getMinutes() + 1);
   const expires = date;
 
-  const newVerificationCode = await db
-    .insert(verificationCodes)
+  const newCode = await db
+    .insert(twoFactorCodes)
     .values({
       email,
       code,
@@ -22,26 +20,24 @@ export async function generateVerificationCode(email: string) {
     })
     .returning();
 
-  return newVerificationCode[0].code;
+  return newCode[0].code;
 }
 
-export async function checkVerificationCode(email: string, password: string) {
-  const existingCode = await db.query.verificationCodes.findFirst({
-    where: eq(verificationCodes.email, email),
+export async function SendTwoFactorCodeEmail(email: string) {
+  const existingCode = await db.query.twoFactorCodes.findFirst({
+    where: eq(twoFactorCodes.email, email),
   });
 
   if (!existingCode || existingCode.expires < new Date()) {
-    await db
-      .delete(verificationCodes)
-      .where(eq(verificationCodes.email, email));
+    await db.delete(twoFactorCodes).where(eq(twoFactorCodes.email, email));
 
-    const newVerificationCode = await generateVerificationCode(email);
+    const newTwoFactorCode = await generateVerificationCode(email);
 
     await sendEmail({
       email: email,
       subject: "Waves Music - Verification Email",
       text: "Your verification code",
-      code: newVerificationCode,
+      code: newTwoFactorCode,
     });
     return;
   }

@@ -4,8 +4,6 @@ import Image from "next/image";
 export default async function Home() {
   const session = await auth();
 
-  console.log(session?.user?.image);
-
   return (
     <div>
       <h1 className="text-muted-foreground">

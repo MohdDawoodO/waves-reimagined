@@ -31,6 +31,9 @@ export const verifyEmail = action
     }
 
     if (existingToken.expires < new Date()) {
+      await db
+        .delete(verificationTokens)
+        .where(eq(verificationTokens.email, email));
       return { error: "Token expired" };
     }
 

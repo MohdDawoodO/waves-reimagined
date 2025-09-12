@@ -5,5 +5,5 @@ export const LoginSchema = z.object({
   password: z.string().min(8, {
     error: "Password must be at least 8 characters long",
   }),
-  verificationCode: z.number().optional(),
+  twoFactorCode: z.string().optional(),
 });

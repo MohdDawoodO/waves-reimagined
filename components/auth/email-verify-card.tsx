@@ -47,7 +47,7 @@ export default function EmailVerifyCard() {
     if (!missingCredentials) {
       execute({ email: email!, token: token! });
     }
-  }, [execute, email, token]);
+  }, [execute, email, token, missingCredentials]);
 
   return (
     <AuthCard title="Verifying your email...">

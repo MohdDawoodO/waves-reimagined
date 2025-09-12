@@ -33,10 +33,10 @@ export const userRelations = relations(users, ({ one }) => ({
     references: [verificationTokens.email],
     relationName: "email_token",
   }),
-  verificationCode: one(verificationCodes, {
+  verificationCode: one(twoFactorCodes, {
     fields: [users.email],
-    references: [verificationCodes.email],
-    relationName: "verification_token",
+    references: [twoFactorCodes.email],
+    relationName: "two_factor_code",
   }),
 }));
 
@@ -86,7 +86,7 @@ export const verificationTokenRelations = relations(
   })
 );
 
-export const verificationCodes = pgTable("verification_code", {
+export const twoFactorCodes = pgTable("two_factor_codes", {
   id: serial("id").primaryKey(),
   code: text("code").notNull(),
   email: text("email")
@@ -95,13 +95,10 @@ export const verificationCodes = pgTable("verification_code", {
   expires: timestamp("expires").notNull(),
 });
 
-export const verificationCodeRelations = relations(
-  verificationCodes,
-  ({ one }) => ({
-    verificationToken: one(users, {
-      fields: [verificationCodes.email],
-      references: [users.email],
-      relationName: "verification_code",
-    }),
-  })
-);
+export const twoFactorCodeRelations = relations(twoFactorCodes, ({ one }) => ({
+  verificationToken: one(users, {
+    fields: [twoFactorCodes.email],
+    references: [users.email],
+    relationName: "two_factor_code",
+  }),
+}));

@@ -14,6 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     accountsTable: accounts,
     usersTable: users,
   }),
+
   session: { strategy: "jwt" },
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
 
@@ -47,4 +48,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const dbUser = await db.query.users.findFirst({
+        where: eq(users.id, token.sub),
+      });
+
+      if (!dbUser) return token;
+
+      token.email = dbUser.email;
+      token.name = dbUser.name;
+      token.handle = dbUser.handle;
+      token.image = dbUser.image;
+
+      return token;
+    },
+    async session({ token, session }) {
+      if (session && token.sub) {
+        session.user.id = token.sub;
+      }
+
+      if (session.user) {
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.handle = token.handle as string;
+        session.user.image = token.image as string;
+      }
+
+      return session;
+    },
+  },
 });

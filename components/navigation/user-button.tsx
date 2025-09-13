@@ -8,6 +8,7 @@ import {
   Music,
   Settings,
   Sun,
+  User,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
@@ -55,7 +56,7 @@ export default function UserButton({ session }: { session: Session | null }) {
             className="cursor-pointer"
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="p-2 w-50">
+        <DropdownMenuContent align="end" className="p-2 w-56">
           <DropdownMenuLabel className="flex flex-col items-center py-4">
             <UserImage
               image={session.user.image!}
@@ -69,20 +70,27 @@ export default function UserButton({ session }: { session: Session | null }) {
               </p>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
+
+          <DropdownMenuSeparator className="my-2" />
+
           <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
+            <User className="mr-1 group-hover:scale-85 transition-transform duration-200" />
             My Profile
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
+
+          <DropdownMenuSeparator className="my-2" />
+
           <DropdownMenuGroup>
             <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
               <Music className="mr-1 group-hover:scale-85 transition-transform duration-200" />
               My Musics
             </DropdownMenuItem>
+
             <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
               <ChartColumnIcon className="mr-1 group-hover:scale-85 transition-transform duration-200" />
               Analytics
             </DropdownMenuItem>
+
             <DropdownMenuItem
               className="group focus:text-yellow-600 dark:focus:text-blue-500 transition-all duration-200 ease-in-out justify-start"
               onClick={(e) => {
@@ -98,12 +106,15 @@ export default function UserButton({ session }: { session: Session | null }) {
                 onCheckedChange={() => toggleTheme()}
               />
             </DropdownMenuItem>
+
             <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
               <Settings className="group-hover:rotate-180 group-hover:scale-90 mr-1 transition-transform duration-200 ease-in-out" />
               Settings
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
+
+          <DropdownMenuSeparator className="my-2" />
+
           <DropdownMenuItem
             className="dark:focus:bg-destructive/20 focus:bg-destructive/25 group transition-all duration-200 ease-in-out cursor-pointer"
             onClick={() => signOut()}

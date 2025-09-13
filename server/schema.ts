@@ -21,6 +21,7 @@ export const users = pgTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
+  handle: text("handle").unique(),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
@@ -28,12 +29,12 @@ export const users = pgTable("user", {
 });
 
 export const userRelations = relations(users, ({ one }) => ({
-  verificationToken: one(verificationTokens, {
+  verification_token: one(verificationTokens, {
     fields: [users.email],
     references: [verificationTokens.email],
-    relationName: "email_token",
+    relationName: "verification_token",
   }),
-  twoFactorCode: one(twoFactorCodes, {
+  two_factor_code: one(twoFactorCodes, {
     fields: [users.email],
     references: [twoFactorCodes.email],
     relationName: "two_factor_code",
@@ -78,15 +79,15 @@ export const verificationTokens = pgTable("verification_token", {
 export const verificationTokenRelations = relations(
   verificationTokens,
   ({ one }) => ({
-    verificationToken: one(users, {
+    verification_token: one(users, {
       fields: [verificationTokens.email],
       references: [users.email],
-      relationName: "email_token",
+      relationName: "verification_token",
     }),
   })
 );
 
-export const twoFactorCodes = pgTable("two_factor_codes", {
+export const twoFactorCodes = pgTable("two_factor_code", {
   id: serial("id").primaryKey(),
   code: text("code").notNull(),
   email: text("email")
@@ -96,7 +97,7 @@ export const twoFactorCodes = pgTable("two_factor_codes", {
 });
 
 export const twoFactorCodeRelations = relations(twoFactorCodes, ({ one }) => ({
-  twoFactorCode: one(users, {
+  two_factor_code: one(users, {
     fields: [twoFactorCodes.email],
     references: [users.email],
     relationName: "two_factor_code",

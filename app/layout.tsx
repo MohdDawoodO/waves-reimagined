@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Nav from "@/components/navigation/nav";
 import { SessionProvider } from "next-auth/react";
+import AppSidebarProvider from "@/components/providers/sidebar-provider";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -13,6 +14,7 @@ const geistMono = Geist_Mono({
 const interFont = Inter({
   variable: "--font-inter-mono",
   subsets: ["latin"],
+  weight: "600",
 });
 
 export const metadata: Metadata = {
@@ -32,10 +34,12 @@ export default function RootLayout({
         style={{ fontVariantNumeric: "tabular-nums" }}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="px-4 md:px-12 lg:px-16 mx-auto max-w-8xl">
-            <Nav />
-            <SessionProvider>{children}</SessionProvider>
-          </div>
+          <AppSidebarProvider>
+            <main className="px-4 md:px-6 py-4 mx-auto w-full h-[100vh] overflow-y-auto">
+              <Nav />
+              <SessionProvider>{children}</SessionProvider>
+            </main>
+          </AppSidebarProvider>
         </ThemeProvider>
       </body>
     </html>

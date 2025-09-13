@@ -6,7 +6,7 @@ export default function UserImage({
   name,
   className,
 }: {
-  image: string | null;
+  image?: string | null;
   name: string;
   className?: string;
 }) {

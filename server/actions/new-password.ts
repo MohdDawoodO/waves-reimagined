@@ -35,6 +35,13 @@ export const newPassword = action
       return { error: "Token expired" };
     }
 
+    if (!existingUser.emailVerified) {
+      await db
+        .update(users)
+        .set({ emailVerified: new Date() })
+        .where(eq(users.email, email));
+    }
+
     const existingPassword = await compare(password, existingUser.password!);
 
     if (existingPassword) {

@@ -60,10 +60,10 @@ export default function NewPasswordForm() {
   });
 
   function onSubmit(values: z.infer<typeof NewPasswordSchema>) {
-    const refinedEmail = values.email.toLowerCase();
+    const email = values.email.toLowerCase();
 
     if (!missingCredentials) {
-      execute({ ...values, email: refinedEmail });
+      execute({ ...values, email });
     }
   }
 

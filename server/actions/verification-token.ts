@@ -42,7 +42,7 @@ export async function sendVerificationTokenEmail(
       email: email,
       subject: "Waves Music - Verification Email",
       text: "Click the link below to",
-      linkText: "Verify your email",
+      linkText: password ? "Verify your email" : "Reset your password",
       tokenLink: `http://localhost:3000/auth/${password ? "verify" : "new-password"}?email=${email}${password ? "&password=" + password : ""}&token=${newVerificationToken}`,
     });
     return;
@@ -52,7 +52,7 @@ export async function sendVerificationTokenEmail(
     email: email,
     subject: "Waves Music - Verification Email",
     text: "Click the link below to",
-    linkText: "Verify your email",
+    linkText: password ? "Verify your email" : "Reset your password",
     tokenLink: `http://localhost:3000/auth/${password ? "verify" : "new-password"}?email=${email}&password=${password ? "&password=" + password : ""}&token=${existingToken.token}`,
   });
   return;

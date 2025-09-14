@@ -1,8 +1,6 @@
 import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
 
-export const revalidate = 60;
-
 export default async function AuthLayout({
   children,
 }: {

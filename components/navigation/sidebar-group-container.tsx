@@ -10,8 +10,9 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import UserImage from "./user-image";
+import { cn } from "@/lib/utils";
 
 export default function SidebarGroupContainer({
   title,
@@ -31,6 +32,7 @@ export default function SidebarGroupContainer({
   }[];
 }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
@@ -40,7 +42,12 @@ export default function SidebarGroupContainer({
           {data.map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton
-                className="text-sm py-5"
+                className={cn(
+                  "text-sm py-5",
+                  pathname === item.path
+                    ? "bg-primary/50 dark:bg-primary/25"
+                    : null
+                )}
                 onClick={() => router.push(item.path)}
               >
                 {item.icon && <item.icon className="scale-105 mr-2" />}

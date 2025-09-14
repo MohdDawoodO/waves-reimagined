@@ -520,7 +520,7 @@ function SidebarMenuButton({
       className={cn(
         sidebarMenuButtonVariants({ variant, size }),
         className,
-        "hover:bg-muted-foreground/15 active:bg-muted-foreground/25 dark:active:bg-muted-foreground/25 focus:bg-primary/35 dark:focus:bg-primary/10"
+        "hover:bg-muted-foreground/8 active:bg-muted-foreground/16 dark:hover:bg-muted-foreground/8 dark:active:bg-muted-foreground/16 transition-colors duration-200"
       )}
       {...props}
     />

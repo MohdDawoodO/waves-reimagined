@@ -6,30 +6,65 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarSeparator,
+  useSidebar,
 } from "../ui/sidebar";
 
 import Logo from "./logo";
 import SidebarGroupContainer from "./sidebar-group-container";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { Session } from "next-auth";
+import SignedOutUserMenu from "./signed-out-user-menu";
 
-export default function AppSidebar() {
+export default function AppSidebar({ session }: { session?: Session | null }) {
   const pageLinks = [
     { path: "/", icon: Home, name: "Home" },
     { path: "/trending", icon: TrendingUp, name: "Trending" },
-    { path: "/subscriptions", icon: PlaySquare, name: "Subscriptions" },
+  ];
+
+  const signedUserPageLinks = [
+    ...pageLinks,
+    {
+      icon: PlaySquare,
+      name: "Subscriptions",
+      path: "/subscriptions",
+    },
   ];
 
   const playlists = [
-    { path: "/", icon: ThumbsUp, name: "Liked Musics" },
-    { path: "/", icon: TrendingUp, name: "Watch Later" },
-    { path: "/", icon: PlaySquare, name: "Other playlist..." },
+    { path: "/playlists?p=67281", icon: ThumbsUp, name: "Liked Musics" },
+    {
+      path: "/playlists?p=21789",
+      icon: TrendingUp,
+      name: "Watch Later",
+    },
+    {
+      path: "/profile/mohddawood/playlists",
+      icon: PlaySquare,
+      name: "Other playlist...",
+    },
   ];
 
   const subscriptions = [
-    { path: "/", image: null, name: "Pappartit" },
-    { path: "/", image: null, name: "Mohd Dawood" },
-    { path: "/", image: null, name: "AirKnight" },
-    { path: "/", image: null, name: "View more..." },
+    {
+      path: "/profile/mohdibrahim",
+      image:
+        "https://lh3.googleusercontent.com/a/ACg8ocK6HMvZzozNdpyfkipdwUuv1ctBImh9yrX4l3JK0J_pkyOlEvU=s96-c",
+      name: "Ibrahim",
+    },
+    { path: "/profile/@mohddawood", image: null, name: "Mohd Dawood" },
+    { path: "/profile/@airknight", image: null, name: "AirKnight" },
+    { path: "/view-more", image: null, name: "View more..." },
   ];
+
+  const { setOpen } = useSidebar();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname.includes("/auth")) {
+      setOpen(false);
+    }
+  }, [pathname, setOpen]);
 
   return (
     <Sidebar variant="inset">
@@ -37,17 +72,26 @@ export default function AppSidebar() {
         <Logo className="py-3" />
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
-        <SidebarGroupContainer title="Waves Music" data={pageLinks} />
-        <SidebarSeparator />
-
-        <SidebarGroupContainer title="Your Playlists" data={playlists} />
-        <SidebarSeparator />
-
         <SidebarGroupContainer
-          title="Your Subscriptions"
-          data={subscriptions}
+          title="Waves Music"
+          data={session ? signedUserPageLinks : pageLinks}
         />
         <SidebarSeparator />
+
+        {session && (
+          <>
+            <SidebarGroupContainer title="Your Playlists" data={playlists} />
+            <SidebarSeparator />
+
+            <SidebarGroupContainer
+              title="Your Subscriptions"
+              data={subscriptions}
+            />
+            <SidebarSeparator />
+          </>
+        )}
+
+        {!session && <SignedOutUserMenu />}
       </SidebarContent>
     </Sidebar>
   );

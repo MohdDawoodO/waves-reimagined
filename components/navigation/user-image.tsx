@@ -15,10 +15,8 @@ export default function UserImage({
       {image ? (
         <AvatarImage src={image!}></AvatarImage>
       ) : (
-        <div className="font-bold w-full h-full flex items-center justify-center bg-primary/85 dark:bg-primary/25">
-          <p className="text-black/75 dark:text-white/75">
-            {name.charAt(0).toUpperCase()}
-          </p>
+        <div className="font-bold w-full h-full flex items-center justify-center bg-primary/85 dark:bg-primary/75">
+          <p className="text-black/75 ">{name.charAt(0).toUpperCase()}</p>
         </div>
       )}
     </Avatar>

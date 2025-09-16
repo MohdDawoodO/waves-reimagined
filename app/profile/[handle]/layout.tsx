@@ -1,0 +1,60 @@
+import ProfileNav from "@/components/navigation/profile-nav";
+import UserImage from "@/components/navigation/user-image";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { db } from "@/server";
+import { users } from "@/server/schema";
+import { eq } from "drizzle-orm";
+import { MoveLeft } from "lucide-react";
+import Link from "next/link";
+
+export default async function ProfileLayout({
+  params,
+  children,
+}: {
+  params: Promise<{ handle: string }>;
+  children: React.ReactNode;
+}) {
+  const parameter = await params;
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.handle, parameter.handle),
+  });
+
+  if (!user) {
+    return (
+      <div className="w-full absolute top-1/2 left-1/2 -translate-1/2 flex flex-col items-center justify-center text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl">404</h2>
+          <div className="w-[2px] h-10 bg-muted" />
+          <h3 className="text-sm">This profile doesn&apos;t exist</h3>
+        </div>
+        <Button variant={"link"}>
+          <MoveLeft />
+          <Link href={"/"}>Go back</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col gap-4">
+        <UserImage
+          name={parameter.handle}
+          image={user.image}
+          className="w-24 h-24 text-4xl"
+        />
+        <div className="text-center">
+          <h2 className="text-sm">{user?.name}</h2>
+          <h2 className="text-xs text-muted-foreground">@{user?.handle}</h2>
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-4 w-full">
+        <ProfileNav handle={parameter.handle} />
+        <Separator />
+      </div>
+      {children}
+    </div>
+  );
+}

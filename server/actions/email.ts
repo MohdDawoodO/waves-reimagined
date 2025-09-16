@@ -1,6 +1,6 @@
 "use server";
 
-import EmailTemplate from "@/components/other/email-template";
+import EmailTemplate from "@/components/email/email-template";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);

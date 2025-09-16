@@ -43,8 +43,9 @@ export default function SidebarGroupContainer({
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton
                 className={cn(
-                  "text-sm py-5",
-                  pathname === item.path
+                  "text-sm py-5 cursor-pointer",
+                  (pathname.includes(item.path) && item.path !== "/") ||
+                    pathname === item.path
                     ? "bg-primary/50 dark:bg-primary/25"
                     : null
                 )}

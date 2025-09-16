@@ -26,8 +26,11 @@ import {
 import UserImage from "./user-image";
 import { useTheme } from "next-themes";
 import { Switch } from "../ui/switch";
+import { useRouter } from "next/navigation";
 
 export default function UserButton({ session }: { session: Session | null }) {
+  const router = useRouter();
+
   const { setTheme, systemTheme, theme } = useTheme();
 
   function toggleTheme() {
@@ -73,7 +76,10 @@ export default function UserButton({ session }: { session: Session | null }) {
 
           <DropdownMenuSeparator className="my-2" />
 
-          <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
+          <DropdownMenuItem
+            className="group transition-all duration-200 ease-in-out cursor-pointer"
+            onClick={() => router.push(`/profile/${session.user.handle}`)}
+          >
             <User className="mr-1 group-hover:scale-85 transition-transform duration-200" />
             My Profile
           </DropdownMenuItem>

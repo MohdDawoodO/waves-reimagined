@@ -39,7 +39,7 @@ export default function AppSidebar({ session }: { session?: Session | null }) {
       name: "Watch Later",
     },
     {
-      path: "/profile/mohddawood/playlists",
+      path: "/profile/pappartit/playlists",
       icon: PlaySquare,
       name: "Other playlist...",
     },
@@ -47,13 +47,18 @@ export default function AppSidebar({ session }: { session?: Session | null }) {
 
   const subscriptions = [
     {
-      path: "/profile/mohdibrahim",
+      path: "/profile/ibrshism/home",
       image:
         "https://lh3.googleusercontent.com/a/ACg8ocK6HMvZzozNdpyfkipdwUuv1ctBImh9yrX4l3JK0J_pkyOlEvU=s96-c",
       name: "Ibrahim",
     },
-    { path: "/profile/@mohddawood", image: null, name: "Mohd Dawood" },
-    { path: "/profile/@airknight", image: null, name: "AirKnight" },
+    { path: "/profile/pappartit/home", image: null, name: "Mohd Dawood" },
+    {
+      path: "/profile/airknight360/home",
+      image:
+        "https://lh3.googleusercontent.com/a/ACg8ocKnnJw7J3rZJd1r8EejMWMQlGSLwRKAXemPGYuJBpTf2Ig1SDdX=s96-c",
+      name: "AirKnight",
+    },
     { path: "/view-more", image: null, name: "View more..." },
   ];
 

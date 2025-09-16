@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
+import { Session } from "next-auth";
 
-export default function ProfileNav({ handle }: { handle: string }) {
+export default function ProfileNav({
+  handle,
+  sesssion,
+}: {
+  handle: string;
+  sesssion: Session | null;
+}) {
   const pathname = usePathname();
 
   const profileLinks = [
@@ -13,12 +20,21 @@ export default function ProfileNav({ handle }: { handle: string }) {
     { name: "Playlists", path: `/profile/${handle}/playlists` },
   ];
 
+  if (sesssion?.user.handle === handle) {
+    profileLinks.push({
+      name: "Analytics",
+      path: `/profile/${handle}/analytics`,
+    });
+  }
+
   return (
-    <nav>
-      <ul className="flex gap-16 text-sm md:text-base md:gap-24">
+    <nav className="overflow-x-auto">
+      <ul className="flex justify-evenly md:justify-center gap-12 text-sm md:gap-20">
         {profileLinks.map((link) => (
           <li key={link.name}>
-            <Link href={link.path}>{link.name}</Link>
+            <Link href={link.path} scroll={false}>
+              {link.name}
+            </Link>
             {pathname === link.path && (
               <motion.div
                 layoutId="profileNavLine"

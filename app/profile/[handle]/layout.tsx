@@ -3,6 +3,7 @@ import UserImage from "@/components/navigation/user-image";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/server";
+import { auth } from "@/server/auth";
 import { users } from "@/server/schema";
 import { eq } from "drizzle-orm";
 import { MoveLeft } from "lucide-react";
@@ -21,6 +22,8 @@ export default async function ProfileLayout({
     where: eq(users.handle, parameter.handle),
   });
 
+  const session = await auth();
+
   if (!user) {
     return (
       <div className="w-full absolute top-1/2 left-1/2 -translate-1/2 flex flex-col items-center justify-center text-muted-foreground">
@@ -38,20 +41,20 @@ export default async function ProfileLayout({
   }
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-center gap-6 sm:gap-8">
+      <div className="flex flex-col items-center gap-2 sm:gap-4">
         <UserImage
           name={parameter.handle}
           image={user.image}
-          className="w-24 h-24 text-4xl"
+          className="w-18 h-18 text-3xl sm:w-24 sm:h-24 sm:text-4xl"
         />
         <div className="text-center">
           <h2 className="text-sm">{user?.name}</h2>
           <h2 className="text-xs text-muted-foreground">@{user?.handle}</h2>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-4 w-full">
-        <ProfileNav handle={parameter.handle} />
+      <div className="flex flex-col gap-2 sm:gap-4 w-full">
+        <ProfileNav handle={parameter.handle} sesssion={session} />
         <Separator />
       </div>
       {children}

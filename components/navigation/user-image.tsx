@@ -13,7 +13,7 @@ export default function UserImage({
   return (
     <Avatar className={cn(className)}>
       {image ? (
-        <AvatarImage src={image!}></AvatarImage>
+        <AvatarImage src={image!} />
       ) : (
         <div className="font-bold w-full h-full flex items-center justify-center bg-primary/85 dark:bg-primary/75">
           <p className="text-black/75 ">{name.charAt(0).toUpperCase()}</p>

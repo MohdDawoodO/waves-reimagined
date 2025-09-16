@@ -87,12 +87,22 @@ export default function UserButton({ session }: { session: Session | null }) {
           <DropdownMenuSeparator className="my-2" />
 
           <DropdownMenuGroup>
-            <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
+            <DropdownMenuItem
+              className="group transition-all duration-200 ease-in-out cursor-pointer"
+              onClick={() =>
+                router.push(`/profile/${session.user.handle}/tracks`)
+              }
+            >
               <Music className="mr-1 group-hover:scale-85 transition-transform duration-200" />
-              My Musics
+              My Tracks
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
+            <DropdownMenuItem
+              className="group transition-all duration-200 ease-in-out cursor-pointer"
+              onClick={() =>
+                router.push(`/profile/${session.user.handle}/analytics`)
+              }
+            >
               <ChartColumnIcon className="mr-1 group-hover:scale-85 transition-transform duration-200" />
               Analytics
             </DropdownMenuItem>
@@ -113,7 +123,10 @@ export default function UserButton({ session }: { session: Session | null }) {
               />
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="group transition-all duration-200 ease-in-out cursor-pointer">
+            <DropdownMenuItem
+              className="group transition-all duration-200 ease-in-out cursor-pointer"
+              onClick={() => router.push(`/settings`)}
+            >
               <Settings className="group-hover:rotate-180 group-hover:scale-90 mr-1 transition-transform duration-200 ease-in-out" />
               Settings
             </DropdownMenuItem>

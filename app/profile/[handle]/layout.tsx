@@ -44,7 +44,7 @@ export default async function ProfileLayout({
     <div className="flex flex-col items-center gap-6 sm:gap-8">
       <div className="flex flex-col items-center gap-2 sm:gap-4">
         <UserImage
-          name={parameter.handle}
+          name={user.name!}
           image={user.image}
           className="w-18 h-18 text-3xl sm:w-24 sm:h-24 sm:text-4xl"
         />
@@ -53,7 +53,7 @@ export default async function ProfileLayout({
           <h2 className="text-xs text-muted-foreground">@{user?.handle}</h2>
         </div>
       </div>
-      <div className="flex flex-col gap-2 sm:gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full">
         <ProfileNav handle={parameter.handle} sesssion={session} />
         <Separator />
       </div>

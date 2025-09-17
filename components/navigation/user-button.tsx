@@ -27,6 +27,7 @@ import UserImage from "./user-image";
 import { useTheme } from "next-themes";
 import { Switch } from "../ui/switch";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UserButton({ session }: { session: Session | null }) {
   const router = useRouter();
@@ -49,6 +50,13 @@ export default function UserButton({ session }: { session: Session | null }) {
     return theme === "dark" ? true : false;
   }
 
+  const redirectToProfileLink = (path: string) => {
+    router.push(session?.user.handle ? path : "/settings/account");
+    if (!session?.user.handle) {
+      toast.error("You need a handle to create a public profile");
+    }
+  };
+
   if (session && session.user) {
     return (
       <DropdownMenu>
@@ -69,7 +77,9 @@ export default function UserButton({ session }: { session: Session | null }) {
             <div className="flex flex-col items-center gap-1">
               <h2 className="text-sm">{session.user?.name}</h2>
               <p className="text-muted-foreground text-xs text-wrap">
-                {session.user?.email}
+                {session.user.handle
+                  ? "@" + session.user.handle
+                  : session.user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
@@ -78,7 +88,9 @@ export default function UserButton({ session }: { session: Session | null }) {
 
           <DropdownMenuItem
             className="group transition-all duration-200 ease-in-out cursor-pointer"
-            onClick={() => router.push(`/profile/${session.user.handle}`)}
+            onClick={() =>
+              redirectToProfileLink(`/profile/${session.user.handle}/home`)
+            }
           >
             <User className="mr-1 group-hover:scale-85 transition-transform duration-200" />
             My Profile
@@ -90,7 +102,7 @@ export default function UserButton({ session }: { session: Session | null }) {
             <DropdownMenuItem
               className="group transition-all duration-200 ease-in-out cursor-pointer"
               onClick={() =>
-                router.push(`/profile/${session.user.handle}/tracks`)
+                redirectToProfileLink(`/profile/${session.user.handle}/tracks`)
               }
             >
               <Music className="mr-1 group-hover:scale-85 transition-transform duration-200" />
@@ -100,7 +112,9 @@ export default function UserButton({ session }: { session: Session | null }) {
             <DropdownMenuItem
               className="group transition-all duration-200 ease-in-out cursor-pointer"
               onClick={() =>
-                router.push(`/profile/${session.user.handle}/analytics`)
+                redirectToProfileLink(
+                  `/profile/${session.user.handle}/analytics`
+                )
               }
             >
               <ChartColumnIcon className="mr-1 group-hover:scale-85 transition-transform duration-200" />
@@ -125,7 +139,7 @@ export default function UserButton({ session }: { session: Session | null }) {
 
             <DropdownMenuItem
               className="group transition-all duration-200 ease-in-out cursor-pointer"
-              onClick={() => router.push(`/settings`)}
+              onClick={() => router.push(`/settings/profile`)}
             >
               <Settings className="group-hover:rotate-180 group-hover:scale-90 mr-1 transition-transform duration-200 ease-in-out" />
               Settings

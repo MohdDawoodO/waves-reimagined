@@ -5,78 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1757159386554,
-      "tag": "0000_amazing_domino",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1757168321470,
-      "tag": "0001_lush_squadron_sinister",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1757168349101,
-      "tag": "0002_colossal_landau",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1757175012804,
-      "tag": "0003_curvy_magus",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1757176320398,
-      "tag": "0004_slippery_puck",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1757345329616,
-      "tag": "0005_natural_enchantress",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1757430151566,
-      "tag": "0006_adorable_jack_flag",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1757528007406,
-      "tag": "0007_happy_scream",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1757673327730,
-      "tag": "0008_chubby_black_bird",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1757691376309,
-      "tag": "0009_bright_ikaris",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1757691524878,
-      "tag": "0010_happy_microchip",
+      "when": 1758107420293,
+      "tag": "0000_kind_silk_fever",
       "breakpoints": true
     }
   ]

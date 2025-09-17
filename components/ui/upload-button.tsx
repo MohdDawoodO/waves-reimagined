@@ -7,11 +7,13 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 export default function UploadButton({
   className,
   onChange: setValue,
+  onDataURI: setDataURI,
   onError: setError,
   children,
 }: {
   className?: string;
   onChange?: Dispatch<SetStateAction<string>> | undefined;
+  onDataURI?: Dispatch<SetStateAction<string>> | undefined;
   onError?: Dispatch<SetStateAction<string>> | undefined;
   children?: React.ReactNode;
 }) {
@@ -31,10 +33,17 @@ export default function UploadButton({
         return;
       }
 
-      const imageURL = URL.createObjectURL(file);
-      if (setValue) setValue(imageURL);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.addEventListener("load", () => {
+        if (setValue) setValue(reader.result as string);
+      });
+
       if (setError) setError("");
     }
+
+    e.target.value = null!;
   };
 
   return (

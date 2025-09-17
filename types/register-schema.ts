@@ -1,9 +1,12 @@
 import z, { email } from "zod";
 
 export const RegisterSchema = z.object({
-  name: z.string().min(3, {
-    error: "Please enter a name with 3 or more characters",
-  }),
+  name: z
+    .string()
+    .min(3, {
+      error: "Please enter a name with 3 or more characters",
+    })
+    .max(25, { error: "Name can be no longer than 25 characters" }),
   email: z.email(),
   password: z
     .string()

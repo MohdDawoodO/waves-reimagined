@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import Nav from "@/components/navigation/nav";
 import { SessionProvider } from "next-auth/react";
 import AppSidebarProvider from "@/components/providers/sidebar-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -39,6 +40,7 @@ export default function RootLayout({
               <Nav />
               <SessionProvider>{children}</SessionProvider>
             </main>
+            <Toaster richColors />
           </AppSidebarProvider>
         </ThemeProvider>
       </body>

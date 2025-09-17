@@ -55,13 +55,21 @@ export function Dropzone({
         return;
       }
 
-      const fileURL = URL.createObjectURL(file);
-      setCurrentFileURL(fileURL);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.addEventListener("load", () => {
+        if (setValue) {
+          setValue(reader.result as string);
+        }
+        setCurrentFileURL(reader.result as string);
+      });
+
       setCurrentFile(file);
 
-      if (setValue) setValue(fileURL);
       if (setError) setError("");
     }
+
+    e.target.value = null!;
   };
 
   return (

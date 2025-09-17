@@ -26,18 +26,14 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   password: text("password"),
+  profileDescription: text("profileDescription"),
 });
 
 export const userRelations = relations(users, ({ one }) => ({
-  verification_token: one(verificationTokens, {
-    fields: [users.email],
-    references: [verificationTokens.email],
-    relationName: "verification_token",
-  }),
-  two_factor_code: one(twoFactorCodes, {
-    fields: [users.email],
-    references: [twoFactorCodes.email],
-    relationName: "two_factor_code",
+  user_avatar: one(userAvatars, {
+    fields: [users.id],
+    references: [userAvatars.userID],
+    relationName: "user_avatar",
   }),
 }));
 
@@ -76,17 +72,6 @@ export const verificationTokens = pgTable("verification_token", {
   expires: timestamp("expires").notNull(),
 });
 
-export const verificationTokenRelations = relations(
-  verificationTokens,
-  ({ one }) => ({
-    verification_token: one(users, {
-      fields: [verificationTokens.email],
-      references: [users.email],
-      relationName: "verification_token",
-    }),
-  })
-);
-
 export const twoFactorCodes = pgTable("two_factor_code", {
   id: serial("id").primaryKey(),
   code: text("code").notNull(),
@@ -96,10 +81,20 @@ export const twoFactorCodes = pgTable("two_factor_code", {
   expires: timestamp("expires").notNull(),
 });
 
-export const twoFactorCodeRelations = relations(twoFactorCodes, ({ one }) => ({
-  two_factor_code: one(users, {
-    fields: [twoFactorCodes.email],
-    references: [users.email],
-    relationName: "two_factor_code",
+export const userAvatars = pgTable("user_avatar", {
+  id: serial("id").primaryKey(),
+  userID: text("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+
+  imageURL: text("imageURL").notNull(),
+  publicID: text("publicID"),
+});
+
+export const userAvatarRelations = relations(userAvatars, ({ one }) => ({
+  user: one(users, {
+    fields: [userAvatars.userID],
+    references: [users.id],
+    relationName: "user_avatar",
   }),
 }));

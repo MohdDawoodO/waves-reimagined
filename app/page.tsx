@@ -1,8 +1,11 @@
+import { Dropzone } from "@/components/ui/dropzone";
 import { auth } from "@/server/auth";
 import Image from "next/image";
 
 export default async function Home() {
   const session = await auth();
+
+  console.log(session);
 
   return (
     <div>

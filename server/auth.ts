@@ -63,7 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.name = dbUser.name;
       token.handle = dbUser.handle;
       token.image = dbUser.image;
-
+      token.isOAuth = !dbUser.emailVerified;
       return token;
     },
     async session({ token, session }) {
@@ -76,6 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.name = token.name as string;
         session.user.handle = token.handle as string;
         session.user.image = token.image as string;
+        session.user.isOAuth = token.isOAuth as boolean;
       }
 
       return session;

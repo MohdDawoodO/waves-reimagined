@@ -7,7 +7,6 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 export default function UploadButton({
   className,
   onChange: setValue,
-  onDataURI: setDataURI,
   onError: setError,
   children,
 }: {

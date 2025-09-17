@@ -8,11 +8,11 @@ export default function SettingsCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card>
-      <CardHeader>
+    <Card className="py-4 md:py-6">
+      <CardHeader className="px-4 md:px-6">
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="px-4 md:px-6">{children}</CardContent>
     </Card>
   );
 }

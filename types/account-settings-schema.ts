@@ -9,7 +9,7 @@ export const AccountSettingsSchema = z.object({
     })
     .lowercase()
     .min(3, { error: "Handle must be at least 3 characters long" })
-    .max(25, { error: "Handle can be no longer than 25 characters" }),
+    .max(20, { error: "Handle can be no longer than 20 characters" }),
   password: z
     .string()
     .min(8, { error: "Password must be at least 8 characters long" })

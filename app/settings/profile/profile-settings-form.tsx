@@ -71,7 +71,7 @@ export default function ProfileSettingForm({
   if (!session) return;
 
   return (
-    <SettingsCard title="Account Settings">
+    <SettingsCard title="Profile Settings">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4">

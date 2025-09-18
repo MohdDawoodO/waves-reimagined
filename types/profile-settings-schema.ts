@@ -4,7 +4,8 @@ export const ProfileSettingsSchema = z.object({
   userID: z.string(),
   displayName: z
     .string()
-    .min(3, { error: "Display name must be at least 3 characters long" }),
+    .min(3, { error: "Display name must be at least 3 characters long" })
+    .max(20, { error: "Display name can be no longer than 20 characters" }),
   profileDescription: z
     .string()
     .max(100, {

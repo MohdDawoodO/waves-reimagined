@@ -29,12 +29,13 @@ export const users = pgTable("user", {
   profileDescription: text("profileDescription"),
 });
 
-export const userRelations = relations(users, ({ one }) => ({
+export const userRelations = relations(users, ({ one, many }) => ({
   user_avatar: one(userAvatars, {
     fields: [users.id],
     references: [userAvatars.userID],
     relationName: "user_avatar",
   }),
+  user_tracks: many(soundTracks, { relationName: "user_track" }),
 }));
 
 export const accounts = pgTable(
@@ -96,5 +97,57 @@ export const userAvatarRelations = relations(userAvatars, ({ one }) => ({
     fields: [userAvatars.userID],
     references: [users.id],
     relationName: "user_avatar",
+  }),
+}));
+
+export const soundTracks = pgTable("sound_track", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userID: text("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  trackURL: text("trackURL").notNull(),
+  publicID: text("publicID").notNull(),
+});
+
+export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
+  user: one(users, {
+    fields: [soundTracks.userID],
+    references: [users.id],
+    relationName: "user_track",
+  }),
+  albumCover: one(albumCovers, {
+    fields: [soundTracks.id],
+    references: [albumCovers.trackID],
+    relationName: "album_cover",
+  }),
+  trackTags: many(trackTags, { relationName: "track_tag" }),
+}));
+
+export const albumCovers = pgTable("album_cover", {
+  id: serial("id").primaryKey(),
+  trackID: text("trackID")
+    .notNull()
+    .references(() => soundTracks.id, { onDelete: "cascade" }),
+  imageURL: text("imageURL").notNull(),
+  publicID: text("publicID"),
+});
+
+export const trackTags = pgTable("track_tags", {
+  id: serial("id").primaryKey(),
+  trackID: text("trackID")
+    .notNull()
+    .references(() => soundTracks.id, { onDelete: "cascade" }),
+  tag: text("tag").notNull(),
+});
+
+export const trackTagRelations = relations(trackTags, ({ one }) => ({
+  soundTrack: one(soundTracks, {
+    fields: [trackTags.trackID],
+    references: [soundTracks.id],
+    relationName: "track_tag",
   }),
 }));

@@ -28,7 +28,7 @@ export default function ProfileNav({
   }
 
   return (
-    <nav className="overflow-x-auto">
+    <nav className="profileNav overflow-x-auto">
       <ul className="flex justify-evenly md:justify-center gap-12 text-sm md:gap-20">
         {profileLinks.map((link) => (
           <li key={link.name}>

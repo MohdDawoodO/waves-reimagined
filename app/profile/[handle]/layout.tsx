@@ -53,7 +53,7 @@ export default async function ProfileLayout({
           <h2 className="text-xs text-muted-foreground">@{user?.handle}</h2>
         </div>
       </div>
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-2 sm:gap-4 w-full">
         <ProfileNav handle={parameter.handle} sesssion={session} />
         <Separator />
       </div>

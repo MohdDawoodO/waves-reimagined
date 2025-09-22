@@ -129,7 +129,7 @@ export default function AccountSettingForm({
               type="submit"
               disabled={status === "executing" || !form.formState.isValid}
             >
-              Update Settings
+              {status === "executing" ? "Updating..." : "Update Settings"}
             </Button>
           </div>
         </form>

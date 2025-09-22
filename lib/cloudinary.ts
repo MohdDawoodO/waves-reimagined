@@ -4,10 +4,12 @@ import { v2 as cloud } from "cloudinary";
 
 export async function cloudinary({
   file,
+  audio,
   action,
   public_id,
 }: {
   file?: string;
+  audio?: boolean;
   action: "upload" | "destroy";
   public_id?: string;
 }) {
@@ -22,7 +24,9 @@ export async function cloudinary({
       throw new Error("file required");
     }
 
-    const data = await cloud.uploader.upload(file);
+    const data = await cloud.uploader.upload(file, {
+      resource_type: audio ? "video" : "image",
+    });
 
     return {
       fileURL: data.url,

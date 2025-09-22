@@ -1,0 +1,1 @@
+CREATE TYPE "public"."visibility" AS ENUM('private', 'unlisted', 'public');

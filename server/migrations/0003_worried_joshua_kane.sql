@@ -1,0 +1,1 @@
+ALTER TABLE "sound_track" ADD COLUMN "visibility" "visibility" DEFAULT 'public';

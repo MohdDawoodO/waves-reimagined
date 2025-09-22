@@ -5,6 +5,8 @@ import {
   primaryKey,
   integer,
   serial,
+  pgEnum,
+  real,
 } from "drizzle-orm/pg-core";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -15,6 +17,12 @@ const connectionString = process.env.DATABASE_URL!;
 const sql = postgres(connectionString);
 
 export const db = drizzle(sql);
+
+export const visibilityEnum = pgEnum("visibility", [
+  "private",
+  "unlisted",
+  "public",
+]);
 
 export const users = pgTable("user", {
   id: text("id")
@@ -89,7 +97,7 @@ export const userAvatars = pgTable("user_avatar", {
     .references(() => users.id, { onDelete: "cascade" }),
 
   imageURL: text("imageURL").notNull(),
-  publicID: text("publicID"),
+  publicID: text("publicID").notNull(),
 });
 
 export const userAvatarRelations = relations(userAvatars, ({ one }) => ({
@@ -107,10 +115,13 @@ export const soundTracks = pgTable("sound_track", {
   userID: text("userID")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
+  trackName: text("name").notNull(),
   description: text("description").notNull(),
+  duration: real("duration").notNull(),
   trackURL: text("trackURL").notNull(),
   publicID: text("publicID").notNull(),
+  visibility: visibilityEnum().default("public"),
+  uploadedOn: timestamp("uploadedOn").notNull().defaultNow(),
 });
 
 export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
@@ -133,7 +144,7 @@ export const albumCovers = pgTable("album_cover", {
     .notNull()
     .references(() => soundTracks.id, { onDelete: "cascade" }),
   imageURL: text("imageURL").notNull(),
-  publicID: text("publicID"),
+  publicID: text("publicID").notNull(),
 });
 
 export const trackTags = pgTable("track_tags", {

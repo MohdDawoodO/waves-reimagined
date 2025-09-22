@@ -2,37 +2,35 @@
 
 import { AudioLines, Pause, Play, Upload, XIcon } from "lucide-react";
 import { Card, CardContent } from "./card";
-import {
-  ChangeEvent,
-  Children,
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { Slider } from "./slider";
-import { Label } from "./label";
 
 export function Dropzone({
+  value,
+  fileName,
   fileType,
   maxFileSize,
+  setFileName,
+  setFileDuration,
   onChange: setValue,
   onError: setError,
-  children,
   className,
 }: {
+  value?: string | undefined;
+  fileName?: string | undefined;
   fileType: "image" | "audio";
   maxFileSize: number;
-  onChange?: Dispatch<SetStateAction<string>> | undefined;
+  setFileName?: Dispatch<SetStateAction<string>> | undefined;
+  setFileDuration?: Dispatch<SetStateAction<number>> | undefined;
+  onChange?: Dispatch<SetStateAction<string | undefined>> | undefined;
   onError?: Dispatch<SetStateAction<string>> | undefined;
-  children?: React.ReactNode;
   className?: string;
 }) {
-  const [currentFileURL, setCurrentFileURL] = useState("");
-  const [currentFile, setCurrentFile] = useState<File>();
+  const [currentFileURL, setCurrentFileURL] = useState(value ?? "");
+  const [currentFileName, setCurrentFileName] = useState(fileName ?? "");
 
   const setFileStatus = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
@@ -64,7 +62,10 @@ export function Dropzone({
         setCurrentFileURL(reader.result as string);
       });
 
-      setCurrentFile(file);
+      setCurrentFileName(file.name);
+      if (setFileName) {
+        setFileName(file.name);
+      }
 
       if (setError) setError("");
     }
@@ -73,67 +74,68 @@ export function Dropzone({
   };
 
   return (
-    <>
-      {Children && <Label className="mb-2">{children}</Label>}
-      <Card className={className}>
-        <CardContent>
-          <div
-            className={cn(
-              "rounded-md p-4 flex flex-col gap-2 items-center justify-center text-muted-foreground relative",
-              currentFileURL
-                ? "aspect-square"
-                : "aspect-video border-2 border-dashed",
-              fileType === "audio" && currentFileURL
-                ? "border-2 border-dashed aspect-8/7"
-                : null
-            )}
-          >
-            {!currentFileURL && (
-              <>
-                <input
-                  type="file"
-                  className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={setFileStatus}
-                />
-                <Upload className="w-12 h-12 md:h-16 md:w-16" />
-                <p className="text-xs md:text-sm">
-                  Max File Size: {maxFileSize} MB
-                </p>
-              </>
-            )}
-            {currentFileURL && (
-              <>
-                <FileDisplay
-                  currentFileURL={currentFileURL}
-                  currentFile={currentFile}
-                  fileType={fileType}
-                />
-                <Button
-                  onClick={() => {
-                    setCurrentFileURL("");
-                    if (setValue) setValue("");
-                  }}
-                  variant={"secondary"}
-                  className="absolute -top-1 -right-1 w-6 h-6 rounded-full cursor-pointer bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-500 text-white"
-                >
-                  <XIcon size={14} />
-                </Button>
-              </>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </>
+    <Card className={cn(className)}>
+      <CardContent>
+        <div
+          className={cn(
+            "rounded-md p-4 flex flex-col gap-2 items-center justify-center text-muted-foreground relative",
+            currentFileURL
+              ? "aspect-square"
+              : "aspect-video border-2 border-dashed",
+            fileType === "audio" && currentFileURL
+              ? "border-2 border-dashed aspect-8/7"
+              : null
+          )}
+        >
+          {!currentFileURL && (
+            <>
+              <input
+                type="file"
+                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                onChange={setFileStatus}
+              />
+              <Upload className="w-12 h-12 md:h-16 md:w-16" />
+              <p className="text-xs md:text-sm">
+                Max File Size: {maxFileSize} MB
+              </p>
+            </>
+          )}
+          {currentFileURL && (
+            <>
+              <FileDisplay
+                setFileDuration={setFileDuration}
+                currentFileURL={currentFileURL}
+                currentFileName={currentFileName}
+                fileType={fileType}
+              />
+              <Button
+                size={"icon"}
+                onClick={() => {
+                  setCurrentFileURL("");
+                  if (setValue) setValue(undefined);
+                }}
+                variant={"secondary"}
+                className="absolute -top-1 -right-1 w-5 h-5 rounded-full cursor-pointer bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-500 text-white"
+              >
+                <XIcon size={12} className="scale-90" />
+              </Button>
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 function FileDisplay({
+  setFileDuration,
   currentFileURL,
-  currentFile,
+  currentFileName,
   fileType,
 }: {
+  setFileDuration?: Dispatch<SetStateAction<number>> | undefined;
   currentFileURL: string;
-  currentFile?: File;
+  currentFileName?: string;
   fileType: "image" | "audio";
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -180,9 +182,7 @@ function FileDisplay({
       <div className="absolute top-0 left-0 rounded-md w-full aspect-8/7 object-cover flex items-center justify-center flex-col">
         <AudioLines className="w-16 h-16 md:w-18 md:h-18 mb-2 md:mb-6" />
         <div className="w-52 md:w-64 flex flex-col gap-2">
-          <p className="text-center line-clamp-2 text-sm">
-            {currentFile?.name}
-          </p>
+          <p className="text-center line-clamp-2 text-sm">{currentFileName}</p>
           <div className="flex items-center gap-4 w-full">
             <p className="text-xs">{timeFormat(currentTime)}</p>
             <Slider
@@ -202,7 +202,11 @@ function FileDisplay({
             <Button
               variant={"secondary"}
               className="p-1 w-8 h-8"
-              onClick={() => playSongHandler()}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                playSongHandler();
+              }}
             >
               {isPlaying ? (
                 <Pause className="text-muted-foreground fill-muted-foreground" />
@@ -216,7 +220,12 @@ function FileDisplay({
         <audio
           src={currentFileURL}
           ref={audioRef}
-          onCanPlay={(e) => setDuration(e.currentTarget.duration)}
+          onCanPlay={(e) => {
+            setDuration(e.currentTarget.duration);
+            if (setFileDuration) {
+              setFileDuration(e.currentTarget.duration);
+            }
+          }}
           onTimeUpdate={(e) => {
             setCurrentTime(e.currentTarget.currentTime);
           }}

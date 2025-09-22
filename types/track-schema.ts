@@ -8,10 +8,13 @@ export const TrackSchema = z.object({
     .max(30, { error: "Track name can be no longer than 30 characters" }),
   description: z
     .string()
-    .min(10, { error: "Description must be at least 10 characters long" })
-    .max(50, { error: "Description can be no longer than 50 characters" }),
-  tags: z.array(z.string()),
-  trackURL: z.string(),
-  publicID: z.string(),
+    .max(200, { error: "Description can be no longer than 200 characters" }),
+  tags: z
+    .array(z.string())
+    .min(1, { error: "Please add at least 1 tag" })
+    .max(10, { error: "You can add no more than 10 tags" }),
   albumCover: z.string(),
+  soundTrack: z.string(),
+  duration: z.number(),
+  visibility: z.enum(["public", "unlisted", "private"]),
 });

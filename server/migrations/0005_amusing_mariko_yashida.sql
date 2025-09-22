@@ -1,0 +1,1 @@
+ALTER TABLE "sound_track" ADD COLUMN "uploadedOn" timestamp DEFAULT now() NOT NULL;

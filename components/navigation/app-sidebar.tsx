@@ -32,7 +32,7 @@ export default function AppSidebar({ session }: { session?: Session | null }) {
   ];
 
   const playlists = [
-    { path: "/playlists?p=67281", icon: ThumbsUp, name: "Liked Musics" },
+    { path: "/playlists?p=67281", icon: ThumbsUp, name: "Liked Tracks" },
     {
       path: "/playlists?p=21789",
       icon: TrendingUp,

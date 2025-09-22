@@ -20,15 +20,15 @@ export default function UploadButton({
     if (!e.target.files?.length) return;
 
     for (const file of e.target.files) {
-      const fileSize = file.size / (1024 * 1024);
+      const fileSize = file.size / 1024;
 
       if (!file.type.includes("image")) {
         if (setError) setError(`Please upload an image`);
         return;
       }
 
-      if (fileSize > 1) {
-        if (setError) setError("Max file size is 1 MB");
+      if (fileSize > 512) {
+        if (setError) setError("Max file size is 500 KB");
         return;
       }
 

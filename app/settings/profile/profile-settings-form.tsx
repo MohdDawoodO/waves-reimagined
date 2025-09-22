@@ -23,7 +23,6 @@ import UserImage from "@/components/navigation/user-image";
 import UploadButton from "@/components/ui/upload-button";
 import { useAction } from "next-safe-action/hooks";
 import { updateProfileSettings } from "@/server/actions/update-profile-settings";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export default function ProfileSettingForm({
   session,
@@ -32,7 +31,6 @@ export default function ProfileSettingForm({
 }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState("");
 
   const form = useForm({
     resolver: zodResolver(ProfileSettingsSchema),
@@ -47,7 +45,6 @@ export default function ProfileSettingForm({
 
   const { execute, status } = useAction(updateProfileSettings, {
     onSuccess: (data) => {
-      setLoading("");
       if (data.data.error) {
         setSuccess("");
         setError(data.data.error);
@@ -57,14 +54,10 @@ export default function ProfileSettingForm({
         setSuccess(data.data.success);
       }
     },
-    onExecute: () => {
-      setError("");
-      setSuccess("");
-      setLoading("Updating settings...");
-    },
   });
 
   function onSubmit(values: z.infer<typeof ProfileSettingsSchema>) {
+    console.log(values);
     execute(values);
   }
 
@@ -155,17 +148,12 @@ export default function ProfileSettingForm({
 
             {error && <FormError error={error} />}
             {success && <FormSuccess success={success} />}
-            {loading && (
-              <Alert>
-                <AlertTitle>{loading}</AlertTitle>
-              </Alert>
-            )}
 
             <Button
               type="submit"
               disabled={!form.formState.isValid || status === "executing"}
             >
-              Update Settings
+              {status === "executing" ? "Updating..." : "Update Settings"}
             </Button>
           </div>
         </form>

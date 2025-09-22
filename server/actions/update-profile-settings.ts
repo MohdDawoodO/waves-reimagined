@@ -65,7 +65,7 @@ export const updateProfileSettings = action
         } else {
           await db.insert(userAvatars).values({
             imageURL: data?.fileURL!,
-            publicID: data?.fileID,
+            publicID: data?.fileID!,
             userID,
           });
         }

@@ -36,7 +36,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AppSidebarProvider>
-            <main className="px-4 md:px-6 py-4 mx-auto w-full h-[100vh] overflow-y-auto">
+            <main className="px-4 md:px-6 py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto">
               <Nav />
               <SessionProvider>{children}</SessionProvider>
             </main>

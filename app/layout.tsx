@@ -36,9 +36,11 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AppSidebarProvider>
-            <main className="px-4 md:px-6 py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto">
+            <main className="py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto">
               <Nav />
-              <SessionProvider>{children}</SessionProvider>
+              <SessionProvider>
+                <div className="py-4 lg:py-0 px-4 md:px-6">{children}</div>
+              </SessionProvider>
             </main>
             <Toaster richColors />
           </AppSidebarProvider>

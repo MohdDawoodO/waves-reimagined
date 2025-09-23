@@ -43,10 +43,10 @@ export default function AllTracks({ tracks }: { tracks: AllTracksType }) {
             height={360}
           />
           <div className="flex flex-col w-full">
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full items-start justify-between">
               <motion.h2
                 layoutId={track.id + "name"}
-                className="text-base font-bold"
+                className="text-sm font-bold"
               >
                 {track.trackName}
               </motion.h2>
@@ -54,10 +54,10 @@ export default function AllTracks({ tracks }: { tracks: AllTracksType }) {
                 {timeFormat(track.duration)}
               </MotionBadge>
             </div>
-            <div className="text-muted-foreground font-extralight relative z-10">
+            <div className="text-muted-foreground font-extralight relative">
               <motion.h3
                 layoutId={track.id + "owner"}
-                className="w-fit text-sm"
+                className="w-fit text-xs"
               >
                 @{track.user.handle}
               </motion.h3>

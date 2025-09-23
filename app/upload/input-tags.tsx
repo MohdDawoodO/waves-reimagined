@@ -72,6 +72,7 @@ export default function Tags({
         <input
           ref={inputRef}
           className="outline-none w-20"
+          placeholder="Add tags..."
           onFocus={() => setFocused(true)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

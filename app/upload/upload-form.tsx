@@ -297,6 +297,7 @@ export default function UploadForm({ session }: { session: Session }) {
 
               {uploadProgress !== "upload-track" && (
                 <Button
+                  disabled={status === "executing"}
                   variant={"link"}
                   onClick={(e) => {
                     e.preventDefault();

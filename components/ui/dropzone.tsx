@@ -7,6 +7,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { Slider } from "./slider";
+import { timeFormat } from "@/lib/time-format";
 
 export function Dropzone({
   value,
@@ -165,17 +166,6 @@ function FileDisplay({
 
       audioRef.current?.play();
       setIsPlaying(true);
-    };
-
-    const timeFormat = (time: number) => {
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time) % (minutes * 60 || 60);
-
-      const formattedTime = `${minutes < 10 ? 0 : ""}${minutes}:${
-        seconds < 10 ? 0 : ""
-      }${seconds}`;
-
-      return formattedTime;
     };
 
     return (

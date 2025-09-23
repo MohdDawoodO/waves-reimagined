@@ -57,7 +57,7 @@ export default async function ProfileLayout({
         <ProfileNav handle={parameter.handle} sesssion={session} />
         <Separator />
       </div>
-      {children}
+      <main>{children}</main>
     </div>
   );
 }

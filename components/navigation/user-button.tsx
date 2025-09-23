@@ -67,7 +67,7 @@ export default function UserButton({ session }: { session: Session | null }) {
             className="cursor-pointer"
             onClick={() => redirectToProfileLink("/upload")}
           >
-            <div className="flex gap-2 sm:bg-muted items-center px-2 sm:px-3 py-2 rounded-full hover:bg-muted-foreground/25 duration-200">
+            <div className="flex gap-2 sm:bg-muted-foreground/15 items-center px-2 sm:px-3 py-2 rounded-full hover:bg-muted-foreground/25 duration-200">
               <PlusCircle className="w-5 h-5 sm:w-4 sm:h-4" />
               <span className="text-xs hidden sm:flex">Upload</span>
             </div>

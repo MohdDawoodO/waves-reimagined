@@ -37,7 +37,7 @@ export default function TrackControls({
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-4">
-      <div className="w-full flex gap-4 text-xs text-muted-foreground">
+      <div className="w-full flex gap-4 text-xs text-black dark:text-muted-foreground">
         <p>{timeFormat(currentDuration)}</p>
         <Slider
           value={[currentDuration]}
@@ -51,17 +51,17 @@ export default function TrackControls({
       </div>
       <div className="flex gap-4">
         <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
-          <ChevronFirstIcon className="text-muted-foreground stroke-3 scale-115" />
+          <ChevronFirstIcon className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
           {isPlaying ? (
-            <Pause className="text-muted-foreground fill-muted-foreground scale-115" />
+            <Pause className="text-black dark:text-muted-foreground fill-muted-foreground scale-115" />
           ) : (
-            <Play className="text-muted-foreground fill-muted-foreground scale-115" />
+            <Play className="text-black dark:text-muted-foreground fill-muted-foreground scale-115" />
           )}
         </Button>
         <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
-          <ChevronLast className="text-muted-foreground stroke-3 scale-115" />
+          <ChevronLast className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
       </div>
 

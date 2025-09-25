@@ -13,8 +13,14 @@ export const TrackSchema = z.object({
     .array(z.string())
     .min(1, { error: "Please add at least 1 tag" })
     .max(10, { error: "You can add no more than 10 tags" }),
-  albumCover: z.string(),
-  soundTrack: z.string(),
+  albumCover: z.object({
+    imageURL: z.string(),
+    publicID: z.string().optional(),
+  }),
+  soundTrack: z.object({
+    trackURL: z.string(),
+    publicID: z.string().optional(),
+  }),
   duration: z.number(),
   visibility: z.enum(["public", "unlisted", "private"]),
 });

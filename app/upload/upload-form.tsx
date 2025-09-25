@@ -41,7 +41,7 @@ import Tags from "./input-tags";
 import { useAction } from "next-safe-action/hooks";
 import { uploadTrack } from "@/server/actions/upload-track";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { cloudinary } from "@/lib/cloudinary";
 
 export default function UploadForm({ session }: { session: Session }) {
   const router = useRouter();
@@ -49,6 +49,7 @@ export default function UploadForm({ session }: { session: Session }) {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [uploadProgress, setUploadProgress] = useState<
     "upload-track" | "upload-cover" | "enter-details"
@@ -70,7 +71,8 @@ export default function UploadForm({ session }: { session: Session }) {
 
   const { execute, status } = useAction(uploadTrack, {
     onSuccess: (data) => {
-      toast.dismiss();
+      setLoading(false);
+
       if (data.data?.error) {
         setError(data.data.error);
         setSuccess("");
@@ -86,9 +88,6 @@ export default function UploadForm({ session }: { session: Session }) {
     },
     onError: (error) => {
       console.log("client error:", error);
-    },
-    onExecute: () => {
-      toast.loading("Uploading Track...");
     },
   });
 
@@ -127,9 +126,33 @@ export default function UploadForm({ session }: { session: Session }) {
     }
   }
 
-  function onSubmit(values: z.infer<typeof TrackSchema>) {
+  async function onSubmit(values: z.infer<typeof TrackSchema>) {
+    setLoading(true);
+
     console.log(values);
-    execute(values);
+
+    const soundTrack = await cloudinary({
+      action: "upload",
+      file: form.getValues("soundTrack.trackURL"),
+      audio: true,
+    });
+
+    const albumCover = await cloudinary({
+      action: "upload",
+      file: form.getValues("albumCover.imageURL"),
+    });
+
+    execute({
+      ...values,
+      soundTrack: {
+        trackURL: soundTrack?.fileURL!,
+        publicID: soundTrack?.fileID!,
+      },
+      albumCover: {
+        imageURL: albumCover?.fileURL!,
+        publicID: albumCover?.fileID!,
+      },
+    });
   }
 
   return (
@@ -156,11 +179,14 @@ export default function UploadForm({ session }: { session: Session }) {
                       <FormLabel>Upload your sound track</FormLabel>
                       <FormControl>
                         <Dropzone
-                          value={form.getValues("soundTrack")}
+                          value={form.getValues("soundTrack.trackURL")}
                           fileType="audio"
                           maxFileSize={10}
                           onChange={(value) => {
-                            form.setValue("soundTrack", value as string);
+                            form.setValue(
+                              "soundTrack.trackURL",
+                              value as string
+                            );
                             form.clearErrors();
                           }}
                           onError={setError}
@@ -186,11 +212,14 @@ export default function UploadForm({ session }: { session: Session }) {
                       <FormLabel>Upload your album cover</FormLabel>
                       <FormControl>
                         <Dropzone
-                          value={form.getValues("albumCover")}
+                          value={form.getValues("albumCover.imageURL")}
                           fileType="image"
                           maxFileSize={1}
                           onChange={(value) => {
-                            form.setValue("albumCover", value as string);
+                            form.setValue(
+                              "albumCover.imageURL",
+                              value as string
+                            );
                             form.clearErrors();
                           }}
                           onError={setError}
@@ -298,14 +327,14 @@ export default function UploadForm({ session }: { session: Session }) {
               )}
 
               {uploadProgress === "enter-details" && (
-                <Button type="submit" disabled={status === "executing"}>
-                  {status === "executing" ? "Uploading..." : "Upload Track"}
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Uploading..." : "Upload Track"}
                 </Button>
               )}
 
               {uploadProgress !== "upload-track" && (
                 <Button
-                  disabled={status === "executing"}
+                  disabled={loading}
                   variant={"link"}
                   onClick={(e) => {
                     e.preventDefault();

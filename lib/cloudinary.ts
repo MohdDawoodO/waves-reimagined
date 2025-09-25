@@ -14,7 +14,7 @@ export async function cloudinary({
   public_id?: string;
 }) {
   cloud.config({
-    cloud_name: "dh7sxoris",
+    cloud_name: process.env.CLOUD_NAME!,
     api_key: process.env.CLOUDINARY_API_KEY!,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });

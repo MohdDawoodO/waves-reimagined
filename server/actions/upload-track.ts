@@ -5,7 +5,6 @@ import { createSafeActionClient } from "next-safe-action";
 import { db } from "..";
 import { eq } from "drizzle-orm";
 import { albumCovers, soundTracks, trackTags, users } from "../schema";
-import { cloudinary } from "@/lib/cloudinary";
 
 const action = createSafeActionClient();
 
@@ -35,12 +34,6 @@ export const uploadTrack = action
 
         // track upload
 
-        const cloudTrack = await cloudinary({
-          action: "upload",
-          file: soundTrack,
-          audio: true,
-        });
-
         const uploadedTrack = await db
           .insert(soundTracks)
           .values({
@@ -49,8 +42,8 @@ export const uploadTrack = action
             userID,
             duration,
             visibility,
-            trackURL: cloudTrack?.fileURL!,
-            publicID: cloudTrack?.fileID!,
+            trackURL: soundTrack?.trackURL!,
+            publicID: soundTrack?.publicID!,
           })
           .returning();
 
@@ -65,14 +58,9 @@ export const uploadTrack = action
 
         // inserting album cover
 
-        const cloudAlbumCover = await cloudinary({
-          action: "upload",
-          file: albumCover,
-        });
-
         await db.insert(albumCovers).values({
-          imageURL: cloudAlbumCover?.fileURL!,
-          publicID: cloudAlbumCover?.fileID!,
+          imageURL: albumCover?.imageURL!,
+          publicID: albumCover?.publicID!,
           trackID: uploadedTrack[0].id,
         });
 

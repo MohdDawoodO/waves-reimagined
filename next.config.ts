@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "res.cloudinary.com" },
     ],
   },
-  experimental: { serverActions: { bodySizeLimit: "11mb" } },
+  experimental: { serverActions: { bodySizeLimit: "20mb" } },
 };
 
 export default nextConfig;

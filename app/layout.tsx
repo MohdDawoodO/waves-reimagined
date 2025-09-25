@@ -39,7 +39,7 @@ export default function RootLayout({
             <main className="py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto">
               <Nav />
               <SessionProvider>
-                <div className="py-4 lg:py-0 px-4 md:px-6">{children}</div>
+                <div className="py-4 lg:py-2 px-4 md:px-6">{children}</div>
               </SessionProvider>
             </main>
             <Toaster richColors />

@@ -1,4 +1,4 @@
-import AllTracks from "@/components/tracks/all-tracks";
+import Tracks from "@/components/tracks/tracks";
 import { db } from "@/server";
 import { soundTracks } from "@/server/schema";
 import { eq } from "drizzle-orm";
@@ -11,5 +11,11 @@ export default async function Home() {
     orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
   });
 
-  return <AllTracks tracks={tracks} />;
+  return (
+    <Tracks
+      tracks={tracks}
+      className="2xl:grid-cols-6"
+      openClassName="2xl:grid-cols-5"
+    />
+  );
 }

@@ -190,7 +190,7 @@ function FileDisplay({
           </div>
           <div className="flex items-center justify-center gap-4">
             <Button
-              variant={"secondary"}
+              variant="secondary"
               className="p-1 w-8 h-8"
               type="button"
               onClick={(e) => {

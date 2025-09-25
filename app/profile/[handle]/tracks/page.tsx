@@ -1,4 +1,4 @@
-import AllTracks from "@/components/tracks/all-tracks";
+import Tracks from "@/components/tracks/tracks";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { soundTracks, users } from "@/server/schema";
@@ -24,7 +24,7 @@ export default async function UserTracks({
       with: { albumCover: true, user: true },
     });
 
-    return <AllTracks tracks={userTracks} />;
+    return <Tracks tracks={userTracks} />;
   }
 
   if (session?.user.handle !== parameter.handle) {
@@ -36,6 +36,6 @@ export default async function UserTracks({
       with: { albumCover: true, user: true },
     });
 
-    return <AllTracks tracks={publicTracks} />;
+    return <Tracks tracks={publicTracks} />;
   }
 }

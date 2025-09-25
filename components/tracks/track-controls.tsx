@@ -5,6 +5,7 @@ import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
 import { ChevronFirstIcon, ChevronLast, Pause, Play } from "lucide-react";
 import { timeFormat } from "@/lib/time-format";
+import { usePathname } from "next/navigation";
 
 export default function TrackControls({
   trackURL,
@@ -16,6 +17,7 @@ export default function TrackControls({
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentDuration, setCurrentDuration] = useState(0);
+  const pathname = usePathname();
 
   function playSongHandler() {
     if (isPlaying) {
@@ -31,7 +33,7 @@ export default function TrackControls({
   useEffect(() => {
     const promise = audioRef.current?.play();
     promise?.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-  }, []);
+  }, [trackURL, pathname]);
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-4">

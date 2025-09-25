@@ -21,6 +21,7 @@ import { useState } from "react";
 import { Session } from "next-auth";
 import { useAction } from "next-safe-action/hooks";
 import { updateAcountSettings } from "@/server/actions/update-account-settings";
+import { toast } from "sonner";
 
 export default function AccountSettingForm({
   session,
@@ -43,6 +44,7 @@ export default function AccountSettingForm({
 
   const { execute, status } = useAction(updateAcountSettings, {
     onSuccess: (data) => {
+      toast.dismiss();
       if (data.data?.error) {
         setSuccess("");
         setError(data.data.error);
@@ -51,6 +53,9 @@ export default function AccountSettingForm({
         setError("");
         setSuccess(data.data.success);
       }
+    },
+    onExecute: () => {
+      toast.loading("Updating Settings...");
     },
   });
 

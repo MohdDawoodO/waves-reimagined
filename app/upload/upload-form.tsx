@@ -41,6 +41,7 @@ import Tags from "./input-tags";
 import { useAction } from "next-safe-action/hooks";
 import { uploadTrack } from "@/server/actions/upload-track";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UploadForm({ session }: { session: Session }) {
   const router = useRouter();
@@ -69,11 +70,12 @@ export default function UploadForm({ session }: { session: Session }) {
 
   const { execute, status } = useAction(uploadTrack, {
     onSuccess: (data) => {
+      toast.dismiss();
       if (data.data?.error) {
         setError(data.data.error);
         setSuccess("");
       }
-      if (data.data.success) {
+      if (data.data?.success) {
         setSuccess(data.data.success);
         setError("");
 
@@ -81,6 +83,12 @@ export default function UploadForm({ session }: { session: Session }) {
           router.push(`/profile/${session.user.handle}/tracks`);
         }, 500);
       }
+    },
+    onError: (error) => {
+      console.log("client error:", error);
+    },
+    onExecute: () => {
+      toast.loading("Uploading Track...");
     },
   });
 

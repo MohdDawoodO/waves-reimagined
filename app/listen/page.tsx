@@ -16,7 +16,7 @@ export default async function Listen({
   const soundTrack = await db.query.soundTracks.findFirst({
     where: and(
       eq(soundTracks.id, trackID),
-      eq(soundTracks.visibility, "public")
+      ne(soundTracks.visibility, "private")
     ),
     with: { albumCover: true, user: true },
   });
@@ -48,7 +48,7 @@ export default async function Listen({
 
   return (
     <div className="flex flex-col 2xl:flex-row">
-      <div className="min-h-[80vh] flex-4 flex flex-col items-center gap-8">
+      <div className="min-h-[80vh] flex-5 flex flex-col items-center gap-8">
         <TrackCover
           albumCover={soundTrack.albumCover.imageURL!}
           trackName={soundTrack.trackName!}

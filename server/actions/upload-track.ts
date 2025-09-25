@@ -24,59 +24,61 @@ export const uploadTrack = action
         soundTrack,
       },
     }) => {
-      const user = await db.query.users.findFirst({
-        where: eq(users.id, userID),
-      });
+      try {
+        const user = await db.query.users.findFirst({
+          where: eq(users.id, userID),
+        });
 
-      if (!user) {
-        return { error: "User not found" };
-      }
+        if (!user) {
+          return { error: "User not found" };
+        }
 
-      // track upload
+        // track upload
 
-      const cloudTrack = await cloudinary({
-        action: "upload",
-        file: soundTrack,
-        audio: true,
-      });
+        const cloudTrack = await cloudinary({
+          action: "upload",
+          file: soundTrack,
+          audio: true,
+        });
 
-      console.log("fine");
+        const uploadedTrack = await db
+          .insert(soundTracks)
+          .values({
+            trackName: name,
+            description,
+            userID,
+            duration,
+            visibility,
+            trackURL: cloudTrack?.fileURL!,
+            publicID: cloudTrack?.fileID!,
+          })
+          .returning();
 
-      const uploadedTrack = await db
-        .insert(soundTracks)
-        .values({
-          trackName: name,
-          description,
-          userID,
-          duration,
-          visibility,
-          trackURL: cloudTrack?.fileURL!,
-          publicID: cloudTrack?.fileID!,
-        })
-        .returning();
+        // inserting tags
 
-      // inserting tags
+        tags.map(async (tag) => {
+          await db.insert(trackTags).values({
+            tag,
+            trackID: uploadedTrack[0].id,
+          });
+        });
 
-      tags.map(async (tag) => {
-        await db.insert(trackTags).values({
-          tag,
+        // inserting album cover
+
+        const cloudAlbumCover = await cloudinary({
+          action: "upload",
+          file: albumCover,
+        });
+
+        await db.insert(albumCovers).values({
+          imageURL: cloudAlbumCover?.fileURL!,
+          publicID: cloudAlbumCover?.fileID!,
           trackID: uploadedTrack[0].id,
         });
-      });
 
-      // inserting album cover
-
-      const cloudAlbumCover = await cloudinary({
-        action: "upload",
-        file: albumCover,
-      });
-
-      await db.insert(albumCovers).values({
-        imageURL: cloudAlbumCover?.fileURL!,
-        publicID: cloudAlbumCover?.fileID!,
-        trackID: uploadedTrack[0].id,
-      });
-
-      return { success: "Track Uploaded" };
+        return { success: "Track Uploaded" };
+      } catch (err) {
+        console.log(err);
+      }
     }
   );

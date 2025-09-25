@@ -23,6 +23,7 @@ import UserImage from "@/components/navigation/user-image";
 import UploadButton from "@/components/ui/upload-button";
 import { useAction } from "next-safe-action/hooks";
 import { updateProfileSettings } from "@/server/actions/update-profile-settings";
+import { toast } from "sonner";
 
 export default function ProfileSettingForm({
   session,
@@ -45,6 +46,7 @@ export default function ProfileSettingForm({
 
   const { execute, status } = useAction(updateProfileSettings, {
     onSuccess: (data) => {
+      toast.dismiss();
       if (data.data.error) {
         setSuccess("");
         setError(data.data.error);
@@ -53,6 +55,9 @@ export default function ProfileSettingForm({
         setError("");
         setSuccess(data.data.success);
       }
+    },
+    onExecute: () => {
+      toast.loading("Updating Settings...");
     },
   });
 

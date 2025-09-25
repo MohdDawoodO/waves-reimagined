@@ -69,7 +69,7 @@ export default function UploadForm({ session }: { session: Session }) {
     mode: "onChange",
   });
 
-  const { execute, status } = useAction(uploadTrack, {
+  const { execute } = useAction(uploadTrack, {
     onSuccess: (data) => {
       setLoading(false);
 
@@ -129,8 +129,6 @@ export default function UploadForm({ session }: { session: Session }) {
   async function onSubmit(values: z.infer<typeof TrackSchema>) {
     setLoading(true);
 
-    console.log(values);
-
     const soundTrack = await cloudinary({
       action: "upload",
       file: form.getValues("soundTrack.trackURL"),
@@ -142,17 +140,18 @@ export default function UploadForm({ session }: { session: Session }) {
       file: form.getValues("albumCover.imageURL"),
     });
 
-    execute({
-      ...values,
-      soundTrack: {
-        trackURL: soundTrack?.fileURL!,
-        publicID: soundTrack?.fileID!,
-      },
-      albumCover: {
-        imageURL: albumCover?.fileURL!,
-        publicID: albumCover?.fileID!,
-      },
-    });
+    if (soundTrack && albumCover)
+      execute({
+        ...values,
+        soundTrack: {
+          trackURL: soundTrack.fileURL!,
+          publicID: soundTrack.fileID!,
+        },
+        albumCover: {
+          imageURL: albumCover.fileURL!,
+          publicID: albumCover.fileID!,
+        },
+      });
   }
 
   return (

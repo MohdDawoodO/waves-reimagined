@@ -1,6 +1,6 @@
 "use server";
 
-import { cloudinary } from "@/lib/cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { ProfileSettingsSchema } from "@/types/profile-settings-schema";
 import { createSafeActionClient } from "next-safe-action";
 import { db } from "..";
@@ -23,6 +23,12 @@ export const updateProfileSettings = action
 
       if (!user) return { error: "User not found" };
 
+      cloudinary.config({
+        cloud_name: process.env.CLOUD_NAME!,
+        api_key: process.env.CLOUDINARY_API_KEY!,
+        api_secret: process.env.CLOUDINARY_API_SECRET!,
+      });
+
       if (!avatar) {
         await db
           .update(users)
@@ -30,10 +36,7 @@ export const updateProfileSettings = action
           .where(eq(users.id, userID));
 
         if (user.user_avatar) {
-          await cloudinary({
-            action: "destroy",
-            public_id: user.user_avatar.publicID!,
-          });
+          await cloudinary.uploader.destroy(user.user_avatar.publicID!);
 
           await db.delete(userAvatars).where(eq(userAvatars.userID, userID));
         }
@@ -44,13 +47,10 @@ export const updateProfileSettings = action
 
       if (user.image !== avatar) {
         if (user.user_avatar) {
-          await cloudinary({
-            action: "destroy",
-            public_id: user.user_avatar.publicID!,
-          });
+          await cloudinary.uploader.destroy(user.user_avatar.publicID!);
         }
 
-        const data = await cloudinary({ action: "upload", file: avatar });
+        const data = await cloudinary.uploader.upload(avatar);
 
         await db
           .update(users)

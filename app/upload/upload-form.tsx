@@ -41,7 +41,8 @@ import Tags from "./input-tags";
 import { useAction } from "next-safe-action/hooks";
 import { uploadTrack } from "@/server/actions/upload-track";
 import { useRouter } from "next/navigation";
-import { cloudinary } from "@/lib/cloudinary";
+import { cloudinarySignature } from "@/lib/cloudinary-signature";
+import { toast } from "sonner";
 
 export default function UploadForm({ session }: { session: Session }) {
   const router = useRouter();
@@ -71,6 +72,7 @@ export default function UploadForm({ session }: { session: Session }) {
 
   const { execute } = useAction(uploadTrack, {
     onSuccess: (data) => {
+      toast.dismiss();
       setLoading(false);
 
       if (data.data?.error) {
@@ -128,28 +130,38 @@ export default function UploadForm({ session }: { session: Session }) {
 
   async function onSubmit(values: z.infer<typeof TrackSchema>) {
     setLoading(true);
+    toast.loading("Uploading Track...");
 
-    const soundTrack = await cloudinary({
-      action: "upload",
-      file: form.getValues("soundTrack.trackURL"),
-      audio: true,
-    });
+    const [soundApiURL, soundData] = await cloudinarySignature(
+      form.getValues("soundTrack.trackURL"),
+      "audio"
+    );
 
-    const albumCover = await cloudinary({
-      action: "upload",
-      file: form.getValues("albumCover.imageURL"),
-    });
+    const [coverApiURL, coverData] = await cloudinarySignature(
+      form.getValues("albumCover.imageURL"),
+      "image"
+    );
+
+    const soundTrack = await fetch(soundApiURL as string, {
+      method: "POST",
+      body: soundData,
+    }).then((response) => response.json());
+
+    const albumCover = await fetch(coverApiURL as string, {
+      method: "POST",
+      body: coverData,
+    }).then((response) => response.json());
 
     if (soundTrack && albumCover)
       execute({
         ...values,
         soundTrack: {
-          trackURL: soundTrack.fileURL!,
-          publicID: soundTrack.fileID!,
+          trackURL: soundTrack.url,
+          publicID: soundTrack.public_id,
         },
         albumCover: {
-          imageURL: albumCover.fileURL!,
-          publicID: albumCover.fileID!,
+          imageURL: albumCover.url,
+          publicID: albumCover.public_id,
         },
       });
   }
@@ -180,7 +192,7 @@ export default function UploadForm({ session }: { session: Session }) {
                         <Dropzone
                           value={form.getValues("soundTrack.trackURL")}
                           fileType="audio"
-                          maxFileSize={4.5}
+                          maxFileSize={10}
                           onChange={(value) => {
                             form.setValue(
                               "soundTrack.trackURL",

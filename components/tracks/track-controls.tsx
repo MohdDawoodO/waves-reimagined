@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { ChevronFirstIcon, ChevronLast, Pause, Play } from "lucide-react";
 import { timeFormat } from "@/lib/time-format";
 import { usePathname, useRouter } from "next/navigation";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { suggestedTrackIDs } from "@/lib/states";
 import { AllTracksType } from "@/types/common-types";
 
@@ -41,7 +41,7 @@ export default function TrackControls({
 
   useEffect(() => {
     setTrackIDs(tracks.map((track) => track.id));
-  }, []);
+  }, [tracks, setTrackIDs]);
 
   useEffect(() => {
     const promise = audioRef.current?.play();
@@ -67,7 +67,6 @@ export default function TrackControls({
           variant="ghost"
           size="icon"
           onClick={() => {
-            console.log(trackIDs, index);
             if (index - 1 < 0) {
               router.push(`/listen?t=${trackIDs[trackIDs.length - 1]}`);
               setIndex(trackIDs.length - 1);

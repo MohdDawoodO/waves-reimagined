@@ -5,6 +5,8 @@ import { db } from "@/server";
 import { soundTracks } from "@/server/schema";
 import { and, eq, ne } from "drizzle-orm";
 
+import { redirect } from "next/navigation";
+
 export default async function Listen({
   searchParams,
 }: {
@@ -12,6 +14,8 @@ export default async function Listen({
 }) {
   const parameters = await searchParams;
   const trackID = parameters.t;
+
+  if (!trackID) redirect("/");
 
   const soundTrack = await db.query.soundTracks.findFirst({
     where: and(
@@ -40,7 +44,7 @@ export default async function Listen({
       eq(soundTracks.visibility, "public")
     ),
     with: { albumCover: true, user: true },
-    limit: 15,
+    limit: 50,
     orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
   });
 
@@ -55,6 +59,7 @@ export default async function Listen({
           userHandle={soundTrack.user.handle!}
         />
         <TrackControls
+          tracks={[soundTrack, ...suggestedTracks]}
           trackURL={soundTrack.trackURL}
           duration={soundTrack.duration}
         />

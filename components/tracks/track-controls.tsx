@@ -5,12 +5,17 @@ import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
 import { ChevronFirstIcon, ChevronLast, Pause, Play } from "lucide-react";
 import { timeFormat } from "@/lib/time-format";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAtom, useSetAtom } from "jotai";
+import { suggestedTrackIDs } from "@/lib/states";
+import { AllTracksType } from "@/types/common-types";
 
 export default function TrackControls({
+  tracks,
   trackURL,
   duration,
 }: {
+  tracks: AllTracksType;
   trackURL: string;
   duration: number;
 }) {
@@ -18,6 +23,10 @@ export default function TrackControls({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentDuration, setCurrentDuration] = useState(0);
   const pathname = usePathname();
+  const router = useRouter();
+  const [index, setIndex] = useState(0);
+
+  const [trackIDs, setTrackIDs] = useAtom(suggestedTrackIDs);
 
   function playSongHandler() {
     if (isPlaying) {
@@ -29,6 +38,10 @@ export default function TrackControls({
     audioRef.current?.play();
     setIsPlaying(true);
   }
+
+  useEffect(() => {
+    setTrackIDs(tracks.map((track) => track.id));
+  }, []);
 
   useEffect(() => {
     const promise = audioRef.current?.play();
@@ -50,7 +63,20 @@ export default function TrackControls({
         <p>{timeFormat(duration)}</p>
       </div>
       <div className="flex gap-4">
-        <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            console.log(trackIDs, index);
+            if (index - 1 < 0) {
+              router.push(`/listen?t=${trackIDs[trackIDs.length - 1]}`);
+              setIndex(trackIDs.length - 1);
+            } else {
+              router.push(`/listen?t=${trackIDs[index - 1]}`);
+              setIndex(index - 1);
+            }
+          }}
+        >
           <ChevronFirstIcon className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
@@ -60,7 +86,20 @@ export default function TrackControls({
             <Play className="text-black dark:text-muted-foreground fill-muted-foreground scale-115" />
           )}
         </Button>
-        <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            if (index + 1 < trackIDs.length) {
+              router.push(`/listen?t=${trackIDs[index + 1]}`);
+              setIndex(index + 1);
+            }
+            if (index + 1 === trackIDs.length) {
+              router.push(`/listen?t=${trackIDs[0]}`);
+              setIndex(0);
+            }
+          }}
+        >
           <ChevronLast className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
       </div>

@@ -34,6 +34,7 @@
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
     "input-otp": "^1.4.2",
+    "jotai": "^2.15.0",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
     "next": "15.5.2",

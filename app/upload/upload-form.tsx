@@ -132,15 +132,13 @@ export default function UploadForm({ session }: { session: Session }) {
     setLoading(true);
     toast.loading("Uploading Track...");
 
-    const [soundApiURL, soundData] = await cloudinarySignature(
-      form.getValues("soundTrack.trackURL"),
-      "audio"
-    );
+    const { apiURL: soundApiURL, formData: soundData } =
+      await cloudinarySignature("audio");
+    soundData.append("file", form.getValues("soundTrack.trackURL"));
 
-    const [coverApiURL, coverData] = await cloudinarySignature(
-      form.getValues("albumCover.imageURL"),
-      "image"
-    );
+    const { apiURL: coverApiURL, formData: coverData } =
+      await cloudinarySignature("image");
+    coverData.append("file", form.getValues("albumCover.imageURL"));
 
     const soundTrack = await fetch(soundApiURL as string, {
       method: "POST",

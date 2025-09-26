@@ -180,7 +180,7 @@ export default function UploadForm({ session }: { session: Session }) {
                         <Dropzone
                           value={form.getValues("soundTrack.trackURL")}
                           fileType="audio"
-                          maxFileSize={10}
+                          maxFileSize={4.5}
                           onChange={(value) => {
                             form.setValue(
                               "soundTrack.trackURL",

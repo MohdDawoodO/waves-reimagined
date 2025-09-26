@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function TrackCover({
   trackName,
@@ -22,9 +23,12 @@ export default function TrackCover({
       />
       <div className="flex items-center flex-col">
         <h2 className="text-base font-bold">{trackName}</h2>
-        <h3 className="text-sm font-bold text-muted-foreground">
+        <Link
+          href={`/profile/${userHandle}/home`}
+          className="text-sm font-bold text-muted-foreground hover:underline underline-offset-2"
+        >
           @{userHandle}
-        </h3>
+        </Link>
       </div>
     </div>
   );

@@ -62,7 +62,6 @@ export default function ProfileSettingForm({
   });
 
   function onSubmit(values: z.infer<typeof ProfileSettingsSchema>) {
-    console.log(values);
     execute(values);
   }
 

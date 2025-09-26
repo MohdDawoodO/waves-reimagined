@@ -39,9 +39,32 @@ export default function TrackControls({
     setIsPlaying(true);
   }
 
+  function previousSong() {
+    if (index - 1 < 0) {
+      router.push(`/listen?t=${trackIDs[trackIDs.length - 1]}`);
+      setIndex(trackIDs.length - 1);
+    } else {
+      router.push(`/listen?t=${trackIDs[index - 1]}`);
+      setIndex(index - 1);
+    }
+  }
+
+  function nextSong() {
+    if (index + 1 < trackIDs.length) {
+      router.push(`/listen?t=${trackIDs[index + 1]}`);
+      setIndex(index + 1);
+    }
+    if (index + 1 === trackIDs.length) {
+      router.push(`/listen?t=${trackIDs[0]}`);
+      setIndex(0);
+    }
+  }
+
+  //* Runs only once to set autoPlay tracks
   useEffect(() => {
     setTrackIDs(tracks.map((track) => track.id));
-  }, [tracks, setTrackIDs]);
+    // eslint-disable-next-line
+  }, [setTrackIDs]);
 
   useEffect(() => {
     const promise = audioRef.current?.play();
@@ -63,19 +86,7 @@ export default function TrackControls({
         <p>{timeFormat(duration)}</p>
       </div>
       <div className="flex gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            if (index - 1 < 0) {
-              router.push(`/listen?t=${trackIDs[trackIDs.length - 1]}`);
-              setIndex(trackIDs.length - 1);
-            } else {
-              router.push(`/listen?t=${trackIDs[index - 1]}`);
-              setIndex(index - 1);
-            }
-          }}
-        >
+        <Button variant="ghost" size="icon" onClick={() => previousSong()}>
           <ChevronFirstIcon className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
         <Button variant="ghost" size="icon" onClick={() => playSongHandler()}>
@@ -85,20 +96,7 @@ export default function TrackControls({
             <Play className="text-black dark:text-muted-foreground fill-muted-foreground scale-115" />
           )}
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            if (index + 1 < trackIDs.length) {
-              router.push(`/listen?t=${trackIDs[index + 1]}`);
-              setIndex(index + 1);
-            }
-            if (index + 1 === trackIDs.length) {
-              router.push(`/listen?t=${trackIDs[0]}`);
-              setIndex(0);
-            }
-          }}
-        >
+        <Button variant="ghost" size="icon" onClick={() => nextSong()}>
           <ChevronLast className="text-black dark:text-muted-foreground stroke-3 scale-115" />
         </Button>
       </div>
@@ -107,6 +105,7 @@ export default function TrackControls({
         src={trackURL}
         ref={audioRef}
         onTimeUpdate={(e) => setCurrentDuration(e.currentTarget.currentTime)}
+        onEnded={() => nextSong()}
       />
     </div>
   );

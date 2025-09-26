@@ -43,12 +43,6 @@ export default function EmailVerifyCard() {
           router.refresh();
         }, 500);
       }
-      if (data.data.error) {
-        console.log(data.data.error);
-      }
-      if (data.data.verification) {
-        console.log(data.data.verification);
-      }
     },
   });
 

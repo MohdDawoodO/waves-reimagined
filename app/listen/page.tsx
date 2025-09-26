@@ -54,8 +54,8 @@ export default async function Listen({
     <div className="flex flex-col 2xl:flex-row">
       <div className="min-h-[80vh] flex-5 flex flex-col items-center gap-8">
         <TrackCover
-          albumCover={soundTrack.albumCover.imageURL!}
-          trackName={soundTrack.trackName!}
+          albumCover={soundTrack.albumCover.imageURL}
+          trackName={soundTrack.trackName}
           userHandle={soundTrack.user.handle!}
         />
         <TrackControls

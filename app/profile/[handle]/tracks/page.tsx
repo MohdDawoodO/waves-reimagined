@@ -24,7 +24,13 @@ export default async function UserTracks({
       with: { albumCover: true, user: true },
     });
 
-    return <Tracks tracks={userTracks} />;
+    return (
+      <Tracks
+        tracks={userTracks}
+        className="2xl:grid-cols-6"
+        openClassName="2xl:grid-cols-5"
+      />
+    );
   }
 
   if (session?.user.handle !== parameter.handle) {

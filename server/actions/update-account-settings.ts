@@ -37,8 +37,6 @@ export const updateAcountSettings = action
 
         const passwordMatch = await compare(password, user.password!);
 
-        console.log(user.password, password, passwordMatch);
-
         if (!passwordMatch) {
           return { error: "Password is incorrect" };
         }

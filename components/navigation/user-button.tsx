@@ -72,8 +72,14 @@ export default function UserButton({ session }: { session: Session | null }) {
               <span className="text-xs hidden sm:flex">Upload</span>
             </div>
           </TooltipTrigger>
-          <TooltipContent>Upload a Track</TooltipContent>
+          <TooltipContent
+            className="bg-primary"
+            arrowClassname="bg-primary fill-primary"
+          >
+            Upload a Track
+          </TooltipContent>
         </Tooltip>
+
         <DropdownMenu>
           <DropdownMenuTrigger>
             <UserImage

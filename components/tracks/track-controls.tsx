@@ -23,11 +23,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { suggestedTrackIDs } from "@/lib/states";
 import { AllTracksType } from "@/types/common-types";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -137,7 +132,7 @@ export default function TrackControls({
   }, [trackURL, pathname, setIndex, trackIDs, tracks]);
 
   return (
-    <div className="w-full max-w-md flex flex-col items-center gap-4 pb-12">
+    <div className="w-full max-w-md flex flex-col items-center gap-4">
       <div className="w-full flex gap-4 text-xs text-black dark:text-muted-foreground">
         <p>{timeFormat(currentDuration)}</p>
         <Slider
@@ -170,43 +165,35 @@ export default function TrackControls({
         <div className="w-full flex flex-col gap-4">
           <Separator />
           <div className="flex w-full justify-between gap-4">
-            <div className="gap-2 group">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-black dark:text-muted-foreground"
-                    onClick={() => muteAudio()}
-                  >
-                    {volume === 0 && <VolumeOffIcon className="scale-115" />}
-                    {volume < 0.25 && volume > 0 && (
-                      <VolumeIcon className="scale-115" />
-                    )}
-                    {volume < 0.5 && volume > 0.25 && (
-                      <Volume1Icon className="scale-115" />
-                    )}
-                    {volume > 0.5 && <Volume2Icon className="scale-115" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="right"
-                  className="bg-background hidden md:flex"
-                  arrowClassname="bg-background fill-background"
-                >
-                  <Slider
-                    className="w-20"
-                    value={[volume]}
-                    onValueChange={(value) => {
-                      if (audioRef.current) {
-                        audioRef.current.volume = value[0];
-                      }
-                    }}
-                    step={0.01}
-                    max={1}
-                  />
-                </TooltipContent>
-              </Tooltip>
+            <div className="flex items-center group">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-black dark:text-muted-foreground"
+                onClick={() => muteAudio()}
+              >
+                {volume === 0 && <VolumeOffIcon className="scale-115" />}
+                {volume < 0.25 && volume > 0 && (
+                  <VolumeIcon className="scale-115" />
+                )}
+                {volume < 0.5 && volume > 0.25 && (
+                  <Volume1Icon className="scale-115" />
+                )}
+                {volume > 0.5 && <Volume2Icon className="scale-115" />}
+              </Button>
+              <div className="hidden md:flex overflow-hidden py-3 translate-x-2 group-hover:px-2 duration-300">
+                <Slider
+                  className="w-0 group-hover:w-20 transition-all duration-300"
+                  value={[volume]}
+                  onValueChange={(value) => {
+                    if (audioRef.current) {
+                      audioRef.current.volume = value[0];
+                    }
+                  }}
+                  step={0.01}
+                  max={1}
+                />
+              </div>
             </div>
 
             <Button

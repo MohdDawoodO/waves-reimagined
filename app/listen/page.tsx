@@ -1,5 +1,7 @@
+import TrackComments from "@/components/tracks/track-comments";
 import TrackControls from "@/components/tracks/track-controls";
 import TrackCover from "@/components/tracks/track-cover";
+import TrackDescription from "@/components/tracks/track-description";
 import Tracks from "@/components/tracks/tracks";
 import { db } from "@/server";
 import { soundTracks } from "@/server/schema";
@@ -51,18 +53,27 @@ export default async function Listen({
   const suggestedTracks = [...userTracks, ...otherTracks];
 
   return (
-    <div className="flex flex-col 2xl:flex-row">
-      <div className="min-h-[80vh] flex-5 flex flex-col items-center gap-8">
-        <TrackCover
-          albumCover={soundTrack.albumCover.imageURL}
-          trackName={soundTrack.trackName}
-          userHandle={soundTrack.user.handle!}
-        />
-        <TrackControls
-          tracks={[soundTrack, ...suggestedTracks]}
-          trackURL={soundTrack.trackURL}
-          duration={soundTrack.duration}
-        />
+    <div className="flex flex-col 2xl:flex-row gap-24 2xl:gap-0">
+      <div className="min-h-[80vh] flex-5 flex flex-col items-center gap-20">
+        <div className="w-full flex flex-col items-center gap-8">
+          <TrackCover
+            albumCover={soundTrack.albumCover.imageURL}
+            trackName={soundTrack.trackName}
+            userHandle={soundTrack.user.handle!}
+          />
+          <TrackControls
+            tracks={[soundTrack, ...suggestedTracks]}
+            trackURL={soundTrack.trackURL}
+            duration={soundTrack.duration}
+          />
+        </div>
+        <div className="flex flex-col w-full items-center gap-8">
+          <TrackDescription
+            uploadedOn={soundTrack.uploadedOn}
+            description={soundTrack.description}
+          />
+          <TrackComments />
+        </div>
       </div>
       <div className="flex-1">
         <Tracks tracks={suggestedTracks} className="2xl:grid-cols-1" />

@@ -3,7 +3,9 @@ import TrackControls from "@/components/tracks/track-controls";
 import TrackCover from "@/components/tracks/track-cover";
 import TrackDescription from "@/components/tracks/track-description";
 import Tracks from "@/components/tracks/tracks";
+import { NotFoundMessage } from "@/components/ui/not-found-message";
 import { db } from "@/server";
+import { auth } from "@/server/auth";
 import { soundTracks } from "@/server/schema";
 import { and, eq, ne } from "drizzle-orm";
 
@@ -27,7 +29,12 @@ export default async function Listen({
     with: { albumCover: true, user: true },
   });
 
-  if (!soundTrack) return <div>No track found</div>;
+  const session = await auth();
+
+  if (!soundTrack)
+    return (
+      <NotFoundMessage>This track is either private or deleted</NotFoundMessage>
+    );
 
   const userTracks = await db.query.soundTracks.findMany({
     where: and(
@@ -65,6 +72,7 @@ export default async function Listen({
             tracks={[soundTrack, ...suggestedTracks]}
             trackURL={soundTrack.trackURL}
             duration={soundTrack.duration}
+            session={session}
           />
         </div>
         <div className="flex flex-col w-full items-center gap-8">

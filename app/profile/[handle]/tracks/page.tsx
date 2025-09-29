@@ -2,7 +2,7 @@ import Tracks from "@/components/tracks/tracks";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { soundTracks, users } from "@/server/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 export default async function UserTracks({
   params,
@@ -22,11 +22,31 @@ export default async function UserTracks({
     const userTracks = await db.query.soundTracks.findMany({
       where: eq(soundTracks.userID, user.id),
       with: { albumCover: true, user: true },
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
     });
 
     return (
       <Tracks
         tracks={userTracks}
+        className="2xl:grid-cols-6"
+        openClassName="2xl:grid-cols-5"
+      />
+    );
+  }
+
+  if (session?.user.role === "admin") {
+    const adminTracks = await db.query.soundTracks.findMany({
+      where: and(
+        eq(soundTracks.userID, user.id),
+        ne(soundTracks.visibility, "private")
+      ),
+      with: { albumCover: true, user: true },
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
+    });
+
+    return (
+      <Tracks
+        tracks={adminTracks}
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
       />
@@ -40,6 +60,7 @@ export default async function UserTracks({
         eq(soundTracks.visibility, "public")
       ),
       with: { albumCover: true, user: true },
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
     });
 
     return (

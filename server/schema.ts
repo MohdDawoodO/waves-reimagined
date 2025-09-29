@@ -24,6 +24,8 @@ export const visibilityEnum = pgEnum("visibility", [
   "public",
 ]);
 
+export const rolesEnum = pgEnum("role", ["user", "admin"]);
+
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -33,6 +35,7 @@ export const users = pgTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  role: rolesEnum().default("user"),
   password: text("password"),
   profileDescription: text("profileDescription"),
 });

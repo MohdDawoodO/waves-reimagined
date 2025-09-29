@@ -1,4 +1,5 @@
 export type UserType = {
+  role: "user" | "admin" | null;
   id: string;
   name: string | null;
   handle: string | null;
@@ -16,7 +17,7 @@ export type AlbumCoverType = {
   trackID: string;
 };
 
-export type AllTracksType = {
+export type TrackType = {
   visibility: "private" | "unlisted" | "public" | null;
   duration: number;
   id: string;
@@ -26,6 +27,6 @@ export type AllTracksType = {
   trackName: string;
   trackURL: string;
   uploadedOn: Date;
-  albumCover: AlbumCoverType;
   user: UserType;
-}[];
+  albumCover: AlbumCoverType;
+};

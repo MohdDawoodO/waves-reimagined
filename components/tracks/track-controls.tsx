@@ -12,6 +12,7 @@ import {
   MoreVertical,
   Pause,
   Play,
+  Trash2,
   Volume1Icon,
   Volume2Icon,
   VolumeIcon,
@@ -22,7 +23,7 @@ import { timeFormat } from "@/lib/time-format";
 import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { suggestedTrackIDs } from "@/lib/states";
-import { AllTracksType } from "@/types/common-types";
+import { TrackType } from "@/types/common-types";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -33,15 +34,20 @@ import {
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "motion/react";
 import { Separator } from "@/components/ui/separator";
+import { Session } from "next-auth";
+import { useAction } from "next-safe-action/hooks";
+import { deleteTrack } from "@/server/actions/delete-track";
 
 export default function TrackControls({
   tracks,
   trackURL,
   duration,
+  session,
 }: {
-  tracks: AllTracksType;
+  tracks: TrackType[];
   trackURL: string;
   duration: number;
+  session?: Session | null | undefined;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -58,6 +64,7 @@ export default function TrackControls({
   const [trackIDs, setTrackIDs] = useAtom(suggestedTrackIDs);
 
   function playSongHandler() {
+    if (status === "executing") return;
     if (isPlaying) {
       setIsPlaying(false);
       audioRef.current?.pause();
@@ -117,6 +124,29 @@ export default function TrackControls({
     setLiked(false);
     setLikes((prev) => prev - 1);
   }
+
+  const { execute, status } = useAction(deleteTrack, {
+    onSuccess: (data) => {
+      toast.dismiss();
+      console.log("bruhhhhhh");
+      if (data.data?.error) {
+        toast.error(data.data.error);
+      }
+      if (data.data?.success) {
+        toast.success(data.data.success);
+        if (session?.user.id === tracks[0].userID) {
+          router.refresh();
+        }
+        if (session?.user.role === "admin") {
+          router.push(`/`);
+        }
+      }
+    },
+    onExecute: () => {
+      toast.loading("Deleting Track...");
+    },
+    onError: (err) => console.log(err.error),
+  });
 
   //* Runs only once to set autoPlay tracks
   useEffect(() => {
@@ -181,9 +211,9 @@ export default function TrackControls({
                 )}
                 {volume > 0.5 && <Volume2Icon className="scale-115" />}
               </Button>
-              <div className="hidden md:flex overflow-hidden py-3 translate-x-2 group-hover:px-2 duration-300">
+              <div className="hidden md:flex overflow-hidden py-3 translate-x-2 group-hover:px-2 duration-200">
                 <Slider
-                  className="w-0 group-hover:w-20 transition-all duration-300"
+                  className="w-0 group-hover:w-20 transition-all duration-200"
                   value={[volume]}
                   onValueChange={(value) => {
                     if (audioRef.current) {
@@ -200,13 +230,14 @@ export default function TrackControls({
               size="icon"
               variant="ghost"
               onClick={() => setBookmarked(!bookmarked)}
+              className="group"
             >
               <Bookmark
                 className={cn(
                   "scale-115 transition-all duration-200 ease-out fill-background",
                   bookmarked
                     ? "text-foreground fill-foreground"
-                    : "dark:text-muted-foreground group-hover:fill-[#17171a]"
+                    : "dark:text-muted-foreground group-hover:fill-muted"
                 )}
               />
             </Button>
@@ -223,7 +254,7 @@ export default function TrackControls({
                     "scale-115 transition-all duration-200 ease-out fill-background",
                     liked
                       ? "text-primary fill-primary"
-                      : "dark:text-muted-foreground group-hover:fill-[#17171a]"
+                      : "dark:text-muted-foreground group-hover:fill-muted"
                   )}
                 />
               </Button>
@@ -266,11 +297,26 @@ export default function TrackControls({
               </DropdownMenuTrigger>
               <DropdownMenuContent side="left">
                 <DropdownMenuItem
-                  className="cursor-pointer text-muted-foreground text-xs"
+                  className="cursor-pointer text-foreground text-xs transition-colors duration-200"
                   onClick={() => copySongURL()}
                 >
                   Copy URL <Link />
                 </DropdownMenuItem>
+                {(session?.user.id === tracks[0].userID ||
+                  session?.user.role === "admin") && (
+                  <DropdownMenuItem
+                    className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200"
+                    disabled={status === "executing"}
+                    onClick={() => {
+                      if (isPlaying) {
+                        playSongHandler();
+                      }
+                      execute({ trackID: tracks[0].id });
+                    }}
+                  >
+                    Delete Track <Trash2 />
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

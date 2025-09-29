@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { useSidebar } from "../ui/sidebar";
-import { AllTracksType } from "@/types/common-types";
+import { TrackType } from "@/types/common-types";
 import Link from "next/link";
 
 export default function Tracks({
@@ -13,7 +13,7 @@ export default function Tracks({
   className,
   openClassName,
 }: {
-  tracks: AllTracksType;
+  tracks: TrackType[];
   className?: string;
   openClassName?: string;
 }) {

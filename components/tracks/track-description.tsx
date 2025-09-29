@@ -14,7 +14,7 @@ export default function TrackDescription({
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="gap-4">
-        <CardDescription className="flex items-center justify-between text-xs">
+        <CardDescription className="flex items-center justify-between text-xs text-foreground\">
           <p>Views: 1024</p>
           <p>{timeDistance.replace("about", "")} ago</p>
         </CardDescription>

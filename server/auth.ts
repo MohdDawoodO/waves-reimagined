@@ -64,6 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.handle = dbUser.handle;
       token.image = dbUser.image;
       token.isOAuth = !dbUser.emailVerified;
+      token.role = dbUser.role;
       return token;
     },
     async session({ token, session }) {
@@ -77,6 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.handle = token.handle as string;
         session.user.image = token.image as string;
         session.user.isOAuth = token.isOAuth as boolean;
+        session.user.role = token.role as "user" | "admin";
       }
 
       return session;

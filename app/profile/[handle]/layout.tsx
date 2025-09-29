@@ -1,13 +1,11 @@
 import ProfileNav from "@/components/navigation/profile-nav";
 import UserImage from "@/components/navigation/user-image";
-import { Button } from "@/components/ui/button";
+import { NotFoundMessage } from "@/components/ui/not-found-message";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { users } from "@/server/schema";
 import { eq } from "drizzle-orm";
-import { MoveLeft } from "lucide-react";
-import Link from "next/link";
 
 export default async function ProfileLayout({
   params,
@@ -25,19 +23,7 @@ export default async function ProfileLayout({
   const session = await auth();
 
   if (!user) {
-    return (
-      <div className="w-full absolute top-1/2 left-1/2 -translate-1/2 flex flex-col items-center justify-center text-muted-foreground">
-        <div className="flex items-center gap-4">
-          <h2 className="text-2xl">404</h2>
-          <div className="w-[2px] h-10 bg-muted" />
-          <h3 className="text-sm">This profile doesn&apos;t exist</h3>
-        </div>
-        <Button variant={"link"}>
-          <MoveLeft />
-          <Link href={"/"}>Go back</Link>
-        </Button>
-      </div>
-    );
+    return <NotFoundMessage>This profile doesn&apos;t exist</NotFoundMessage>;
   }
 
   return (

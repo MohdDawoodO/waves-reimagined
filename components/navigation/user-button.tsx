@@ -102,6 +102,9 @@ export default function UserButton({ session }: { session: Session | null }) {
                     ? "@" + session.user.handle
                     : session.user?.email}
                 </p>
+                {session.user.role === "admin" && (
+                  <p className="text-xs font-bold text-primary">Admin</p>
+                )}
               </div>
             </DropdownMenuLabel>
 

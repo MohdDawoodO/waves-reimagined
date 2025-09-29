@@ -64,7 +64,7 @@ export default function UploadForm({ session }: { session: Session }) {
       description: "",
       albumCover: undefined,
       soundTrack: undefined,
-      tags: undefined,
+      tags: [],
       visibility: "public",
     },
     mode: "onChange",

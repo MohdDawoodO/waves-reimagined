@@ -8,6 +8,7 @@ export type ExtendedUser = DefaultSession["user"] & {
   image: string;
   isOAuth: boolean;
   profileDescription: string;
+  role: "user" | "admin";
 };
 
 declare module "next-auth" {

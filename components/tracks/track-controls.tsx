@@ -178,6 +178,8 @@ export default function TrackControls({
     promise?.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     const currentIndex = trackIDs.findIndex((id) => id === tracks[0].id);
     setIndex(currentIndex);
+    setLiked(isLiked);
+    setLikes(tracks[0].likes);
   }, [trackURL, pathname, setIndex, trackIDs, tracks]);
 
   return (

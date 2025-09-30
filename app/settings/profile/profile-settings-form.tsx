@@ -50,11 +50,11 @@ export default function ProfileSettingForm({
     onSuccess: (data) => {
       toast.dismiss();
       setIsLoading(false);
-      if (data.data.error) {
+      if (data.data?.error) {
         setSuccess("");
         setError(data.data.error);
       }
-      if (data.data.success) {
+      if (data.data?.success) {
         setError("");
         setSuccess(data.data.success);
       }

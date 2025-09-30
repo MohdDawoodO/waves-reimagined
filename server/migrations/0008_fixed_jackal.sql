@@ -1,0 +1,1 @@
+ALTER TABLE "sound_track" ALTER COLUMN "likes" SET NOT NULL;

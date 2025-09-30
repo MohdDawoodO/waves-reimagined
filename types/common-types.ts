@@ -27,6 +27,15 @@ export type TrackType = {
   trackName: string;
   trackURL: string;
   uploadedOn: Date;
+  likes: number;
   user: UserType;
   albumCover: AlbumCoverType;
 };
+
+export type LikeType =
+  | {
+      id: number;
+      userID: string;
+      trackID: string;
+    }
+  | undefined;

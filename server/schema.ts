@@ -125,6 +125,7 @@ export const soundTracks = pgTable("sound_track", {
   publicID: text("publicID").notNull(),
   visibility: visibilityEnum().default("public"),
   uploadedOn: timestamp("uploadedOn").notNull().defaultNow(),
+  likes: real("likes").notNull().default(0),
 });
 
 export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
@@ -163,5 +164,23 @@ export const trackTagRelations = relations(trackTags, ({ one }) => ({
     fields: [trackTags.trackID],
     references: [soundTracks.id],
     relationName: "track_tag",
+  }),
+}));
+
+export const likes = pgTable("likes", {
+  id: serial("id").primaryKey(),
+  userID: text("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  trackID: text("trackID")
+    .notNull()
+    .references(() => soundTracks.id, { onDelete: "cascade" }),
+});
+
+export const likeRelations = relations(likes, ({ one }) => ({
+  soundTrack: one(soundTracks, {
+    fields: [likes.trackID],
+    references: [soundTracks.id],
+    relationName: "track_like",
   }),
 }));

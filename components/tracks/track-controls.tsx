@@ -9,6 +9,7 @@ import {
   ChevronLast,
   Heart,
   Link,
+  LogIn,
   MoreVertical,
   Pause,
   Play,
@@ -48,16 +49,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { formatNumber } from "@/lib/format-number";
+import { likeTrackHandler } from "@/server/actions/like-track-handler";
 
 export default function TrackControls({
   tracks,
-  trackURL,
-  duration,
+  isLiked,
   session,
 }: {
   tracks: TrackType[];
-  trackURL: string;
-  duration: number;
+  isLiked: boolean;
   session?: Session | null | undefined;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -66,13 +67,13 @@ export default function TrackControls({
   const [volume, setVolume] = useState(1);
   const [currentVolume, setCurrentVolume] = useState(1);
   const [bookmarked, setBookmarked] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(333);
+  const [liked, setLiked] = useState(isLiked);
+  const [likes, setLikes] = useState(tracks[0].likes);
   const pathname = usePathname();
   const router = useRouter();
   const [index, setIndex] = useState(0);
-
   const [trackIDs, setTrackIDs] = useAtom(suggestedTrackIDs);
+  const trackURL = tracks[0].trackURL;
 
   function playSongHandler() {
     if (status === "executing") return;
@@ -126,27 +127,34 @@ export default function TrackControls({
     toast.success("Copied URL!");
   }
 
-  function likeSong() {
+  async function likeSong() {
+    if (!session) {
+      return;
+    }
+
     if (!liked) {
       setLiked(true);
       setLikes((prev) => prev + 1);
-      return;
+    } else {
+      setLiked(false);
+      setLikes((prev) => prev - 1);
     }
-    setLiked(false);
-    setLikes((prev) => prev - 1);
+
+    await likeTrackHandler(session.user.id, tracks[0].id);
   }
 
   const { execute, status } = useAction(deleteTrack, {
     onSuccess: (data) => {
       toast.dismiss();
-      console.log("bruhhhhhh");
+
       if (data.data?.error) {
         toast.error(data.data.error);
       }
       if (data.data?.success) {
         toast.success(data.data.success);
         if (session?.user.id === tracks[0].userID) {
-          router.refresh();
+          router.push(`/profile/${session.user.handle}/home`);
+          return;
         }
         if (session?.user.role === "admin") {
           router.push(`/`);
@@ -179,12 +187,12 @@ export default function TrackControls({
         <Slider
           value={[currentDuration]}
           step={0.01}
-          max={duration}
+          max={tracks[0].duration}
           onValueChange={(value) => {
             if (audioRef.current) audioRef.current.currentTime = value[0];
           }}
         />
-        <p>{timeFormat(duration)}</p>
+        <p>{timeFormat(tracks[0].duration)}</p>
       </div>
       <div className="flex flex-col gap-8 items-center w-full">
         <div className="flex gap-4">
@@ -237,64 +245,99 @@ export default function TrackControls({
               </div>
             </div>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setBookmarked(!bookmarked)}
-              className="group"
-            >
-              <Bookmark
-                className={cn(
-                  "scale-115 transition-all duration-200 ease-out fill-background",
-                  bookmarked
-                    ? "text-foreground fill-foreground"
-                    : "dark:text-muted-foreground group-hover:fill-muted"
-                )}
-              />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setBookmarked(!bookmarked)}
+                  className="group"
+                >
+                  <Bookmark
+                    className={cn(
+                      "scale-115 transition-all duration-200 ease-out fill-background",
+                      bookmarked
+                        ? "text-foreground fill-foreground"
+                        : "dark:text-muted-foreground group-hover:fill-muted"
+                    )}
+                  />
+                </Button>
+              </AlertDialogTrigger>
 
-            <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="group"
-                onClick={() => likeSong()}
-              >
-                <Heart
-                  className={cn(
-                    "scale-115 transition-all duration-200 ease-out fill-background",
-                    liked
-                      ? "text-primary fill-primary"
-                      : "dark:text-muted-foreground group-hover:fill-muted"
-                  )}
-                />
-              </Button>
-              <div className="flex relative">
-                <AnimatePresence mode="popLayout">
-                  {[...likes.toString()].map((letter, i) => (
-                    <div key={i + letter} className="overflow-hidden">
-                      <motion.span
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "-100%" }}
-                        transition={{ delay: i * 0.1 }}
-                        className="inline-flex"
-                      >
-                        {letter}
-                      </motion.span>
-                    </div>
-                  ))}
-                </AnimatePresence>
+              <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="group"
+                    onClick={() => likeSong()}
+                  >
+                    <Heart
+                      className={cn(
+                        "scale-115 transition-all duration-200 ease-out fill-background",
+                        liked
+                          ? "text-primary fill-primary"
+                          : "dark:text-muted-foreground group-hover:fill-muted"
+                      )}
+                    />
+                  </Button>
+                </AlertDialogTrigger>
+
+                <div className="flex relative">
+                  <AnimatePresence mode="popLayout">
+                    {[...formatNumber(likes)].map((letter, i) => (
+                      <div key={i + letter} className="overflow-hidden">
+                        <motion.span
+                          initial={{ y: "100%" }}
+                          animate={{ y: 0 }}
+                          exit={{ y: "-100%" }}
+                          transition={{ delay: i * 0.1 }}
+                          className="inline-flex"
+                        >
+                          {letter}
+                        </motion.span>
+                      </div>
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
 
-            <Button size="icon" variant="ghost">
-              <TbPlaylistAdd
-                className={cn(
-                  "text-black dark:text-muted-foreground scale-150"
-                )}
-              />
-            </Button>
+              <AlertDialogTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <TbPlaylistAdd
+                    className={cn(
+                      "text-black dark:text-muted-foreground scale-150"
+                    )}
+                  />
+                </Button>
+              </AlertDialogTrigger>
+
+              {!session && (
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-destructive text-base">
+                      Please log in to perform this action.
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Log in to like songs, build playlists, and follow your
+                      favorite artists.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="cursor-pointer">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="flex group cursor-pointer"
+                      onClick={() => router.push("/auth/login")}
+                    >
+                      <LogIn className="group-hover:scale-90 group-hover:translate-x-1 transition-transform duration-200" />
+                      Log in
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              )}
+            </AlertDialog>
 
             <AlertDialog>
               <DropdownMenu>

@@ -7,6 +7,7 @@ import { NotFoundMessage } from "@/components/ui/not-found-message";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { soundTracks } from "@/server/schema";
+import { TrackType } from "@/types/common-types";
 import { and, eq, ne } from "drizzle-orm";
 
 import { redirect } from "next/navigation";
@@ -18,6 +19,9 @@ export default async function Listen({
 }) {
   const parameters = await searchParams;
   const trackID = parameters.t;
+
+  let otherTracks: TrackType[] = [];
+  let userTracks: TrackType[] = [];
 
   if (!trackID) redirect("/");
 
@@ -36,26 +40,49 @@ export default async function Listen({
       <NotFoundMessage>This track is either private or deleted</NotFoundMessage>
     );
 
-  const userTracks = await db.query.soundTracks.findMany({
-    where: and(
-      eq(soundTracks.userID, soundTrack.userID),
-      eq(soundTracks.visibility, "public"),
-      ne(soundTracks.id, soundTrack.id)
-    ),
-    with: { albumCover: true, user: true },
-    limit: 5,
-    orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
-  });
+  if (session?.user.role === "admin") {
+    userTracks = await db.query.soundTracks.findMany({
+      where: and(
+        eq(soundTracks.userID, soundTrack.userID),
+        ne(soundTracks.visibility, "private"),
+        ne(soundTracks.id, soundTrack.id)
+      ),
+      with: { albumCover: true, user: true },
+      limit: 5,
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
+    });
 
-  const otherTracks = await db.query.soundTracks.findMany({
-    where: and(
-      ne(soundTracks.userID, soundTrack.userID),
-      eq(soundTracks.visibility, "public")
-    ),
-    with: { albumCover: true, user: true },
-    limit: 50,
-    orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
-  });
+    otherTracks = await db.query.soundTracks.findMany({
+      where: and(
+        ne(soundTracks.userID, soundTrack.userID),
+        ne(soundTracks.visibility, "private")
+      ),
+      with: { albumCover: true, user: true },
+      limit: 50,
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
+    });
+  } else {
+    userTracks = await db.query.soundTracks.findMany({
+      where: and(
+        eq(soundTracks.userID, soundTrack.userID),
+        eq(soundTracks.visibility, "public"),
+        ne(soundTracks.id, soundTrack.id)
+      ),
+      with: { albumCover: true, user: true },
+      limit: 5,
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
+    });
+
+    otherTracks = await db.query.soundTracks.findMany({
+      where: and(
+        ne(soundTracks.userID, soundTrack.userID),
+        eq(soundTracks.visibility, "public")
+      ),
+      with: { albumCover: true, user: true },
+      limit: 50,
+      orderBy: (soundTracks, { desc }) => desc(soundTracks.uploadedOn),
+    });
+  }
 
   const suggestedTracks = [...userTracks, ...otherTracks];
 

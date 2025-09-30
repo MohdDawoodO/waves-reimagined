@@ -37,6 +37,17 @@ import { Separator } from "@/components/ui/separator";
 import { Session } from "next-auth";
 import { useAction } from "next-safe-action/hooks";
 import { deleteTrack } from "@/server/actions/delete-track";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 export default function TrackControls({
   tracks,
@@ -285,28 +296,53 @@ export default function TrackControls({
               />
             </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-black dark:text-muted-foreground"
-                >
-                  <MoreVertical className="scale-115" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="left">
-                <DropdownMenuItem
-                  className="cursor-pointer text-foreground text-xs transition-colors duration-200"
-                  onClick={() => copySongURL()}
-                >
-                  Copy URL <Link />
-                </DropdownMenuItem>
-                {(session?.user.id === tracks[0].userID ||
-                  session?.user.role === "admin") && (
+            <AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-black dark:text-muted-foreground"
+                  >
+                    <MoreVertical className="scale-115" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="left">
                   <DropdownMenuItem
-                    className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200"
-                    disabled={status === "executing"}
+                    className="cursor-pointer text-foreground text-xs transition-colors duration-200"
+                    onClick={() => copySongURL()}
+                  >
+                    Copy URL <Link />
+                  </DropdownMenuItem>
+                  {(session?.user.id === tracks[0].userID ||
+                    session?.user.role === "admin") && (
+                    <>
+                      <AlertDialogTrigger className="w-full">
+                        <DropdownMenuItem
+                          className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200"
+                          disabled={status === "executing"}
+                        >
+                          Delete Track <Trash2 />
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permenantly delete
+                    your track from Waves Music.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="cursor-pointer">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="cursor-pointer bg-destructive hover:bg-destructive/80"
                     onClick={() => {
                       if (isPlaying) {
                         playSongHandler();
@@ -314,11 +350,11 @@ export default function TrackControls({
                       execute({ trackID: tracks[0].id });
                     }}
                   >
-                    Delete Track <Trash2 />
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>

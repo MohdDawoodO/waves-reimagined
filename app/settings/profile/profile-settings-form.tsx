@@ -24,6 +24,7 @@ import UploadButton from "@/components/ui/upload-button";
 import { useAction } from "next-safe-action/hooks";
 import { updateProfileSettings } from "@/server/actions/update-profile-settings";
 import { toast } from "sonner";
+import { cloudinarySignature } from "@/lib/cloudinary-signature";
 
 export default function ProfileSettingForm({
   session,
@@ -32,21 +33,23 @@ export default function ProfileSettingForm({
 }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(ProfileSettingsSchema),
     defaultValues: {
       displayName: session?.user.name,
       profileDescription: undefined,
-      avatar: session?.user.image || undefined,
+      avatar: { fileURL: session?.user.image || undefined, fileID: undefined },
       userID: session?.user.id,
     },
     mode: "onChange",
   });
 
-  const { execute, status } = useAction(updateProfileSettings, {
+  const { execute } = useAction(updateProfileSettings, {
     onSuccess: (data) => {
       toast.dismiss();
+      setIsLoading(false);
       if (data.data.error) {
         setSuccess("");
         setError(data.data.error);
@@ -56,12 +59,34 @@ export default function ProfileSettingForm({
         setSuccess(data.data.success);
       }
     },
-    onExecute: () => {
-      toast.loading("Updating Settings...");
-    },
   });
 
-  function onSubmit(values: z.infer<typeof ProfileSettingsSchema>) {
+  async function onSubmit(values: z.infer<typeof ProfileSettingsSchema>) {
+    toast.loading("Updating Settings...");
+    setIsLoading(true);
+
+    if (
+      values.avatar.fileURL &&
+      values.avatar.fileURL !== session?.user.image
+    ) {
+      const { apiURL, formData } = await cloudinarySignature("image");
+      formData.append("file", values.avatar.fileURL as string);
+
+      const uploadedAvatar = await fetch(apiURL, {
+        method: "POST",
+        body: formData,
+      }).then((response) => response.json());
+
+      execute({
+        ...values,
+        avatar: {
+          fileURL: uploadedAvatar.url,
+          fileID: uploadedAvatar.public_id,
+        },
+      });
+      return;
+    }
+
     execute(values);
   }
 
@@ -91,7 +116,7 @@ export default function ProfileSettingForm({
             />
             <FormField
               control={form.control}
-              name="avatar"
+              name="avatar.fileURL"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Avatar</FormLabel>
@@ -100,11 +125,11 @@ export default function ProfileSettingForm({
                       <UserImage
                         className="w-10 h-10"
                         name={session.user.name}
-                        image={form.getValues("avatar")}
+                        image={form.getValues("avatar.fileURL")}
                       />
                       <UploadButton
                         onChange={(image) =>
-                          form.setValue("avatar", image as string)
+                          form.setValue("avatar.fileURL", image as string)
                         }
                         onError={setError}
                       >
@@ -115,7 +140,7 @@ export default function ProfileSettingForm({
                         type="button"
                         onClick={(e) => {
                           e.preventDefault();
-                          form.setValue("avatar", "");
+                          form.setValue("avatar.fileURL", "");
                         }}
                       >
                         Remove avatar
@@ -155,9 +180,9 @@ export default function ProfileSettingForm({
 
             <Button
               type="submit"
-              disabled={!form.formState.isValid || status === "executing"}
+              disabled={!form.formState.isValid || isLoading}
             >
-              {status === "executing" ? "Updating..." : "Update Settings"}
+              {isLoading ? "Updating..." : "Update Settings"}
             </Button>
           </div>
         </form>

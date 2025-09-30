@@ -12,6 +12,9 @@ export const ProfileSettingsSchema = z.object({
       error: "Profile description must be 200 characters or fewer.",
     })
     .optional(),
-  avatar: z.string().optional(),
+  avatar: z.object({
+    fileURL: z.string().optional(),
+    fileID: z.string().optional(),
+  }),
   // keepLikedVideosPrivate: z.boolean(), //? for some time only, till playlists are added
 });

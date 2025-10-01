@@ -64,6 +64,34 @@
       "when": 1759248026134,
       "tag": "0008_fixed_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1759300977751,
+      "tag": "0009_worried_landau",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1759301561009,
+      "tag": "0010_aberrant_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1759301683499,
+      "tag": "0011_curvy_shinobi_shaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1759302855655,
+      "tag": "0012_overjoyed_jocasta",
+      "breakpoints": true
     }
   ]
 }

@@ -6,8 +6,8 @@ import Tracks from "@/components/tracks/tracks";
 import { NotFoundMessage } from "@/components/ui/not-found-message";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
-import { likes, soundTracks } from "@/server/schema";
-import { LikeType, TrackType } from "@/types/common-types";
+import { likes, playlists, playlistTracks, soundTracks } from "@/server/schema";
+import { LikeType, PlaylistTrackType, TrackType } from "@/types/common-types";
 import { and, eq, ne } from "drizzle-orm";
 
 import { redirect } from "next/navigation";
@@ -23,6 +23,7 @@ export default async function Listen({
   let otherTracks: TrackType[] = [];
   let userTracks: TrackType[] = [];
   let like: LikeType = undefined;
+  let bookmarked: PlaylistTrackType = undefined;
 
   if (!trackID) redirect("/");
 
@@ -89,6 +90,22 @@ export default async function Listen({
     like = await db.query.likes.findFirst({
       where: and(eq(likes.userID, session.user.id), eq(likes.trackID, trackID)),
     });
+
+    const watchLaterPlaylist = await db.query.playlists.findFirst({
+      where: and(
+        eq(playlists.userID, session.user.id),
+        eq(playlists.name, "Watch Later")
+      ),
+    });
+
+    if (!watchLaterPlaylist) return;
+
+    bookmarked = await db.query.playlistTracks.findFirst({
+      where: and(
+        eq(playlistTracks.playlistID, watchLaterPlaylist.id),
+        eq(playlistTracks.trackID, trackID)
+      ),
+    });
   }
 
   const suggestedTracks = [...userTracks, ...otherTracks];
@@ -105,6 +122,7 @@ export default async function Listen({
           <TrackControls
             tracks={[soundTrack, ...suggestedTracks]}
             isLiked={!!like}
+            isBookmarked={!!bookmarked}
             session={session}
           />
         </div>

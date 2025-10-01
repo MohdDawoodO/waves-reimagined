@@ -3,7 +3,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { accounts, users } from "./schema";
+import { accounts, playlists, users } from "./schema";
 import { LoginSchema } from "@/types/login-schema";
 import { db } from ".";
 import { eq } from "drizzle-orm";
@@ -82,6 +82,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       return session;
+    },
+  },
+  events: {
+    createUser: async (user) => {
+      await db.insert(playlists).values({
+        name: "Watch Later",
+        description: "Your watch later tracks",
+        visibility: "private",
+        userID: user.user.id!,
+        editable: false,
+      });
     },
   },
 });

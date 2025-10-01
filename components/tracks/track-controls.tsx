@@ -51,13 +51,16 @@ import {
 } from "../ui/alert-dialog";
 import { formatNumber } from "@/lib/format-number";
 import { likeTrackHandler } from "@/server/actions/like-track-handler";
+import { bookmarkTrackHandler } from "@/server/actions/bookmark-track";
 
 export default function TrackControls({
   tracks,
+  isBookmarked,
   isLiked,
   session,
 }: {
   tracks: TrackType[];
+  isBookmarked: boolean;
   isLiked: boolean;
   session?: Session | null | undefined;
 }) {
@@ -66,7 +69,7 @@ export default function TrackControls({
   const [currentDuration, setCurrentDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [currentVolume, setCurrentVolume] = useState(1);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [liked, setLiked] = useState(isLiked);
   const [likes, setLikes] = useState(tracks[0].likes);
   const pathname = usePathname();
@@ -143,6 +146,32 @@ export default function TrackControls({
     await likeTrackHandler(session.user.id, tracks[0].id);
   }
 
+  async function bookmarkSong() {
+    if (!session) {
+      return;
+    }
+
+    if (!bookmarked) {
+      setBookmarked(true);
+    } else {
+      setBookmarked(false);
+    }
+
+    // await bookmarkTrackHandler(session.user.id, tracks[0].id);
+    executeBookmark({ userID: session.user.id, trackID: tracks[0].id });
+  }
+
+  const { execute: executeBookmark } = useAction(bookmarkTrackHandler, {
+    onSuccess: (data) => {
+      if (data.data?.error) {
+        toast.error(data.data.error);
+      }
+      if (data.data?.success) {
+        toast.success(data.data.success);
+      }
+    },
+  });
+
   const { execute, status } = useAction(deleteTrack, {
     onSuccess: (data) => {
       toast.dismiss();
@@ -180,7 +209,8 @@ export default function TrackControls({
     setIndex(currentIndex);
     setLiked(isLiked);
     setLikes(tracks[0].likes);
-  }, [trackURL, pathname, setIndex, trackIDs, tracks]);
+    setBookmarked(isBookmarked);
+  }, [trackURL, pathname, setIndex, trackIDs, tracks, isBookmarked, isLiked]);
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-4">
@@ -252,7 +282,7 @@ export default function TrackControls({
                 <Button
                   size="icon"
                   variant="ghost"
-                  onClick={() => setBookmarked(!bookmarked)}
+                  onClick={() => bookmarkSong()}
                   className="group"
                 >
                   <Bookmark
@@ -321,7 +351,7 @@ export default function TrackControls({
                       Please log in to perform this action.
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Log in to like songs, build playlists, and follow your
+                      Log in to like tracks, build playlists, and follow your
                       favorite artists.
                     </AlertDialogDescription>
                   </AlertDialogHeader>

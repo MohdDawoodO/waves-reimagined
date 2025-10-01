@@ -7,6 +7,7 @@ import {
   serial,
   pgEnum,
   real,
+  boolean,
 } from "drizzle-orm/pg-core";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -182,5 +183,53 @@ export const likeRelations = relations(likes, ({ one }) => ({
     fields: [likes.trackID],
     references: [soundTracks.id],
     relationName: "track_like",
+  }),
+}));
+
+export const playlists = pgTable("playlist", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userID: text("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  visibility: visibilityEnum().notNull().default("public"),
+  tracks: real("tracks").notNull().default(0),
+  editable: boolean("editable").notNull().default(false),
+});
+
+export const playlistRelations = relations(playlists, ({ one, many }) => ({
+  user: one(users, {
+    fields: [playlists.userID],
+    references: [users.id],
+    relationName: "playlist_user",
+  }),
+  playlistTracks: many(playlistTracks, {
+    relationName: "playlist_track",
+  }),
+}));
+
+export const playlistTracks = pgTable("playlistTrack", {
+  id: serial("id").primaryKey(),
+  playlistID: text("playlistID")
+    .notNull()
+    .references(() => playlists.id, { onDelete: "cascade" }),
+  trackID: text("trackID")
+    .notNull()
+    .references(() => soundTracks.id, { onDelete: "cascade" }),
+});
+
+export const playlistTrackRelations = relations(playlistTracks, ({ one }) => ({
+  playlist: one(playlists, {
+    fields: [playlistTracks.playlistID],
+    references: [playlists.id],
+    relationName: "playlist_track",
+  }),
+  track: one(soundTracks, {
+    fields: [playlistTracks.trackID],
+    references: [soundTracks.id],
+    relationName: "playlist_content",
   }),
 }));

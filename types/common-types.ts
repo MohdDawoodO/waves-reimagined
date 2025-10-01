@@ -39,3 +39,7 @@ export type LikeType =
       trackID: string;
     }
   | undefined;
+
+export type PlaylistTrackType =
+  | { id: number; playlistID: string; trackID: string }
+  | undefined;

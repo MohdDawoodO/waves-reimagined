@@ -10,4 +10,5 @@ export const PlaylistSchema = z.object({
     .string()
     .max(200, { error: "Description can be no more than 200 characters" }),
   visibility: z.enum(["public", "unlisted", "private"]),
+  trackID: z.string(),
 });

@@ -14,22 +14,25 @@ import CreatePlaylistForm from "./create-playlist-form";
 import { PlusCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
-import { PlaylistType } from "@/types/common-types";
+import { PlaylistWithTrackType } from "@/types/common-types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Playlist from "./playlist";
 
 export function PlaylistsDialog({
   userPlaylists,
+  trackID,
   session,
   children,
 }: {
-  userPlaylists: PlaylistType[];
+  userPlaylists: PlaylistWithTrackType[];
+  trackID: string;
   session: Session | null | undefined;
   children: React.ReactNode;
 }) {
   const router = useRouter();
   const [createPlaylist, setCreatePlaylist] = useState(false);
+  const [executing, setExecuting] = useState(false);
 
   return (
     <Dialog
@@ -48,16 +51,21 @@ export function PlaylistsDialog({
           {createPlaylist ? (
             <CreatePlaylistForm
               setCreatePlaylist={setCreatePlaylist}
+              trackID={trackID}
               userID={session.user.id}
             />
           ) : (
             <div className="flex flex-col gap-8">
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
                 {userPlaylists.map((playlist) => (
                   <Playlist
                     id={playlist.id}
                     name={playlist.name}
                     visibility={playlist.visibility}
+                    track={playlist.playlistTracks[0]}
+                    trackID={trackID}
+                    executing={executing}
+                    setExecuting={setExecuting}
                     key={playlist.id}
                   />
                 ))}

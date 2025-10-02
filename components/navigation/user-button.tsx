@@ -29,7 +29,7 @@ import { useTheme } from "next-themes";
 import { Switch } from "../ui/switch";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { TooltipMessage } from "../ui/tooltip-message";
 
 export default function UserButton({ session }: { session: Session | null }) {
   const router = useRouter();
@@ -62,23 +62,15 @@ export default function UserButton({ session }: { session: Session | null }) {
   if (session && session.user) {
     return (
       <div className="flex items-center gap-2 md:gap-4">
-        <Tooltip>
-          <TooltipTrigger
-            className="cursor-pointer"
-            onClick={() => redirectToProfileLink("/upload")}
-          >
-            <div className="flex gap-2 sm:bg-muted-foreground/8 dark:sm:bg-muted-foreground/15 items-center px-2 sm:px-3 py-2 rounded-full hover:bg-muted-foreground/15 dark:hover:bg-muted-foreground/20 duration-200">
-              <PlusCircle className="w-5 h-5 sm:w-4 sm:h-4" />
-              <span className="text-xs hidden sm:flex">Upload</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent
-            className="bg-primary"
-            arrowClassname="bg-primary fill-primary"
-          >
-            Upload a Track
-          </TooltipContent>
-        </Tooltip>
+        <TooltipMessage
+          onClick={() => redirectToProfileLink("/upload")}
+          message="Upload a Track"
+        >
+          <div className="flex gap-2 sm:bg-muted-foreground/8 dark:sm:bg-muted-foreground/15 items-center px-2 sm:px-3 py-2 rounded-full hover:bg-muted-foreground/15 dark:hover:bg-muted-foreground/20 duration-200 cursor-pointer">
+            <PlusCircle className="w-5 h-5 sm:w-4 sm:h-4" />
+            <span className="text-xs hidden sm:flex">Upload</span>
+          </div>
+        </TooltipMessage>
 
         <DropdownMenu>
           <DropdownMenuTrigger>

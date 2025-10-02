@@ -5,13 +5,16 @@ import { createSafeActionClient } from "next-safe-action";
 import { db } from "..";
 import { eq } from "drizzle-orm";
 import { playlists, users } from "../schema";
+import { revalidatePath } from "next/cache";
 
 const action = createSafeActionClient();
 
 export const createPlaylist = action
   .inputSchema(PlaylistSchema)
   .action(
-    async ({ parsedInput: { description, name, userID, visibility } }) => {
+    async ({
+      parsedInput: { description, name, userID, visibility, trackID },
+    }) => {
       try {
         const user = await db.query.users.findFirst({
           where: eq(users.id, userID),
@@ -24,6 +27,8 @@ export const createPlaylist = action
         await db
           .insert(playlists)
           .values({ name, description, userID, visibility });
+
+        revalidatePath(`/listen?t=${trackID}`);
 
         return { success: "Playlist created!" };
       } catch (err) {

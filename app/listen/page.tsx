@@ -10,7 +10,7 @@ import { likes, playlists, playlistTracks, soundTracks } from "@/server/schema";
 import {
   LikeType,
   PlaylistTrackType,
-  PlaylistType,
+  PlaylistWithTrackType,
   TrackType,
 } from "@/types/common-types";
 import { and, eq, ne } from "drizzle-orm";
@@ -29,7 +29,7 @@ export default async function Listen({
   let userTracks: TrackType[] = [];
   let like: LikeType | undefined = undefined;
   let bookmarked: PlaylistTrackType | undefined = undefined;
-  let userPlaylists: PlaylistType[] = [];
+  let userPlaylists: PlaylistWithTrackType[] = [];
 
   if (!trackID) redirect("/");
 
@@ -99,6 +99,7 @@ export default async function Listen({
 
     userPlaylists = await db.query.playlists.findMany({
       where: eq(playlists.userID, session.user.id),
+      with: { playlistTracks: { where: eq(playlistTracks.trackID, trackID) } },
     });
 
     const watchLaterPlaylist = userPlaylists.filter(

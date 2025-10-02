@@ -23,7 +23,7 @@ import { timeFormat } from "@/lib/time-format";
 import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { suggestedTrackIDs } from "@/lib/states";
-import { PlaylistType, TrackType } from "@/types/common-types";
+import { PlaylistWithTrackType, TrackType } from "@/types/common-types";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -51,6 +51,7 @@ import {
   DeleteTrackDialog,
   DeleteTrackDialogTrigger,
 } from "./delete-track-dialog";
+import { TooltipMessage } from "../ui/tooltip-message";
 
 export default function TrackControls({
   tracks,
@@ -63,7 +64,7 @@ export default function TrackControls({
   isBookmarked: boolean;
   isLiked: boolean;
   session?: Session | null | undefined;
-  userPlaylists: PlaylistType[];
+  userPlaylists: PlaylistWithTrackType[];
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -157,7 +158,6 @@ export default function TrackControls({
       setBookmarked(false);
     }
 
-    // await bookmarkTrackHandler(session.user.id, tracks[0].id);
     executeBookmark({ userID: session.user.id, trackID: tracks[0].id });
   }
 
@@ -223,21 +223,25 @@ export default function TrackControls({
           <Separator />
           <div className="flex w-full justify-between gap-4">
             <div className="flex items-center group">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-black dark:text-muted-foreground"
-                onClick={() => muteAudio()}
+              <TooltipMessage
+                message={audioRef.current?.volume !== 0 ? "Mute" : "Unmute"}
               >
-                {volume === 0 && <VolumeOffIcon className="scale-115" />}
-                {volume < 0.25 && volume > 0 && (
-                  <VolumeIcon className="scale-115" />
-                )}
-                {volume < 0.5 && volume > 0.25 && (
-                  <Volume1Icon className="scale-115" />
-                )}
-                {volume > 0.5 && <Volume2Icon className="scale-115" />}
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-black dark:text-muted-foreground"
+                  onClick={() => muteAudio()}
+                >
+                  {volume === 0 && <VolumeOffIcon className="scale-115" />}
+                  {volume < 0.25 && volume > 0 && (
+                    <VolumeIcon className="scale-115" />
+                  )}
+                  {volume < 0.5 && volume > 0.25 && (
+                    <Volume1Icon className="scale-115" />
+                  )}
+                  {volume > 0.5 && <Volume2Icon className="scale-115" />}
+                </Button>
+              </TooltipMessage>
               <div className="hidden md:flex overflow-hidden py-3 translate-x-2 group-hover:px-2 duration-200">
                 <Slider
                   className="w-0 group-hover:w-20 transition-all duration-200"
@@ -254,42 +258,56 @@ export default function TrackControls({
             </div>
 
             <LoginAlertDialog session={session}>
-              <PlaylistsDialog session={session} userPlaylists={userPlaylists}>
+              <PlaylistsDialog
+                session={session}
+                userPlaylists={userPlaylists}
+                trackID={tracks[0].id}
+              >
                 <LoginAlertDialogTrigger>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => bookmarkSong()}
-                    className="group"
+                  <TooltipMessage
+                    message={
+                      !bookmarked
+                        ? "Add to watch later"
+                        : "Remove from watch later"
+                    }
                   >
-                    <Bookmark
-                      className={cn(
-                        "scale-115 transition-all duration-200 ease-out fill-background",
-                        bookmarked
-                          ? "text-foreground fill-foreground"
-                          : "dark:text-muted-foreground group-hover:fill-muted"
-                      )}
-                    />
-                  </Button>
-                </LoginAlertDialogTrigger>
-
-                <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
-                  <LoginAlertDialogTrigger>
                     <Button
-                      variant="ghost"
                       size="icon"
+                      variant="ghost"
+                      onClick={() => bookmarkSong()}
                       className="group"
-                      onClick={() => likeSong()}
                     >
-                      <Heart
+                      <Bookmark
                         className={cn(
                           "scale-115 transition-all duration-200 ease-out fill-background",
-                          liked
-                            ? "text-primary fill-primary"
+                          bookmarked
+                            ? "text-foreground fill-foreground"
                             : "dark:text-muted-foreground group-hover:fill-muted"
                         )}
                       />
                     </Button>
+                  </TooltipMessage>
+                </LoginAlertDialogTrigger>
+
+                <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
+                  <LoginAlertDialogTrigger>
+                    <TooltipMessage message={!liked ? "Like" : "Dislike"}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="group"
+                        onClick={() => likeSong()}
+                      >
+                        <Heart
+                          className={cn(
+                            "scale-115 transition-all duration-200 ease-out fill-background",
+                            liked
+                              ? "text-primary fill-primary"
+                              : "dark:text-muted-foreground group-hover:fill-muted"
+                          )}
+                        />
+                      </Button>
+                    </TooltipMessage>
                   </LoginAlertDialogTrigger>
 
                   <div className="flex relative">
@@ -313,13 +331,15 @@ export default function TrackControls({
 
                 <LoginAlertDialogTrigger>
                   <PlaylistsDialogTrigger>
-                    <Button size="icon" variant="ghost">
-                      <TbPlaylistAdd
-                        className={cn(
-                          "text-black dark:text-muted-foreground scale-150"
-                        )}
-                      />
-                    </Button>
+                    <TooltipMessage message="Add to playlist">
+                      <Button size="icon" variant="ghost">
+                        <TbPlaylistAdd
+                          className={cn(
+                            "text-black dark:text-muted-foreground scale-150"
+                          )}
+                        />
+                      </Button>
+                    </TooltipMessage>
                   </PlaylistsDialogTrigger>
                 </LoginAlertDialogTrigger>
               </PlaylistsDialog>

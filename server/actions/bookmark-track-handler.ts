@@ -5,6 +5,7 @@ import { db } from "..";
 import { playlists, playlistTracks } from "../schema";
 import { createSafeActionClient } from "next-safe-action";
 import z from "zod";
+import { revalidatePath } from "next/cache";
 
 const action = createSafeActionClient();
 
@@ -22,7 +23,10 @@ export const bookmarkTrackHandler = action
       if (!userPlaylist) return { error: "Failed to add track to watch later" };
 
       const watchLaterTrack = await db.query.playlistTracks.findFirst({
-        where: eq(playlistTracks.playlistID, userPlaylist.id),
+        where: and(
+          eq(playlistTracks.playlistID, userPlaylist.id),
+          eq(playlistTracks.trackID, trackID)
+        ),
       });
 
       if (watchLaterTrack) {
@@ -42,6 +46,8 @@ export const bookmarkTrackHandler = action
             and(eq(playlists.userID, userID), eq(playlists.name, "Watch Later"))
           );
 
+        revalidatePath(`/listen/t=${trackID}`);
+
         return { success: "Removed track from watch later" };
       }
 
@@ -55,6 +61,8 @@ export const bookmarkTrackHandler = action
         .where(
           and(eq(playlists.userID, userID), eq(playlists.name, "Watch Later"))
         );
+
+      revalidatePath(`/listen/t=${trackID}`);
 
       return { success: "Added track to watch later" };
     } catch (err) {

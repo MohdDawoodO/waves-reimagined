@@ -53,3 +53,7 @@ export type PlaylistTrackType = {
   playlistID: string;
   trackID: string;
 };
+
+export type PlaylistWithTrackType = PlaylistType & {
+  playlistTracks: PlaylistTrackType[];
+};

@@ -34,9 +34,11 @@ import { VscLoading } from "react-icons/vsc";
 export default function CreatePlaylistForm({
   setCreatePlaylist,
   userID,
+  trackID,
 }: {
   setCreatePlaylist: Dispatch<SetStateAction<boolean>>;
   userID: string;
+  trackID: string;
 }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -49,6 +51,7 @@ export default function CreatePlaylistForm({
       description: "",
       visibility: "public" as "public" | "unlisted" | "public",
       userID,
+      trackID,
     },
     mode: "onChange",
   });

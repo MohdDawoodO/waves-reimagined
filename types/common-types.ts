@@ -32,14 +32,24 @@ export type TrackType = {
   albumCover: AlbumCoverType;
 };
 
-export type LikeType =
-  | {
-      id: number;
-      userID: string;
-      trackID: string;
-    }
-  | undefined;
+export type LikeType = {
+  id: number;
+  userID: string;
+  trackID: string;
+};
 
-export type PlaylistTrackType =
-  | { id: number; playlistID: string; trackID: string }
-  | undefined;
+export type PlaylistType = {
+  id: string;
+  userID: string;
+  name: string;
+  description: string;
+  visibility: "public" | "unlisted" | "private";
+  tracks: number;
+  editable: boolean;
+};
+
+export type PlaylistTrackType = {
+  id: number;
+  playlistID: string;
+  trackID: string;
+};

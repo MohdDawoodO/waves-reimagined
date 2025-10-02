@@ -5,8 +5,8 @@ export default function SignedOutUserMenu() {
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="items-start gap-2">
-        <LogIn /> Log in to like songs, build playlists, and subscribe to your
-        favorites.
+        <LogIn /> Log in to like tracks, build playlists, and follow your
+        favorite artists.
       </SidebarGroupLabel>
     </SidebarGroup>
   );

@@ -197,7 +197,7 @@ export const playlists = pgTable("playlist", {
   description: text("description").notNull(),
   visibility: visibilityEnum().notNull().default("public"),
   tracks: real("tracks").notNull().default(0),
-  editable: boolean("editable").notNull().default(false),
+  editable: boolean("editable").notNull().default(true),
 });
 
 export const playlistRelations = relations(playlists, ({ one, many }) => ({

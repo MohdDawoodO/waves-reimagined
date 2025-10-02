@@ -7,7 +7,12 @@ import { NotFoundMessage } from "@/components/ui/not-found-message";
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { likes, playlists, playlistTracks, soundTracks } from "@/server/schema";
-import { LikeType, PlaylistTrackType, TrackType } from "@/types/common-types";
+import {
+  LikeType,
+  PlaylistTrackType,
+  PlaylistType,
+  TrackType,
+} from "@/types/common-types";
 import { and, eq, ne } from "drizzle-orm";
 
 import { redirect } from "next/navigation";
@@ -22,8 +27,9 @@ export default async function Listen({
 
   let otherTracks: TrackType[] = [];
   let userTracks: TrackType[] = [];
-  let like: LikeType = undefined;
-  let bookmarked: PlaylistTrackType = undefined;
+  let like: LikeType | undefined = undefined;
+  let bookmarked: PlaylistTrackType | undefined = undefined;
+  let userPlaylists: PlaylistType[] = [];
 
   if (!trackID) redirect("/");
 
@@ -91,12 +97,13 @@ export default async function Listen({
       where: and(eq(likes.userID, session.user.id), eq(likes.trackID, trackID)),
     });
 
-    const watchLaterPlaylist = await db.query.playlists.findFirst({
-      where: and(
-        eq(playlists.userID, session.user.id),
-        eq(playlists.name, "Watch Later")
-      ),
+    userPlaylists = await db.query.playlists.findMany({
+      where: eq(playlists.userID, session.user.id),
     });
+
+    const watchLaterPlaylist = userPlaylists.filter(
+      (playlist) => playlist.name === "Watch Later"
+    )[0];
 
     if (!watchLaterPlaylist) return;
 
@@ -112,7 +119,7 @@ export default async function Listen({
 
   return (
     <div className="flex flex-col 2xl:flex-row gap-24 2xl:gap-0">
-      <div className="min-h-[80vh] flex-5 flex flex-col items-center gap-20">
+      <div className="min-h-[80vh] flex-5 flex flex-col items-center pt-8 md:pt-0 gap-20">
         <div className="w-full flex flex-col items-center gap-8">
           <TrackCover
             albumCover={soundTrack.albumCover.imageURL}
@@ -124,6 +131,7 @@ export default async function Listen({
             isLiked={!!like}
             isBookmarked={!!bookmarked}
             session={session}
+            userPlaylists={userPlaylists}
           />
         </div>
         <div className="flex flex-col w-full items-center gap-8">

@@ -9,7 +9,6 @@ import {
   ChevronLast,
   Heart,
   Link,
-  LogIn,
   MoreVertical,
   Pause,
   Play,
@@ -24,7 +23,7 @@ import { timeFormat } from "@/lib/time-format";
 import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { suggestedTrackIDs } from "@/lib/states";
-import { TrackType } from "@/types/common-types";
+import { PlaylistType, TrackType } from "@/types/common-types";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -37,32 +36,34 @@ import { AnimatePresence, motion } from "motion/react";
 import { Separator } from "@/components/ui/separator";
 import { Session } from "next-auth";
 import { useAction } from "next-safe-action/hooks";
-import { deleteTrack } from "@/server/actions/delete-track";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
 import { formatNumber } from "@/lib/format-number";
 import { likeTrackHandler } from "@/server/actions/like-track-handler";
-import { bookmarkTrackHandler } from "@/server/actions/bookmark-track";
+import { bookmarkTrackHandler } from "@/server/actions/bookmark-track-handler";
+import {
+  PlaylistsDialog,
+  PlaylistsDialogTrigger,
+} from "../playlist/playlists-dialog";
+import {
+  LoginAlertDialog,
+  LoginAlertDialogTrigger,
+} from "./login-alert-dialog";
+import {
+  DeleteTrackDialog,
+  DeleteTrackDialogTrigger,
+} from "./delete-track-dialog";
 
 export default function TrackControls({
   tracks,
   isBookmarked,
   isLiked,
   session,
+  userPlaylists,
 }: {
   tracks: TrackType[];
   isBookmarked: boolean;
   isLiked: boolean;
   session?: Session | null | undefined;
+  userPlaylists: PlaylistType[];
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -79,7 +80,6 @@ export default function TrackControls({
   const trackURL = tracks[0].trackURL;
 
   function playSongHandler() {
-    if (status === "executing") return;
     if (isPlaying) {
       setIsPlaying(false);
       audioRef.current?.pause();
@@ -172,30 +172,6 @@ export default function TrackControls({
     },
   });
 
-  const { execute, status } = useAction(deleteTrack, {
-    onSuccess: (data) => {
-      toast.dismiss();
-
-      if (data.data?.error) {
-        toast.error(data.data.error);
-      }
-      if (data.data?.success) {
-        toast.success(data.data.success);
-        if (session?.user.id === tracks[0].userID) {
-          router.push(`/profile/${session.user.handle}/home`);
-          return;
-        }
-        if (session?.user.role === "admin") {
-          router.push(`/`);
-        }
-      }
-    },
-    onExecute: () => {
-      toast.loading("Deleting Track...");
-    },
-    onError: (err) => console.log(err.error),
-  });
-
   //* Runs only once to set autoPlay tracks
   useEffect(() => {
     setTrackIDs(tracks.map((track) => track.id));
@@ -277,101 +253,84 @@ export default function TrackControls({
               </div>
             </div>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => bookmarkSong()}
-                  className="group"
-                >
-                  <Bookmark
-                    className={cn(
-                      "scale-115 transition-all duration-200 ease-out fill-background",
-                      bookmarked
-                        ? "text-foreground fill-foreground"
-                        : "dark:text-muted-foreground group-hover:fill-muted"
-                    )}
-                  />
-                </Button>
-              </AlertDialogTrigger>
-
-              <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
-                <AlertDialogTrigger asChild>
+            <LoginAlertDialog session={session}>
+              <PlaylistsDialog session={session} userPlaylists={userPlaylists}>
+                <LoginAlertDialogTrigger>
                   <Button
-                    variant="ghost"
                     size="icon"
+                    variant="ghost"
+                    onClick={() => bookmarkSong()}
                     className="group"
-                    onClick={() => likeSong()}
                   >
-                    <Heart
+                    <Bookmark
                       className={cn(
                         "scale-115 transition-all duration-200 ease-out fill-background",
-                        liked
-                          ? "text-primary fill-primary"
+                        bookmarked
+                          ? "text-foreground fill-foreground"
                           : "dark:text-muted-foreground group-hover:fill-muted"
                       )}
                     />
                   </Button>
-                </AlertDialogTrigger>
+                </LoginAlertDialogTrigger>
 
-                <div className="flex relative">
-                  <AnimatePresence mode="popLayout">
-                    {[...formatNumber(likes)].map((letter, i) => (
-                      <div key={i + letter} className="overflow-hidden">
-                        <motion.span
-                          initial={{ y: "100%" }}
-                          animate={{ y: 0 }}
-                          exit={{ y: "-100%" }}
-                          transition={{ delay: i * 0.1 }}
-                          className="inline-flex"
-                        >
-                          {letter}
-                        </motion.span>
-                      </div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-
-              <AlertDialogTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <TbPlaylistAdd
-                    className={cn(
-                      "text-black dark:text-muted-foreground scale-150"
-                    )}
-                  />
-                </Button>
-              </AlertDialogTrigger>
-
-              {!session && (
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="text-destructive text-base">
-                      Please log in to perform this action.
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Log in to like tracks, build playlists, and follow your
-                      favorite artists.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="cursor-pointer">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      className="flex group cursor-pointer"
-                      onClick={() => router.push("/auth/login")}
+                <div className="text-sm flex items-center gap-2 text-black dark:text-muted-foreground">
+                  <LoginAlertDialogTrigger>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="group"
+                      onClick={() => likeSong()}
                     >
-                      <LogIn className="group-hover:scale-90 group-hover:translate-x-1 transition-transform duration-200" />
-                      Log in
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              )}
-            </AlertDialog>
+                      <Heart
+                        className={cn(
+                          "scale-115 transition-all duration-200 ease-out fill-background",
+                          liked
+                            ? "text-primary fill-primary"
+                            : "dark:text-muted-foreground group-hover:fill-muted"
+                        )}
+                      />
+                    </Button>
+                  </LoginAlertDialogTrigger>
 
-            <AlertDialog>
+                  <div className="flex relative">
+                    <AnimatePresence mode="popLayout">
+                      {[...formatNumber(likes)].map((letter, i) => (
+                        <div key={i + letter} className="overflow-hidden">
+                          <motion.span
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "-100%" }}
+                            transition={{ delay: i * 0.1 }}
+                            className="inline-flex"
+                          >
+                            {letter}
+                          </motion.span>
+                        </div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                <LoginAlertDialogTrigger>
+                  <PlaylistsDialogTrigger>
+                    <Button size="icon" variant="ghost">
+                      <TbPlaylistAdd
+                        className={cn(
+                          "text-black dark:text-muted-foreground scale-150"
+                        )}
+                      />
+                    </Button>
+                  </PlaylistsDialogTrigger>
+                </LoginAlertDialogTrigger>
+              </PlaylistsDialog>
+            </LoginAlertDialog>
+
+            <DeleteTrackDialog
+              session={session}
+              currentTrack={tracks[0]}
+              isPlaying={isPlaying}
+              playSongHandler={playSongHandler}
+            >
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -392,44 +351,16 @@ export default function TrackControls({
                   {(session?.user.id === tracks[0].userID ||
                     session?.user.role === "admin") && (
                     <>
-                      <AlertDialogTrigger className="w-full">
-                        <DropdownMenuItem
-                          className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200"
-                          disabled={status === "executing"}
-                        >
+                      <DeleteTrackDialogTrigger className="w-full">
+                        <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
                           Delete Track <Trash2 />
                         </DropdownMenuItem>
-                      </AlertDialogTrigger>
+                      </DeleteTrackDialogTrigger>
                     </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permenantly delete
-                    your track from Waves Music.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="cursor-pointer">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="cursor-pointer bg-destructive hover:bg-destructive/80"
-                    onClick={() => {
-                      if (isPlaying) {
-                        playSongHandler();
-                      }
-                      execute({ trackID: tracks[0].id });
-                    }}
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            </DeleteTrackDialog>
           </div>
         </div>
       </div>

@@ -148,6 +148,7 @@ export default async function Listen({
             description={soundTrack.description}
           />
           <TrackComments
+            trackID={soundTrack.id}
             comments={soundTrack.trackComments}
             session={session}
             trackOwnerHandle={soundTrack.user.handle!}

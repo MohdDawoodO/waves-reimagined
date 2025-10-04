@@ -24,22 +24,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CommentSchema } from "@/types/comment-schema";
 import z from "zod";
-import { useSearchParams } from "next/navigation";
 
 export default function AddComment({
   session,
+  trackID,
 }: {
   session: Session | null | undefined;
+  trackID: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const trackID = searchParams.get("t");
 
   const form = useForm({
     resolver: zodResolver(CommentSchema),
     defaultValues: {
       comment: "",
-      trackID: trackID!,
+      trackID: trackID,
       userID: session?.user.id ?? "",
     },
   });

@@ -28,7 +28,7 @@ import { useAction } from "next-safe-action/hooks";
 import { deleteComment } from "@/server/actions/delete-comment";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Comment({
   comment,
@@ -41,6 +41,7 @@ export default function Comment({
   commentedOn,
   session,
   commentUserID,
+  trackID,
 }: {
   comment?: string | undefined | null;
   commentID?: number | undefined | null;
@@ -52,10 +53,9 @@ export default function Comment({
   className?: string;
   session?: Session | null | undefined;
   commentUserID?: string | null | undefined;
+  trackID?: string | null | undefined;
 }) {
   const [deleting, setDeleting] = useState(false);
-  const searchParams = useSearchParams();
-  const trackID = searchParams.get("t");
   const router = useRouter();
 
   const { execute } = useAction(deleteComment, {

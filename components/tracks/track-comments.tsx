@@ -18,10 +18,12 @@ export default function TrackComments({
   comments,
   session,
   trackOwnerHandle,
+  trackID,
 }: {
   comments: CommentType[];
   session: Session | null | undefined;
   trackOwnerHandle: string;
+  trackID: string;
 }) {
   const latestComment = comments[0];
 
@@ -56,6 +58,7 @@ export default function TrackComments({
                 comments={comments}
                 session={session}
                 trackOwnerHandle={trackOwnerHandle}
+                trackID={trackID}
               />
             </div>
           </DrawerContent>
@@ -67,6 +70,7 @@ export default function TrackComments({
           comments={comments}
           session={session}
           trackOwnerHandle={trackOwnerHandle}
+          trackID={trackID}
         />
       </div>
     </div>
@@ -77,10 +81,12 @@ function Comments({
   comments,
   session,
   trackOwnerHandle,
+  trackID,
 }: {
   session: Session | null | undefined;
   comments: CommentType[];
   trackOwnerHandle: string;
+  trackID: string;
 }) {
   return (
     <div
@@ -91,7 +97,7 @@ function Comments({
     >
       <div className="flex flex-col gap-4">
         <h2 className="pt-4">Comments: {formatNumber(comments.length)}</h2>
-        <AddComment session={session} />
+        <AddComment session={session} trackID={trackID} />
       </div>
       <div className="flex flex-col gap-8 2xl:gap-10">
         {!comments[0] && <Comment />}

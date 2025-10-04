@@ -67,7 +67,8 @@ export default function AddComment({
 
   useEffect(() => {
     form.setValue("trackID", trackID);
-  }, []);
+    form.setValue("comment", "");
+  }, [trackID, form]);
 
   return (
     <LoginAlertDialog session={session}>

@@ -34,8 +34,8 @@ export function LoginAlertDialog({
               Please log in to perform this action.
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Log in to like tracks, build playlists, and follow your favorite
-              artists.
+              Log in to like tracks, build playlists, post comments and follow
+              your favorite artists.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

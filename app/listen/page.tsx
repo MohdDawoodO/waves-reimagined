@@ -38,7 +38,14 @@ export default async function Listen({
       eq(soundTracks.id, trackID),
       ne(soundTracks.visibility, "private")
     ),
-    with: { albumCover: true, user: true },
+    with: {
+      albumCover: true,
+      user: true,
+      trackComments: {
+        with: { commentUser: true },
+        orderBy: (comments, { desc }) => desc(comments.commentedOn),
+      },
+    },
   });
 
   const session = await auth();
@@ -120,7 +127,7 @@ export default async function Listen({
 
   return (
     <div className="flex flex-col 2xl:flex-row gap-24 2xl:gap-0">
-      <div className="min-h-[80vh] flex-5 flex flex-col items-center pt-8 md:pt-0 gap-20">
+      <div className="min-h-[80vh] flex-5 flex flex-col items-center pt-4 md:pt-0 gap-20">
         <div className="w-full flex flex-col items-center gap-8">
           <TrackCover
             albumCover={soundTrack.albumCover.imageURL}
@@ -135,12 +142,16 @@ export default async function Listen({
             userPlaylists={userPlaylists}
           />
         </div>
-        <div className="flex flex-col w-full items-center gap-8">
+        <div className="flex flex-col w-full items-center gap-12">
           <TrackDescription
             uploadedOn={soundTrack.uploadedOn}
             description={soundTrack.description}
           />
-          <TrackComments />
+          <TrackComments
+            comments={soundTrack.trackComments}
+            session={session}
+            trackOwnerHandle={soundTrack.user.handle!}
+          />
         </div>
       </div>
       <div className="flex-1">

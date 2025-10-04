@@ -18,7 +18,7 @@ export function TooltipMessage({
         {children}
       </TooltipTrigger>
       <TooltipContent
-        className="bg-primary"
+        className="bg-primary hidden md:flex"
         arrowClassname="bg-primary fill-primary"
       >
         {message}

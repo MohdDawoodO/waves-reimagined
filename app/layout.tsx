@@ -36,7 +36,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AppSidebarProvider>
-            <main className="py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto">
+            <main className="py-4 pt-0 mx-auto w-full h-[100vh] overflow-y-auto custom-scrollbar">
               <Nav />
               <SessionProvider>
                 <div className="py-4 lg:py-2 px-4 md:px-6">{children}</div>

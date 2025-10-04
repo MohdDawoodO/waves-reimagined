@@ -186,6 +186,7 @@ export default function TrackControls({
     setLiked(isLiked);
     setLikes(tracks[0].likes);
     setBookmarked(isBookmarked);
+    document.title = tracks[0].trackName;
   }, [trackURL, pathname, setIndex, trackIDs, tracks, isBookmarked, isLiked]);
 
   return (
@@ -370,13 +371,11 @@ export default function TrackControls({
                   </DropdownMenuItem>
                   {(session?.user.id === tracks[0].userID ||
                     session?.user.role === "admin") && (
-                    <>
-                      <DeleteTrackDialogTrigger className="w-full">
-                        <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
-                          Delete Track <Trash2 />
-                        </DropdownMenuItem>
-                      </DeleteTrackDialogTrigger>
-                    </>
+                    <DeleteTrackDialogTrigger className="w-full">
+                      <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
+                        Delete Track <Trash2 />
+                      </DropdownMenuItem>
+                    </DeleteTrackDialogTrigger>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

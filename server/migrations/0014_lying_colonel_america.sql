@@ -1,0 +1,1 @@
+ALTER TABLE "comment" ADD COLUMN "commentedOn" timestamp DEFAULT now() NOT NULL;

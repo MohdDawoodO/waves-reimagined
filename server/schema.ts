@@ -48,6 +48,7 @@ export const userRelations = relations(users, ({ one, many }) => ({
     relationName: "user_avatar",
   }),
   user_tracks: many(soundTracks, { relationName: "user_track" }),
+  comment_user: many(comments, { relationName: "comment_user" }),
 }));
 
 export const accounts = pgTable(
@@ -141,6 +142,7 @@ export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
     relationName: "album_cover",
   }),
   trackTags: many(trackTags, { relationName: "track_tag" }),
+  trackComments: many(comments, { relationName: "track_comment" }),
 }));
 
 export const albumCovers = pgTable("album_cover", {
@@ -231,5 +233,30 @@ export const playlistTrackRelations = relations(playlistTracks, ({ one }) => ({
     fields: [playlistTracks.trackID],
     references: [soundTracks.id],
     relationName: "playlist_content",
+  }),
+}));
+
+export const comments = pgTable("comment", {
+  id: serial("id").primaryKey(),
+  comment: text("comment").notNull(),
+  userID: text("userID")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  trackID: text("trackID")
+    .notNull()
+    .references(() => soundTracks.id, { onDelete: "cascade" }),
+  commentedOn: timestamp("commentedOn").notNull().defaultNow(),
+});
+
+export const commentRelations = relations(comments, ({ one }) => ({
+  trackComments: one(soundTracks, {
+    fields: [comments.trackID],
+    references: [soundTracks.id],
+    relationName: "track_comment",
+  }),
+  commentUser: one(users, {
+    fields: [comments.userID],
+    references: [users.id],
+    relationName: "comment_user",
   }),
 }));

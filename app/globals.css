@@ -177,16 +177,16 @@ input::-webkit-file-upload-button {
   display: none;
 }
 
-main::-webkit-scrollbar {
+.custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   margin: 1rem;
   position: relative;
   z-index: 100;
 }
-main::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track {
   margin: 0.5rem 0rem;
 }
-main::-webkit-scrollbar-thumb {
+.custom-scrollbar::-webkit-scrollbar-thumb {
   background: oklch(54.965% 0.02007 285.684 / 0.5);
   border-radius: 5rem;
   background-clip: padding-box;

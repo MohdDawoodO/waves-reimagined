@@ -17,6 +17,15 @@ export type AlbumCoverType = {
   trackID: string;
 };
 
+export type CommentType = {
+  id: number;
+  comment: string;
+  userID: string;
+  trackID: string;
+  commentedOn: Date;
+  commentUser: UserType;
+};
+
 export type TrackType = {
   visibility: "private" | "unlisted" | "public" | null;
   duration: number;

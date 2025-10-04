@@ -53,6 +53,7 @@ export default function AddComment({
       }
       if (data.data.success) {
         toast.success(data.data.success);
+        form.reset();
       }
     },
     onExecute: () => {

@@ -40,6 +40,7 @@ export default function Comment({
   className,
   commentedOn,
   session,
+  commentUserID,
 }: {
   comment?: string | undefined | null;
   commentID?: number | undefined | null;
@@ -50,6 +51,7 @@ export default function Comment({
   commentedOn?: Date | null | undefined;
   className?: string;
   session?: Session | null | undefined;
+  commentUserID?: string | null | undefined;
 }) {
   const [deleting, setDeleting] = useState(false);
   const searchParams = useSearchParams();
@@ -76,7 +78,7 @@ export default function Comment({
 
   if (!comment || !userName || !commentedOn)
     return (
-      <div className={cn("flex justify-center gap-4 w-full ", className)}>
+      <div className={cn("flex gap-4 w-full ", className)}>
         <p className="text-sm text-muted-foreground">
           Be the first one to comment
         </p>
@@ -122,12 +124,16 @@ export default function Comment({
               ))}
             </p>
             {(session?.user.role === "admin" ||
-              session?.user.id === session?.user.id ||
+              session?.user.id === commentUserID ||
               session?.user.handle === trackOwnerHandle) && (
               <div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="w-8 h-8">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="p-1 aspect-square h-fit w-fit"
+                    >
                       <MoreVertical />
                     </Button>
                   </DropdownMenuTrigger>

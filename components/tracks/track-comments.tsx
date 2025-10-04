@@ -1,7 +1,7 @@
 "use client";
 
 import { CommentType } from "@/types/common-types";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardHeader, CardTitle } from "../ui/card";
 import AddComment from "./add-comment";
 import { Session } from "next-auth";
 import Comment from "./comment";
@@ -33,19 +33,20 @@ export default function TrackComments({
             <Card>
               <CardHeader className="gap-4 text-start">
                 <CardTitle>Comments: {formatNumber(comments.length)}</CardTitle>
-                <AddComment session={session} />
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground gap-8">
                 {latestComment && (
                   <Comment
                     comment={latestComment.comment}
                     userAvatar={latestComment.commentUser.image}
                     userHandle={latestComment.commentUser.handle}
                     userName={latestComment.commentUser.name}
+                    commentedOn={latestComment.commentedOn}
+                    trackOwnerHandle={trackOwnerHandle}
+                    commentID={latestComment.id}
+                    commentUserID={latestComment.userID}
                   />
                 )}
                 {!latestComment && <Comment />}
-              </CardContent>
+              </CardHeader>
             </Card>
           </DrawerTrigger>
           <DrawerContent className="px-6 pr-2 py-2 min-h-20">
@@ -54,7 +55,7 @@ export default function TrackComments({
               <Comments
                 comments={comments}
                 session={session}
-                trackOwnerhandle={trackOwnerHandle}
+                trackOwnerHandle={trackOwnerHandle}
               />
             </div>
           </DrawerContent>
@@ -65,7 +66,7 @@ export default function TrackComments({
         <Comments
           comments={comments}
           session={session}
-          trackOwnerhandle={trackOwnerHandle}
+          trackOwnerHandle={trackOwnerHandle}
         />
       </div>
     </div>
@@ -75,11 +76,11 @@ export default function TrackComments({
 function Comments({
   comments,
   session,
-  trackOwnerhandle,
+  trackOwnerHandle,
 }: {
   session: Session | null | undefined;
   comments: CommentType[];
-  trackOwnerhandle: string;
+  trackOwnerHandle: string;
 }) {
   return (
     <div
@@ -104,8 +105,9 @@ function Comments({
             className="border-b-2 pb-4"
             session={session}
             commentedOn={comment.commentedOn}
-            trackOwnerHandle={trackOwnerhandle}
+            trackOwnerHandle={trackOwnerHandle}
             commentID={comment.id}
+            commentUserID={comment.userID}
           />
         ))}
       </div>

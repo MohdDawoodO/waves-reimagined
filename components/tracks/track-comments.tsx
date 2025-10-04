@@ -114,6 +114,7 @@ function Comments({
             trackOwnerHandle={trackOwnerHandle}
             commentID={comment.id}
             commentUserID={comment.userID}
+            trackID={trackID}
           />
         ))}
       </div>

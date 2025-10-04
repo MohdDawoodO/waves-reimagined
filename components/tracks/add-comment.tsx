@@ -12,7 +12,7 @@ import { Session } from "next-auth";
 import { useAction } from "next-safe-action/hooks";
 import { postComment } from "@/server/actions/post-comment";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -64,6 +64,10 @@ export default function AddComment({
     if (!session) return;
     execute(values);
   }
+
+  useEffect(() => {
+    form.setValue("trackID", trackID);
+  }, []);
 
   return (
     <LoginAlertDialog session={session}>

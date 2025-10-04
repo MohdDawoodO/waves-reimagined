@@ -138,7 +138,7 @@ export default function Comment({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side="left">
-                    <AlertDialogTrigger>
+                    <AlertDialogTrigger disabled={deleting}>
                       <DropdownMenuItem
                         className="transition-all duration-200 focus:bg-destructive/25 dark:focus:bg-destructive/20 text-xs cursor-pointer"
                         disabled={deleting}

@@ -73,7 +73,7 @@ export default function TrackControls({
   const [currentVolume, setCurrentVolume] = useState(1);
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [liked, setLiked] = useState(isLiked);
-  const [likes, setLikes] = useState(tracks[0].likes);
+  const [likes, setLikes] = useState(tracks[0].like?.length as number);
   const pathname = usePathname();
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -184,7 +184,7 @@ export default function TrackControls({
     const currentIndex = trackIDs.findIndex((id) => id === tracks[0].id);
     setIndex(currentIndex);
     setLiked(isLiked);
-    setLikes(tracks[0].likes);
+    setLikes(tracks[0].like?.length as number);
     setBookmarked(isBookmarked);
     document.title = tracks[0].trackName;
   }, [trackURL, pathname, setIndex, trackIDs, tracks, isBookmarked, isLiked]);

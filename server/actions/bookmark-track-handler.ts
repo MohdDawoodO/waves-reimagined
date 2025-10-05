@@ -67,5 +67,6 @@ export const bookmarkTrackHandler = action
       return { success: "Added track to watch later" };
     } catch (err) {
       console.log(err);
+      return { error: "Failed to add track to watch later" };
     }
   });

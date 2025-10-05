@@ -33,6 +33,7 @@ export const createPlaylist = action
         return { success: "Playlist created!" };
       } catch (err) {
         console.log(err);
+        return { error: "Failed to create playlist" };
       }
     }
   );

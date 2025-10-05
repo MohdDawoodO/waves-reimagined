@@ -67,6 +67,7 @@ export const uploadTrack = action
         return { success: "Track Uploaded" };
       } catch (err) {
         console.log(err);
+        return { error: "Failed to upload track" };
       }
     }
   );

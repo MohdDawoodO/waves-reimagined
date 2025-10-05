@@ -54,7 +54,6 @@ export function DeleteTrackDialog({
     onExecute: () => {
       toast.loading("Deleting Track...");
     },
-    onError: (err) => console.log(err.error),
   });
 
   return (

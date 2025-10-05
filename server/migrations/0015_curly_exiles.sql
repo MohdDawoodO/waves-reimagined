@@ -1,0 +1,1 @@
+ALTER TABLE "sound_track" DROP COLUMN "likes";

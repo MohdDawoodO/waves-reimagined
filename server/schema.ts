@@ -127,7 +127,6 @@ export const soundTracks = pgTable("sound_track", {
   publicID: text("publicID").notNull(),
   visibility: visibilityEnum().default("public"),
   uploadedOn: timestamp("uploadedOn").notNull().defaultNow(),
-  likes: real("likes").notNull().default(0),
 });
 
 export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
@@ -143,6 +142,9 @@ export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({
   }),
   trackTags: many(trackTags, { relationName: "track_tag" }),
   trackComments: many(comments, { relationName: "track_comment" }),
+  like: many(likes, {
+    relationName: "track_like",
+  }),
 }));
 
 export const albumCovers = pgTable("album_cover", {

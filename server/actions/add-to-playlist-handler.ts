@@ -65,5 +65,6 @@ export const addToPlaylistHandler = action
       return { success: "Added track to playlist" };
     } catch (err) {
       console.log(err);
+      return { error: "Failed to add track to playlist" };
     }
   });

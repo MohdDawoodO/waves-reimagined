@@ -22,10 +22,6 @@ export async function likeTrackHandler(userID: string, trackID: string) {
         .delete(likes)
         .where(and(eq(likes.userID, userID), eq(likes.trackID, trackID)));
 
-      await db
-        .update(soundTracks)
-        .set({ likes: like.soundTrack.likes - 1 })
-        .where(eq(soundTracks.id, trackID));
       return;
     }
 
@@ -33,11 +29,6 @@ export async function likeTrackHandler(userID: string, trackID: string) {
       userID,
       trackID,
     });
-
-    await db
-      .update(soundTracks)
-      .set({ likes: soundTrack.likes + 1 })
-      .where(eq(soundTracks.id, trackID));
   } catch (err) {
     console.log(err);
   }

@@ -41,6 +41,7 @@ export default async function Listen({
     with: {
       albumCover: true,
       user: true,
+      like: true,
       trackComments: {
         with: { commentUser: true },
         orderBy: (comments, { desc }) => desc(comments.commentedOn),

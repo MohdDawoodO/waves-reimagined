@@ -45,8 +45,6 @@ export default function Playlist({
     },
   });
 
-  console.log(track, trackID);
-
   return (
     <div key={id} className="flex items-center justify-between">
       <div className="flex items-center gap-2 text-sm flex-10">

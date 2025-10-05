@@ -87,6 +87,7 @@ export const updateProfileSettings = action
         return { success: "Settings Updated" };
       } catch (err) {
         console.log(err);
+        return { error: "Failed to update settings" };
       }
     }
   );

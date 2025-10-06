@@ -52,6 +52,7 @@ import {
   DeleteTrackDialogTrigger,
 } from "./delete-track-dialog";
 import { TooltipMessage } from "../ui/tooltip-message";
+import { incrementView } from "@/server/actions/increment-view";
 
 export default function TrackControls({
   tracks,
@@ -79,6 +80,8 @@ export default function TrackControls({
   const [index, setIndex] = useState(0);
   const [trackIDs, setTrackIDs] = useAtom(suggestedTrackIDs);
   const trackURL = tracks[0].trackURL;
+  const [watched, setWatched] = useState(0);
+  const [viewed, setViewed] = useState(false);
 
   function playSongHandler() {
     if (isPlaying) {
@@ -172,6 +175,10 @@ export default function TrackControls({
     },
   });
 
+  async function addView() {
+    await incrementView(tracks[0].id);
+  }
+
   //* Runs only once to set autoPlay tracks
   useEffect(() => {
     setTrackIDs(tracks.map((track) => track.id));
@@ -186,6 +193,8 @@ export default function TrackControls({
     setLiked(isLiked);
     setLikes(tracks[0].like?.length as number);
     setBookmarked(isBookmarked);
+    setWatched(0);
+    setViewed(false);
     document.title = tracks[0].trackName;
   }, [trackURL, pathname, setIndex, trackIDs, tracks, isBookmarked, isLiked]);
 
@@ -387,9 +396,25 @@ export default function TrackControls({
       <audio
         src={trackURL}
         ref={audioRef}
-        onTimeUpdate={(e) => setCurrentDuration(e.currentTarget.currentTime)}
+        onTimeUpdate={(e) => {
+          const currentTime = e.currentTarget.currentTime;
+          const lastTime = currentDuration;
+
+          if (Math.abs(currentTime - lastTime) < 0.5) {
+            setWatched((prev) => prev + (currentTime - lastTime));
+          }
+
+          if ((watched / tracks[0].duration) * 100 >= 60 && !viewed) {
+            addView();
+            setViewed(true);
+          }
+
+          setCurrentDuration(e.currentTarget.currentTime);
+        }}
         onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
-        onEnded={() => nextSong()}
+        onEnded={() => {
+          nextSong();
+        }}
       />
     </div>
   );

@@ -1,0 +1,1 @@
+ALTER TABLE "sound_track" ADD COLUMN "views" real DEFAULT 0 NOT NULL;

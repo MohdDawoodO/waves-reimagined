@@ -147,6 +147,7 @@ export default async function Listen({
           <TrackDescription
             uploadedOn={soundTrack.uploadedOn}
             description={soundTrack.description}
+            views={soundTrack.views}
           />
           <TrackComments
             trackID={soundTrack.id}

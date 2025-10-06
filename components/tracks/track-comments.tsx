@@ -51,7 +51,7 @@ export default function TrackComments({
               </CardHeader>
             </Card>
           </DrawerTrigger>
-          <DrawerContent className="px-6 pr-2 py-2 min-h-20">
+          <DrawerContent className="px-6 pr-2 py-2 min-h-7/8">
             <div className="overflow-y-auto mx-auto my-8 pr-4 w-full h-[80rem] max-w-md custom-scrollbar">
               <DrawerTitle />
               <Comments

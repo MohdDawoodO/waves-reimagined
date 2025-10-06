@@ -127,6 +127,7 @@ export const soundTracks = pgTable("sound_track", {
   publicID: text("publicID").notNull(),
   visibility: visibilityEnum().default("public"),
   uploadedOn: timestamp("uploadedOn").notNull().defaultNow(),
+  views: real("views").notNull().default(0),
 });
 
 export const soundTrackRelations = relations(soundTracks, ({ one, many }) => ({

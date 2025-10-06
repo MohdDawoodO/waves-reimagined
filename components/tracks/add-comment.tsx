@@ -83,6 +83,7 @@ export default function AddComment({
                   <FormControl>
                     <Input
                       placeholder="Add a comment"
+                      type="text"
                       autoComplete="off"
                       {...field}
                     />

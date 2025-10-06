@@ -38,6 +38,7 @@ export type TrackType = {
   uploadedOn: Date;
   user: UserType;
   albumCover: AlbumCoverType;
+  views: number;
   like?: LikeType[];
 };
 

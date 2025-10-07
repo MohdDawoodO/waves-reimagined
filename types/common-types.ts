@@ -36,10 +36,17 @@ export type TrackType = {
   trackName: string;
   trackURL: string;
   uploadedOn: Date;
-  user: UserType;
-  albumCover: AlbumCoverType;
   views: number;
+  albumCover: AlbumCoverType;
+  user?: UserType;
   like?: LikeType[];
+  trackTags?: tagsType[];
+};
+
+export type tagsType = {
+  id: number;
+  tag: string;
+  trackID: string;
 };
 
 export type LikeType = {

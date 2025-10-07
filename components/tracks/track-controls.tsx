@@ -7,6 +7,7 @@ import {
   Bookmark,
   ChevronFirstIcon,
   ChevronLast,
+  EditIcon,
   Heart,
   Link,
   MoreVertical,
@@ -380,11 +381,20 @@ export default function TrackControls({
                   </DropdownMenuItem>
                   {(session?.user.id === tracks[0].userID ||
                     session?.user.role === "admin") && (
-                    <DeleteTrackDialogTrigger className="w-full">
-                      <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
-                        Delete Track <Trash2 />
+                    <>
+                      <DropdownMenuItem
+                        className="cursor-pointer text-foreground text-xs transition-colors duration-200"
+                        onClick={() => router.push(`edit?t=${tracks[0].id}`)}
+                      >
+                        Edit <EditIcon />
                       </DropdownMenuItem>
-                    </DeleteTrackDialogTrigger>
+
+                      <DeleteTrackDialogTrigger className="w-full">
+                        <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
+                          Delete Track <Trash2 />
+                        </DropdownMenuItem>
+                      </DeleteTrackDialogTrigger>
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

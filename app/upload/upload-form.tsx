@@ -96,22 +96,13 @@ export default function UploadForm({ session }: { session: Session }) {
   function ascendUploadProgress() {
     form.clearErrors();
     if (uploadProgress === "upload-track") {
-      if (!form.getValues("soundTrack")) {
-        form.setError("soundTrack", {
-          message: "Please upload your sound track",
-        });
-        return;
-      }
+      if (!form.getValues("soundTrack.trackURL")) return;
       setUploadProgress("upload-cover");
       return;
     }
+
     if (uploadProgress === "upload-cover") {
-      if (!form.getValues("albumCover")) {
-        form.setError("albumCover", {
-          message: "Please upload an album cover",
-        });
-        return;
-      }
+      if (!form.getValues("albumCover.imageURL")) return;
       setUploadProgress("enter-details");
       return;
     }
@@ -182,7 +173,7 @@ export default function UploadForm({ session }: { session: Session }) {
               {uploadProgress === "upload-track" && (
                 <FormField
                   control={form.control}
-                  name="soundTrack"
+                  name="soundTrack.trackURL"
                   render={() => (
                     <FormItem>
                       <FormLabel>Upload your sound track</FormLabel>
@@ -215,7 +206,7 @@ export default function UploadForm({ session }: { session: Session }) {
               {uploadProgress === "upload-cover" && (
                 <FormField
                   control={form.control}
-                  name="albumCover"
+                  name="albumCover.imageURL"
                   render={() => (
                     <FormItem>
                       <FormLabel>Upload your album cover</FormLabel>
@@ -326,7 +317,7 @@ export default function UploadForm({ session }: { session: Session }) {
 
               {uploadProgress !== "enter-details" && (
                 <Button
-                  type="button"
+                  type="submit"
                   onClick={() => {
                     ascendUploadProgress();
                   }}

@@ -13,10 +13,10 @@ export function NotFoundMessage({
 }) {
   return (
     <div className="w-full absolute top-1/2 left-1/2 -translate-1/2 flex flex-col items-center justify-center text-muted-foreground">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 px-6">
         <h2 className="text-2xl">404</h2>
         <div className="w-[2px] h-10 bg-muted" />
-        <h3 className="text-sm">{children}</h3>
+        <h3 className="text-sm whitespace-break-spaces">{children}</h3>
       </div>
       <Button variant={"link"}>
         <MoveLeft />

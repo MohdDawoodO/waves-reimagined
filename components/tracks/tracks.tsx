@@ -56,7 +56,7 @@ export default function Tracks({
             </div>
             <div>
               <h3 className="w-fit text-muted-foreground font-light text-xs">
-                @{track.user.handle}
+                @{track.user?.handle}
               </h3>
             </div>
           </div>

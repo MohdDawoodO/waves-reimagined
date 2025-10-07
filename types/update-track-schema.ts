@@ -1,7 +1,7 @@
 import z from "zod";
 
-export const TrackSchema = z.object({
-  userID: z.string(),
+export const UpdateTrackSchema = z.object({
+  trackID: z.string(),
   name: z
     .string()
     .min(3, { error: "Track name must be at least 4 characters long" })
@@ -17,10 +17,5 @@ export const TrackSchema = z.object({
     imageURL: z.string({ error: "Please upload an album cover" }),
     publicID: z.string().optional(),
   }),
-  soundTrack: z.object({
-    trackURL: z.string({ error: "Please upload your sound track" }),
-    publicID: z.string().optional(),
-  }),
-  duration: z.number(),
   visibility: z.enum(["public", "unlisted", "private"]),
 });

@@ -379,22 +379,23 @@ export default function TrackControls({
                   >
                     Copy URL <Link />
                   </DropdownMenuItem>
+
+                  {session?.user.id === tracks[0].userID && (
+                    <DropdownMenuItem
+                      className="cursor-pointer text-foreground text-xs transition-colors duration-200"
+                      onClick={() => router.push(`edit?t=${tracks[0].id}`)}
+                    >
+                      Edit <EditIcon />
+                    </DropdownMenuItem>
+                  )}
+
                   {(session?.user.id === tracks[0].userID ||
                     session?.user.role === "admin") && (
-                    <>
-                      <DropdownMenuItem
-                        className="cursor-pointer text-foreground text-xs transition-colors duration-200"
-                        onClick={() => router.push(`edit?t=${tracks[0].id}`)}
-                      >
-                        Edit <EditIcon />
+                    <DeleteTrackDialogTrigger className="w-full">
+                      <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
+                        Delete Track <Trash2 />
                       </DropdownMenuItem>
-
-                      <DeleteTrackDialogTrigger className="w-full">
-                        <DropdownMenuItem className="cursor-pointer text-foreground text-xs focus:bg-destructive/25 dark:focus:bg-destructive/20 transition-colors duration-200">
-                          Delete Track <Trash2 />
-                        </DropdownMenuItem>
-                      </DeleteTrackDialogTrigger>
-                    </>
+                    </DeleteTrackDialogTrigger>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

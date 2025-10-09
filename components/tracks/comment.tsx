@@ -3,7 +3,7 @@
 import UserImage from "../navigation/user-image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { MoreVertical, Trash2Icon } from "lucide-react";
+import { EditIcon, MoreVertical, Trash2Icon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +29,10 @@ import { deleteComment } from "@/server/actions/delete-comment";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  EditCommentDialog,
+  EditCommentDialogTrigger,
+} from "./edit-comment-dialog";
 
 export default function Comment({
   comment,
@@ -88,93 +92,112 @@ export default function Comment({
   const words = comment.split(" ");
 
   return (
-    <AlertDialog>
-      <div className={cn("flex items-start gap-4 w-full", className)}>
-        <div>
-          <UserImage name={userName} image={userAvatar} className="w-8 h-8" />
-        </div>
-        <div className="flex flex-col gap-2 w-full">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div>
-              {!userHandle && <h3>{userName}</h3>}
-              {userHandle && (
-                <Link
-                  href={`/profile/${userHandle}/home`}
-                  className="hover:underline"
-                  target="_blank"
-                >
-                  @{userHandle}
-                </Link>
+    <EditCommentDialog
+      comment={comment}
+      trackID={trackID!}
+      commentID={commentID!}
+    >
+      <AlertDialog>
+        <div className={cn("flex items-start gap-4 w-full", className)}>
+          <div>
+            <UserImage name={userName} image={userAvatar} className="w-8 h-8" />
+          </div>
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <div>
+                {!userHandle && <h3>{userName}</h3>}
+                {userHandle && (
+                  <Link
+                    href={`/profile/${userHandle}/home`}
+                    className="hover:underline"
+                    target="_blank"
+                  >
+                    @{userHandle}
+                  </Link>
+                )}
+              </div>
+              <p>
+                {formatDistance(commentedOn, new Date()).replace("about", "") +
+                  " ago"}
+              </p>
+            </div>
+            <div className="flex items-start justify-between gap-4">
+              <p className="text-sm text-foreground flex gap-1 flex-wrap">
+                {words.map((word, i) => (
+                  <span
+                    key={word + i}
+                    className={cn(word.length > 15 ? "break-all" : null)}
+                  >
+                    {word}
+                  </span>
+                ))}
+              </p>
+              {(session?.user.role === "admin" ||
+                session?.user.id === commentUserID ||
+                session?.user.handle === trackOwnerHandle) && (
+                <div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-1 aspect-square h-fit w-fit"
+                      >
+                        <MoreVertical />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="left">
+                      {session?.user.id === commentUserID && (
+                        <EditCommentDialogTrigger>
+                          <DropdownMenuItem
+                            className="transition-all duration-200 text-xs cursor-pointer"
+                            disabled={deleting}
+                          >
+                            Edit <EditIcon className="scale-90" />
+                          </DropdownMenuItem>
+                        </EditCommentDialogTrigger>
+                      )}
+                      <AlertDialogTrigger
+                        disabled={deleting}
+                        className="w-full"
+                      >
+                        <DropdownMenuItem
+                          className="transition-all duration-200 focus:bg-destructive/25 dark:focus:bg-destructive/20 text-xs cursor-pointer"
+                          disabled={deleting}
+                        >
+                          Delete <Trash2Icon className="scale-90" />
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
             </div>
-            <p>
-              {formatDistance(commentedOn, new Date()).replace("about", "") +
-                " ago"}
-            </p>
-          </div>
-          <div className="flex items-start justify-between gap-4">
-            <p className="text-sm text-foreground flex gap-1 flex-wrap">
-              {words.map((word, i) => (
-                <span
-                  key={word + i}
-                  className={cn(word.length > 15 ? "break-all" : null)}
-                >
-                  {word}
-                </span>
-              ))}
-            </p>
-            {(session?.user.role === "admin" ||
-              session?.user.id === commentUserID ||
-              session?.user.handle === trackOwnerHandle) && (
-              <div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="p-1 aspect-square h-fit w-fit"
-                    >
-                      <MoreVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent side="left">
-                    <AlertDialogTrigger disabled={deleting}>
-                      <DropdownMenuItem
-                        className="transition-all duration-200 focus:bg-destructive/25 dark:focus:bg-destructive/20 text-xs cursor-pointer"
-                        disabled={deleting}
-                      >
-                        Delete Comment <Trash2Icon className="scale-90" />
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
           </div>
         </div>
-      </div>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permenantly delete your
-            comment.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            className="cursor-pointer bg-destructive hover:bg-destructive/80"
-            onClick={() =>
-              execute({ trackID: trackID!, commentID: commentID! })
-            }
-          >
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permenantly delete your
+              comment.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="cursor-pointer bg-destructive hover:bg-destructive/80"
+              onClick={() =>
+                execute({ trackID: trackID!, commentID: commentID! })
+              }
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </EditCommentDialog>
   );
 }

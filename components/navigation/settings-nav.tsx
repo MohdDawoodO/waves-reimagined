@@ -21,7 +21,7 @@ export default function SettingsNav() {
             </Link>
             {pathname === link.path && (
               <motion.div
-                layoutId="profileNavLine"
+                layoutId="settingsNavLine"
                 className="w-full h-1 bg-primary rounded"
               />
             )}

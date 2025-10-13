@@ -1,0 +1,1 @@
+ALTER TABLE "playlist" ADD COLUMN "createdOn" timestamp DEFAULT now() NOT NULL;

@@ -108,6 +108,7 @@ export default async function Listen({
     userPlaylists = await db.query.playlists.findMany({
       where: eq(playlists.userID, session.user.id),
       with: { playlistTracks: { where: eq(playlistTracks.trackID, trackID) } },
+      orderBy: (playlist, { asc }) => asc(playlist.createdOn),
     });
 
     const watchLaterPlaylist = userPlaylists.filter(

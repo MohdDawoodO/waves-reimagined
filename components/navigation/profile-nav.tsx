@@ -22,8 +22,8 @@ export default function ProfileNav({
 
   if (sesssion?.user.handle === handle) {
     profileLinks.push({
-      name: "Analytics",
-      path: `/profile/${handle}/analytics`,
+      name: "Manage",
+      path: `/profile/${handle}/manage`,
     });
   }
 

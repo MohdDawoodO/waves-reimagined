@@ -1,6 +1,15 @@
 "use client";
 
-import { Home, PlaySquare, ThumbsUp, TrendingUp } from "lucide-react";
+import {
+  Clock,
+  Earth,
+  Home,
+  Link2,
+  Lock,
+  PlaySquare,
+  ThumbsUp,
+  TrendingUp,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -15,8 +24,17 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Session } from "next-auth";
 import SignedOutUserMenu from "./signed-out-user-menu";
+import { PlaylistType } from "@/types/common-types";
 
-export default function AppSidebar({ session }: { session?: Session | null }) {
+export default function AppSidebar({
+  session,
+  userPlaylists,
+  watchLaterPlaylist,
+}: {
+  session?: Session | null;
+  watchLaterPlaylist: PlaylistType | undefined;
+  userPlaylists?: PlaylistType[] | undefined;
+}) {
   const pageLinks = [
     { path: "/", icon: Home, name: "Home" },
     { path: "/trending", icon: TrendingUp, name: "Trending" },
@@ -31,19 +49,30 @@ export default function AppSidebar({ session }: { session?: Session | null }) {
     },
   ];
 
-  const playlists = [
-    { path: "/playlists?p=67281", icon: ThumbsUp, name: "Liked Tracks" },
-    {
-      path: "/playlists?p=21789",
-      icon: TrendingUp,
-      name: "Watch Later",
-    },
-    {
-      path: "/profile/pappartit/playlists",
-      icon: PlaySquare,
-      name: "Other playlist...",
-    },
-  ];
+  const playlists = userPlaylists?.map((playlist) => {
+    return {
+      path: `/playlist?list=${playlist.id}`,
+      icon:
+        playlist.visibility === "private"
+          ? Lock
+          : playlist.visibility === "unlisted"
+            ? Link2
+            : Earth,
+      name: playlist.name,
+    };
+  });
+
+  const watchLater = {
+    path: `/playlist?list=${watchLaterPlaylist?.id}`,
+    name: "Watch Later",
+    icon: Clock,
+  };
+
+  const likedPlaylist = {
+    path: `/playlist/liked`,
+    name: "Liked Tracks",
+    icon: ThumbsUp,
+  };
 
   const subscriptions = [
     {
@@ -85,7 +114,10 @@ export default function AppSidebar({ session }: { session?: Session | null }) {
 
         {session && (
           <>
-            <SidebarGroupContainer title="Your Playlists" data={playlists} />
+            <SidebarGroupContainer
+              title="Your Playlists"
+              data={[watchLater, likedPlaylist, ...playlists!]}
+            />
             <SidebarSeparator />
 
             <SidebarGroupContainer

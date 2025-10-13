@@ -131,12 +131,12 @@ export default function UserButton({ session }: { session: Session | null }) {
                 className="group transition-all duration-200 ease-in-out cursor-pointer"
                 onClick={() =>
                   redirectToProfileLink(
-                    `/profile/${session.user.handle}/analytics`
+                    `/profile/${session.user.handle}/manage`
                   )
                 }
               >
                 <ChartColumnIcon className="mr-1 group-hover:scale-85 transition-transform duration-200" />
-                Analytics
+                Manage
               </DropdownMenuItem>
 
               <DropdownMenuItem

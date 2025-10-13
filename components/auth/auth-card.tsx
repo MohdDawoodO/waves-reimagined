@@ -27,7 +27,7 @@ export default function AuthCard({
   withSocials?: boolean;
 }) {
   return (
-    <Card className="max-w-xl mx-auto py-4 md:py-6">
+    <Card className="max-w-xl mx-auto py-4 md:py-6 my-4 sm:my-0">
       <CardHeader className="px-4 md:px-6">
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}

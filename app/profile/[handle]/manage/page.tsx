@@ -1,7 +1,7 @@
 import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
 
-export default async function UserAnalytics({
+export default async function ManageContent({
   params,
 }: {
   params: Promise<{ handle: string }>;
@@ -16,5 +16,5 @@ export default async function UserAnalytics({
     redirect(`/profile/${parameter.handle}/home`);
   }
 
-  return <div>profile analytics page</div>;
+  return <div>profile manage page</div>;
 }

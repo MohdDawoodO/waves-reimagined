@@ -1,7 +1,7 @@
 import z from "zod";
 
-export const PlaylistSchema = z.object({
-  userID: z.string(),
+export const EditPlaylistSchema = z.object({
+  playlistID: z.string(),
   name: z
     .string()
     .min(3, { error: "Playlist name must be 3 or more characters" })
@@ -10,5 +10,4 @@ export const PlaylistSchema = z.object({
     .string()
     .max(200, { error: "Description can be no more than 200 characters" }),
   visibility: z.enum(["public", "unlisted", "private"]),
-  trackID: z.string().optional(),
 });

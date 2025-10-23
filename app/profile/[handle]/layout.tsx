@@ -43,7 +43,7 @@ export default async function ProfileLayout({
         <ProfileNav handle={parameter.handle} sesssion={session} />
         <Separator />
       </div>
-      <main>{children}</main>
+      <main className="w-full">{children}</main>
     </div>
   );
 }

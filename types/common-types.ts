@@ -75,3 +75,14 @@ export type PlaylistTrackType = {
 export type PlaylistWithTrackType = PlaylistType & {
   playlistTracks: PlaylistTrackType[];
 };
+
+export type DisplayPlaylistType = {
+  id: string;
+  name: string;
+  description: string;
+  tracks: number;
+  editable: boolean;
+  latestTrackCover: string | undefined;
+  userHandle: string | null;
+  visibility: "private" | "unlisted" | "public";
+};

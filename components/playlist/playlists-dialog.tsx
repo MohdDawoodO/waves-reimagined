@@ -46,7 +46,9 @@ export function PlaylistsDialog({
       {session && (
         <DialogContent className="px-4 md:px-6">
           <DialogHeader className="mb-4">
-            <DialogTitle>Select your playlist</DialogTitle>
+            <DialogTitle>
+              {createPlaylist ? "Create" : "Select"} your playlist
+            </DialogTitle>
           </DialogHeader>
           {createPlaylist ? (
             <CreatePlaylistForm

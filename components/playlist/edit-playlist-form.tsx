@@ -1,6 +1,5 @@
 "use client";
 
-import { PlaylistSchema } from "@/types/playlist-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -16,8 +15,7 @@ import { Button } from "../ui/button";
 import FormError from "../auth/form-error";
 import FormSuccess from "../auth/form-success";
 import { Input } from "../ui/input";
-import { Dispatch, SetStateAction, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -26,54 +24,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useAction } from "next-safe-action/hooks";
-import { createPlaylist } from "@/server/actions/create-playlist";
 import { useRouter } from "next/navigation";
 import { VscLoading } from "react-icons/vsc";
+import { EditPlaylistSchema } from "@/types/edit-playlist-schema";
+import { useAction } from "next-safe-action/hooks";
+import { editPlaylist } from "@/server/actions/edit-playlist";
 
-export default function CreatePlaylistForm({
-  userID,
-  trackID,
-  setCreatePlaylist,
+export default function EditPlaylistForm({
+  playlistID,
+  name,
+  description,
+  visibility,
 }: {
-  userID: string;
-  trackID?: string;
-  setCreatePlaylist?: Dispatch<SetStateAction<boolean>>;
+  playlistID: string;
+  name: string;
+  description: string;
+  visibility: "public" | "unlisted" | "private";
 }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(PlaylistSchema),
+    resolver: zodResolver(EditPlaylistSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      visibility: "public" as "public" | "unlisted" | "public",
-      userID,
-      trackID,
+      name,
+      description,
+      visibility,
+      playlistID,
     },
     mode: "onChange",
   });
 
-  const { execute, status } = useAction(createPlaylist, {
+  const { execute, status } = useAction(editPlaylist, {
     onSuccess: (data) => {
       if (data.data?.error) {
         setSuccess("");
         setError(data.data.error);
-        setTimeout(() => {
-          router.refresh();
-          if (setCreatePlaylist) setCreatePlaylist(false);
-        }, 500);
       }
       if (data.data?.success) {
         setError("");
         setSuccess(data.data.success);
+
+        setTimeout(() => {
+          router.refresh();
+        }, 500);
       }
     },
   });
 
-  function onSubmit(values: z.infer<typeof PlaylistSchema>) {
+  function onSubmit(values: z.infer<typeof EditPlaylistSchema>) {
     execute(values);
   }
 
@@ -154,23 +154,9 @@ export default function CreatePlaylistForm({
             {status === "executing" ? (
               <VscLoading className="animate-spin w-4 h-4" />
             ) : (
-              "Create Playlist"
+              "Update Playlist"
             )}
           </Button>
-
-          {setCreatePlaylist && (
-            <Button
-              variant={"link"}
-              className="p-0 w-fit mx-auto"
-              type="button"
-              onClick={() => {
-                setCreatePlaylist(false);
-              }}
-              disabled={status === "executing"}
-            >
-              <ArrowLeft /> Go back
-            </Button>
-          )}
         </div>
       </form>
     </Form>

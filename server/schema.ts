@@ -189,6 +189,11 @@ export const likeRelations = relations(likes, ({ one }) => ({
     references: [soundTracks.id],
     relationName: "track_like",
   }),
+  user: one(users, {
+    fields: [likes.userID],
+    references: [users.id],
+    relationName: "like_user",
+  }),
 }));
 
 export const playlists = pgTable("playlist", {

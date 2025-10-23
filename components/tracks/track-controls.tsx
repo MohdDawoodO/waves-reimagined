@@ -415,7 +415,7 @@ export default function TrackControls({
             setWatched((prev) => prev + (currentTime - lastTime));
           }
 
-          if ((watched / tracks[0].duration) * 100 >= 60 && !viewed) {
+          if ((watched / tracks[0].duration) * 100 >= 40 && !viewed) {
             addView();
             setViewed(true);
           }

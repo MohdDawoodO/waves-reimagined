@@ -34,19 +34,17 @@ export default function Tracks({
       )}
     >
       {tracks.map((track) => (
-        <Link
-          key={track.id}
-          href={`/listen?t=${track.id}`}
-          className="flex flex-col items-center gap-2"
-        >
-          <Image
-            loading="lazy"
-            className="aspect-square object-cover rounded-lg w-full pointer-events-none shadow-2xl"
-            src={track.albumCover.imageURL}
-            alt={track.trackName}
-            width={640}
-            height={640}
-          />
+        <div key={track.id} className="flex flex-col items-center gap-2">
+          <Link href={`/listen?t=${track.id}`} className="w-full">
+            <Image
+              loading="lazy"
+              className="aspect-square object-cover rounded-lg w-full pointer-events-none shadow-2xl"
+              src={track.albumCover.imageURL}
+              alt={track.trackName}
+              width={640}
+              height={640}
+            />
+          </Link>
           <div className="flex flex-col w-full">
             <div className="flex w-full items-start justify-between gap-2">
               <h2 className="text-sm font-bold">{track.trackName}</h2>
@@ -55,12 +53,14 @@ export default function Tracks({
               </Badge>
             </div>
             <div>
-              <h3 className="w-fit text-muted-foreground font-light text-xs">
-                @{track.user?.handle}
-              </h3>
+              <Link href={`/profile/${track.user?.handle}`} target="_blank">
+                <h3 className="w-fit text-muted-foreground font-light text-xs hover:underline underline-offset-2">
+                  @{track.user?.handle}
+                </h3>
+              </Link>
             </div>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );

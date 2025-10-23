@@ -28,7 +28,7 @@ export const createPlaylist = action
           .insert(playlists)
           .values({ name, description, userID, visibility });
 
-        revalidatePath(`/listen?t=${trackID}`);
+        if (trackID) revalidatePath(`/listen?t=${trackID}`);
 
         return { success: "Playlist created!" };
       } catch (err) {

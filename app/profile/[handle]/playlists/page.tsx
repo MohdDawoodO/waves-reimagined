@@ -1,5 +1,5 @@
 import { db } from "@/server";
-import { playlists, users } from "@/server/schema";
+import { likes, playlists, users } from "@/server/schema";
 import { and, eq, ne } from "drizzle-orm";
 
 import Playlists from "./playlists";
@@ -34,7 +34,50 @@ export default async function UserPlaylists({
       orderBy: (playlists, { desc }) => desc(playlists.createdOn),
     });
 
-    return <Playlists playlists={userPlaylists} />;
+    const playlistsData = userPlaylists.map((playlist) => ({
+      id: playlist.id,
+      name: playlist.name,
+      description: playlist.description,
+      tracks: playlist.tracks,
+      editable: playlist.editable,
+      visibility: playlist.visibility as "private" | "unlisted" | "public",
+      latestTrackCover: playlist.playlistTracks[0]
+        ? playlist.playlistTracks[0].track.albumCover.imageURL
+        : undefined,
+      userHandle: playlist.user.handle,
+    }));
+
+    const likedTracks = await db.query.likes.findMany({
+      where: eq(likes.userID, user.id),
+      orderBy: (like, { desc }) => desc(like.id),
+      with: { soundTrack: { with: { albumCover: true } }, user: true },
+    });
+
+    const allPlaylists = [
+      ...playlistsData,
+      {
+        id: "liked",
+        name: "Liked Tracks",
+        description: "",
+        tracks: likedTracks.length,
+        editable: false,
+        visibility: "private" as "private" | "unlisted" | "public",
+        latestTrackCover: likedTracks[0]
+          ? likedTracks[0].soundTrack.albumCover.imageURL
+          : undefined,
+        userHandle: parameter.handle,
+      },
+    ];
+
+    //* implement likes as a playlist
+
+    return (
+      <Playlists
+        playlists={allPlaylists}
+        session={session}
+        userHandle={parameter.handle}
+      />
+    );
   }
 
   if (session?.user.role === "admin") {
@@ -54,7 +97,26 @@ export default async function UserPlaylists({
       orderBy: (playlists, { desc }) => desc(playlists.createdOn),
     });
 
-    return <Playlists playlists={adminPlaylists} />;
+    const playlistsData = adminPlaylists.map((playlist) => ({
+      id: playlist.id,
+      name: playlist.name,
+      description: playlist.description,
+      tracks: playlist.tracks,
+      editable: playlist.editable,
+      visibility: playlist.visibility as "private" | "unlisted" | "public",
+      latestTrackCover: playlist.playlistTracks[0]
+        ? playlist.playlistTracks[0].track.albumCover.imageURL
+        : undefined,
+      userHandle: playlist.user.handle,
+    }));
+
+    return (
+      <Playlists
+        playlists={[...playlistsData]}
+        session={session}
+        userHandle={parameter.handle}
+      />
+    );
   }
 
   if (session?.user.handle !== parameter.handle) {
@@ -74,6 +136,25 @@ export default async function UserPlaylists({
       orderBy: (playlists, { desc }) => desc(playlists.createdOn),
     });
 
-    return <Playlists playlists={publicPlaylists} />;
+    const playlistsData = publicPlaylists.map((playlist) => ({
+      id: playlist.id,
+      name: playlist.name,
+      description: playlist.description,
+      tracks: playlist.tracks,
+      editable: playlist.editable,
+      visibility: playlist.visibility as "private" | "unlisted" | "public",
+      latestTrackCover: playlist.playlistTracks[0]
+        ? playlist.playlistTracks[0].track.albumCover.imageURL
+        : undefined,
+      userHandle: playlist.user.handle,
+    }));
+
+    return (
+      <Playlists
+        playlists={playlistsData}
+        session={session}
+        userHandle={parameter.handle}
+      />
+    );
   }
 }

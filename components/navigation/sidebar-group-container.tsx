@@ -49,7 +49,14 @@ export default function SidebarGroupContainer({
                     ? "bg-primary/50 dark:bg-primary/25"
                     : null
                 )}
-                onClick={() => router.push(item.path)}
+                onMouseUp={(e) => {
+                  if (e.ctrlKey || e.button === 1) {
+                    window.open(item.path);
+                    return;
+                  }
+
+                  router.push(item.path);
+                }}
               >
                 {item.icon && <item.icon className="scale-105 mr-2" />}
                 {!item.icon && (

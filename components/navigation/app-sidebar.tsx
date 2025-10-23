@@ -116,7 +116,7 @@ export default function AppSidebar({
           <>
             <SidebarGroupContainer
               title="Your Playlists"
-              data={[watchLater, likedPlaylist, ...playlists!]}
+              data={[likedPlaylist, watchLater, ...playlists!]}
             />
             <SidebarSeparator />
 

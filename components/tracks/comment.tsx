@@ -13,17 +13,6 @@ import {
 import { Button } from "../ui/button";
 import { Session } from "next-auth";
 import { formatDistance } from "date-fns";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
 import { useAction } from "next-safe-action/hooks";
 import { deleteComment } from "@/server/actions/delete-comment";
 import { toast } from "sonner";
@@ -33,6 +22,7 @@ import {
   EditCommentDialog,
   EditCommentDialogTrigger,
 } from "./edit-comment-dialog";
+import { DeleteDialog, DeleteDialogTrigger } from "../ui/delete-dialog";
 
 export default function Comment({
   comment,
@@ -97,7 +87,11 @@ export default function Comment({
       trackID={trackID!}
       commentID={commentID!}
     >
-      <AlertDialog>
+      <DeleteDialog
+        content="comment"
+        disabled={deleting}
+        action={() => execute({ trackID: trackID!, commentID: commentID! })}
+      >
         <div className={cn("flex items-start gap-4 w-full", className)}>
           <div>
             <UserImage name={userName} image={userAvatar} className="w-8 h-8" />
@@ -157,17 +151,14 @@ export default function Comment({
                           </DropdownMenuItem>
                         </EditCommentDialogTrigger>
                       )}
-                      <AlertDialogTrigger
-                        disabled={deleting}
-                        className="w-full"
-                      >
+                      <DeleteDialogTrigger className="w-full">
                         <DropdownMenuItem
                           className="transition-all duration-200 focus:bg-destructive/25 dark:focus:bg-destructive/20 text-xs cursor-pointer"
                           disabled={deleting}
                         >
                           Delete <Trash2Icon className="scale-90" />
                         </DropdownMenuItem>
-                      </AlertDialogTrigger>
+                      </DeleteDialogTrigger>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -175,29 +166,7 @@ export default function Comment({
             </div>
           </div>
         </div>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permenantly delete your
-              comment.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="cursor-pointer bg-destructive hover:bg-destructive/80"
-              onClick={() =>
-                execute({ trackID: trackID!, commentID: commentID! })
-              }
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      </DeleteDialog>
     </EditCommentDialog>
   );
 }

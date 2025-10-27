@@ -10,17 +10,6 @@ import {
 import { Button } from "../ui/button";
 import { EditIcon, LinkIcon, MoreVertical, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
 import { useAction } from "next-safe-action/hooks";
 import { deletePlaylist } from "@/server/actions/delete-playlist";
 import { useState } from "react";
@@ -36,6 +25,7 @@ import {
 } from "../ui/dialog";
 import EditPlaylistForm from "./edit-playlist-form";
 import { DisplayPlaylistType } from "@/types/common-types";
+import { DeleteDialog, DeleteDialogTrigger } from "../ui/delete-dialog";
 
 export default function PlaylistActions({
   session,
@@ -76,8 +66,12 @@ export default function PlaylistActions({
 
   return (
     <DropdownMenu>
-      <AlertDialog>
-        <Dialog>
+      <Dialog>
+        <DeleteDialog
+          content="playlist"
+          disabled={loading}
+          action={() => execute({ playlistID: playlist.id })}
+        >
           <DropdownMenuTrigger asChild>
             <Button size="icon" variant="ghost" className="w-7 h-7">
               <MoreVertical />
@@ -101,7 +95,7 @@ export default function PlaylistActions({
                     Edit Playlist <EditIcon />
                   </DropdownMenuItem>
                 </DialogTrigger>
-                <AlertDialogTrigger asChild>
+                <DeleteDialogTrigger>
                   <DropdownMenuItem
                     className="transition-colors duration-200 text-xs cursor-pointer focus:bg-destructive/25 dark:focus:bg-destructive/25"
                     onClick={(e) => e.stopPropagation()}
@@ -109,7 +103,7 @@ export default function PlaylistActions({
                   >
                     Delete Playlist <Trash2Icon />
                   </DropdownMenuItem>
-                </AlertDialogTrigger>
+                </DeleteDialogTrigger>
               </>
             )}
           </DropdownMenuContent>
@@ -129,30 +123,8 @@ export default function PlaylistActions({
               </DialogClose>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
-
-        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permenantly delete your
-              playlist from Waves Music.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="cursor-pointer bg-destructive hover:bg-destructive/80"
-              disabled={loading}
-              onClick={() => execute({ playlistID: playlist.id })}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </DeleteDialog>
+      </Dialog>
     </DropdownMenu>
   );
 }

@@ -51,8 +51,6 @@ export default function Playlists({
         <Playlist key={playlist.id} session={session} playlist={playlist} />
       ))}
 
-      {/* create playlist fn */}
-
       {session && session.user.handle === userHandle && (
         <Dialog>
           <div className="flex flex-col items-center gap-2">

@@ -1,4 +1,4 @@
-export type UserType = {
+type UserType = {
   role: "user" | "admin" | null;
   id: string;
   name: string | null;
@@ -10,10 +10,22 @@ export type UserType = {
   profileDescription: string | null;
 };
 
-export type AlbumCoverType = {
+type AlbumCoverType = {
   id: number;
   imageURL: string;
   publicID: string;
+  trackID: string;
+};
+
+type tagsType = {
+  id: number;
+  tag: string;
+  trackID: string;
+};
+
+export type LikeType = {
+  id: number;
+  userID: string;
   trackID: string;
 };
 
@@ -41,18 +53,6 @@ export type TrackType = {
   user?: UserType;
   like?: LikeType[];
   trackTags?: tagsType[];
-};
-
-export type tagsType = {
-  id: number;
-  tag: string;
-  trackID: string;
-};
-
-export type LikeType = {
-  id: number;
-  userID: string;
-  trackID: string;
 };
 
 export type PlaylistType = {

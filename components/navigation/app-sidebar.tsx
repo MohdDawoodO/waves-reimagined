@@ -37,7 +37,7 @@ export default function AppSidebar({
 }) {
   const pageLinks = [
     { path: "/", icon: Home, name: "Home" },
-    { path: "/trending", icon: TrendingUp, name: "Trending" },
+    { path: "/most-viewed", icon: TrendingUp, name: "Most Viewed" },
   ];
 
   const signedUserPageLinks = [

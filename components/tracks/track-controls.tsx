@@ -54,6 +54,7 @@ import {
 } from "./delete-track-dialog";
 import { TooltipMessage } from "../ui/tooltip-message";
 import { incrementView } from "@/server/actions/increment-view";
+import { copyToClipboard } from "@/lib/copy-to-clipboard";
 
 export default function TrackControls({
   tracks,
@@ -125,14 +126,6 @@ export default function TrackControls({
     }
     setCurrentVolume(volume);
     audioRef.current.volume = 0;
-  }
-
-  function copySongURL() {
-    navigator.clipboard.writeText(
-      `https://waves-reimagined.vercel.app/listen?t=${tracks[0].id}`
-    );
-
-    toast.success("Copied URL!");
   }
 
   async function likeSong() {
@@ -375,7 +368,11 @@ export default function TrackControls({
                 <DropdownMenuContent side="left">
                   <DropdownMenuItem
                     className="cursor-pointer text-foreground text-xs transition-colors duration-200"
-                    onClick={() => copySongURL()}
+                    onClick={() =>
+                      copyToClipboard(
+                        `https://waves-reimagined.vercel.app/listen?t=${tracks[0].id}`
+                      )
+                    }
                   >
                     Copy URL <Link />
                   </DropdownMenuItem>

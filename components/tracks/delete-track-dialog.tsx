@@ -25,8 +25,8 @@ export function DeleteTrackDialog({
   session,
   children,
 }: {
-  isPlaying: boolean;
-  playSongHandler: () => void;
+  isPlaying?: boolean;
+  playSongHandler?: () => void;
   currentTrack: TrackType;
   session: Session | null | undefined;
   children: React.ReactNode;
@@ -76,7 +76,7 @@ export function DeleteTrackDialog({
             onClick={() => {
               if (status === "executing") return;
 
-              if (isPlaying) {
+              if (isPlaying && playSongHandler) {
                 playSongHandler();
               }
               execute({ trackID: currentTrack.id });

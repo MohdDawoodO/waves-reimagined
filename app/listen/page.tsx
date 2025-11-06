@@ -159,7 +159,11 @@ export default async function Listen({
         </div>
       </div>
       <div className="flex-1">
-        <Tracks tracks={suggestedTracks} className="2xl:grid-cols-1" />
+        <Tracks
+          tracks={suggestedTracks}
+          className="2xl:grid-cols-1"
+          session={session}
+        />
       </div>
     </div>
   );

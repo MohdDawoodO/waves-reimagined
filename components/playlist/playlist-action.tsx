@@ -26,6 +26,7 @@ import {
 import EditPlaylistForm from "./edit-playlist-form";
 import { DisplayPlaylistType } from "@/types/common-types";
 import { DeleteDialog, DeleteDialogTrigger } from "../ui/delete-dialog";
+import { copyToClipboard } from "@/lib/copy-to-clipboard";
 
 export default function PlaylistActions({
   session,
@@ -36,13 +37,6 @@ export default function PlaylistActions({
 }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  function copyToClipboard() {
-    navigator.clipboard.writeText(
-      `https://waves-reimagined.vercel.app/playlist?list=${playlist.id}`
-    );
-    toast.success("Copied URL");
-  }
 
   const { execute } = useAction(deletePlaylist, {
     onSuccess: (data) => {
@@ -82,7 +76,9 @@ export default function PlaylistActions({
               className="transition-colors duration-200 text-xs cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                copyToClipboard();
+                copyToClipboard(
+                  `https://waves-reimagined.vercel.app/playlist?list=${playlist.id}`
+                );
               }}
             >
               Copy URL <LinkIcon />

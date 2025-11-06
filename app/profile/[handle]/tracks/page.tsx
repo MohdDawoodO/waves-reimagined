@@ -30,6 +30,7 @@ export default async function UserTracks({
         tracks={userTracks}
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
+        session={session}
       />
     );
   }
@@ -49,6 +50,7 @@ export default async function UserTracks({
         tracks={adminTracks}
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
+        session={session}
       />
     );
   }
@@ -68,6 +70,7 @@ export default async function UserTracks({
         tracks={publicTracks}
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
+        session={session}
       />
     );
   }

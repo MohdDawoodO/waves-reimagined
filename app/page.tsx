@@ -19,6 +19,7 @@ export default async function Home() {
         tracks={tracks}
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
+        session={session}
       />
     );
   }
@@ -34,6 +35,7 @@ export default async function Home() {
       tracks={tracks}
       className="2xl:grid-cols-6"
       openClassName="2xl:grid-cols-5"
+      session={session}
     />
   );
 }

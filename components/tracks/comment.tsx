@@ -97,7 +97,7 @@ export default function Comment({
             <UserImage name={userName} image={userAvatar} className="w-8 h-8" />
           </div>
           <div className="flex flex-col gap-1 w-full">
-            <div className="flex items-center justify-between text-[0.75rem] text-muted-foreground">
+            <div className="flex items-center justify-between text-[0.7rem] text-muted-foreground">
               <div>
                 {!userHandle && <h3>{userName}</h3>}
                 {userHandle && (

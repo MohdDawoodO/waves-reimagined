@@ -75,6 +75,21 @@ export default function Tracks({
           <div className="flex flex-col w-full gap-1">
             <div className="flex w-full items-start justify-between">
               <h2 className="text-sm font-bold">{track.trackName}</h2>
+              <h3 className="text-muted-foreground font-light text-xs scale-90">
+                {formatNumber(track.views)} views
+              </h3>
+            </div>
+
+            <div className="flex justify-between">
+              <Link
+                href={`/profile/${track.user?.handle}`}
+                target="_blank"
+                className="w-fit"
+              >
+                <h3 className="w-fit text-muted-foreground font-light text-xs hover:underline underline-offset-2">
+                  @{track.user?.handle}
+                </h3>
+              </Link>
               <DeleteTrackDialog session={session} currentTrack={track}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -117,21 +132,6 @@ export default function Tracks({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </DeleteTrackDialog>
-            </div>
-
-            <div className="flex justify-between">
-              <Link
-                href={`/profile/${track.user?.handle}`}
-                target="_blank"
-                className="w-fit"
-              >
-                <h3 className="w-fit text-muted-foreground font-light text-xs hover:underline underline-offset-2">
-                  @{track.user?.handle}
-                </h3>
-              </Link>
-              <h3 className="text-muted-foreground font-light text-xs">
-                {formatNumber(track.views)} views
-              </h3>
             </div>
           </div>
         </div>

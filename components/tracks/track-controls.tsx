@@ -55,6 +55,7 @@ import {
 import { TooltipMessage } from "../ui/tooltip-message";
 import { incrementView } from "@/server/actions/increment-view";
 import { copyToClipboard } from "@/lib/copy-to-clipboard";
+import { Switch } from "../ui/switch";
 
 export default function TrackControls({
   tracks,
@@ -84,6 +85,7 @@ export default function TrackControls({
   const trackURL = tracks[0].trackURL;
   const [watched, setWatched] = useState(0);
   const [viewed, setViewed] = useState(false);
+  const [autoplay, setAutoplay] = useState(true);
 
   function playSongHandler() {
     if (isPlaying) {
@@ -368,6 +370,17 @@ export default function TrackControls({
                 <DropdownMenuContent side="left">
                   <DropdownMenuItem
                     className="cursor-pointer text-foreground text-xs transition-colors duration-200"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Autoplay
+                    <Switch
+                      className="scale-75 cursor-pointer"
+                      checked={autoplay}
+                      onCheckedChange={setAutoplay}
+                    />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer text-foreground text-xs transition-colors duration-200"
                     onClick={() =>
                       copyToClipboard(
                         `https://waves-reimagined.vercel.app/listen?t=${tracks[0].id}`
@@ -421,7 +434,13 @@ export default function TrackControls({
         }}
         onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
         onEnded={() => {
-          nextSong();
+          if (autoplay) {
+            nextSong();
+            return;
+          }
+
+          playSongHandler();
+          setCurrentDuration(0);
         }}
       />
     </div>

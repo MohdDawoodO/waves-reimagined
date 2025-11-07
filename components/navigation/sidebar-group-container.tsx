@@ -13,6 +13,7 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import UserImage from "./user-image";
 import { cn } from "@/lib/utils";
+import { IconType } from "react-icons/lib";
 
 export default function SidebarGroupContainer({
   title,
@@ -28,7 +29,8 @@ export default function SidebarGroupContainer({
           Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
         >
       | undefined
-      | null;
+      | null
+      | IconType;
   }[];
 }) {
   const router = useRouter();

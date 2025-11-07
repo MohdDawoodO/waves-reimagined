@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import { Session } from "next-auth";
 import SignedOutUserMenu from "./signed-out-user-menu";
 import { PlaylistType } from "@/types/common-types";
+import { TbPlaylist } from "react-icons/tb";
 
 export default function AppSidebar({
   session,
@@ -74,6 +75,12 @@ export default function AppSidebar({
     icon: ThumbsUp,
   };
 
+  const playlistViewAllBtn = {
+    path: `/profile/${session?.user.handle}/playlists`,
+    name: "Your Playlists",
+    icon: TbPlaylist,
+  };
+
   const subscriptions = [
     {
       path: "/profile/ibrshism",
@@ -116,7 +123,12 @@ export default function AppSidebar({
           <>
             <SidebarGroupContainer
               title="Your Playlists"
-              data={[likedPlaylist, watchLater, ...playlists!]}
+              data={[
+                likedPlaylist,
+                watchLater,
+                ...playlists!,
+                playlistViewAllBtn,
+              ]}
             />
             <SidebarSeparator />
 

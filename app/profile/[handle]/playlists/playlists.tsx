@@ -21,7 +21,7 @@ import { PlusCircle } from "lucide-react";
 import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { TbPlaylistAdd } from "react-icons/tb";
+import { TbPlaylist } from "react-icons/tb";
 
 export default function Playlists({
   playlists,
@@ -125,7 +125,7 @@ function Playlist({
           {!playlist.latestTrackCover && (
             <>
               <div className="bg-muted-foreground/15 w-full aspect-square rounded-lg" />
-              <TbPlaylistAdd
+              <TbPlaylist
                 className="p-2 rounded-full bg-black/50 text-white absolute top-1/2 left-1/2 -translate-1/2 z-1"
                 size={64}
               />

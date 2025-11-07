@@ -23,7 +23,7 @@ export default async function AppSidebarProvider({
         ne(playlists.name, "Watch Later")
       ),
       orderBy: (playlist, { desc }) => desc(playlist.createdOn),
-      limit: 3,
+      limit: 2,
     });
 
     watchLaterPlaylist = await db.query.playlists.findFirst({

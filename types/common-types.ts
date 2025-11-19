@@ -50,7 +50,7 @@ export type TrackType = {
   uploadedOn: Date;
   views: number;
   albumCover: AlbumCoverType;
-  user?: UserType;
+  user: UserType;
   like?: LikeType[];
   trackTags?: tagsType[];
 };

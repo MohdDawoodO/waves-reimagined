@@ -14,7 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { EditIcon, LinkIcon, MoreVertical, Trash2 } from "lucide-react";
+import {
+  BanIcon,
+  EditIcon,
+  LinkIcon,
+  MoreVertical,
+  Trash2,
+} from "lucide-react";
 import {
   DeleteTrackDialog,
   DeleteTrackDialogTrigger,
@@ -28,11 +34,13 @@ export default function Tracks({
   tracks,
   className,
   openClassName,
+  isPlaylist,
   session,
 }: {
   tracks: TrackType[];
   className?: string;
   openClassName?: string;
+  isPlaylist?: boolean;
   session: Session | undefined | null;
 }) {
   const { open } = useSidebar();
@@ -115,9 +123,18 @@ export default function Tracks({
                     {session?.user.id === track.userID && (
                       <DropdownMenuItem
                         className="cursor-pointer text-foreground text-xs transition-colors duration-200"
-                        onClick={() => router.push(`edit?t=${track.id}`)}
+                        onClick={() => router.push(`/edit?t=${track.id}`)}
                       >
                         Edit <EditIcon />
+                      </DropdownMenuItem>
+                    )}
+
+                    {isPlaylist && (
+                      <DropdownMenuItem
+                        className="cursor-pointer text-foreground text-xs transition-colors duration-200"
+                        onClick={() => console.log("removed")}
+                      >
+                        Remove <BanIcon />
                       </DropdownMenuItem>
                     )}
 

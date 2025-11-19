@@ -102,7 +102,7 @@ function Playlist({
     <div key={playlist.id} className="flex flex-col items-center gap-2">
       <div className="relative w-full">
         <Link
-          href={`/playlist?list=${playlist.id}`}
+          href={`/playlist/${playlist.id}`}
           className={
             playlist.latestTrackCover ? "cursor-pointer" : "cursor-auto"
           }

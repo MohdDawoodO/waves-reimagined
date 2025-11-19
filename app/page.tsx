@@ -20,6 +20,7 @@ export default async function Home() {
         className="2xl:grid-cols-6"
         openClassName="2xl:grid-cols-5"
         session={session}
+        isPlaylist
       />
     );
   }

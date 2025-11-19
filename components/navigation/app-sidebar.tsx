@@ -52,7 +52,7 @@ export default function AppSidebar({
 
   const playlists = userPlaylists?.map((playlist) => {
     return {
-      path: `/playlist?list=${playlist.id}`,
+      path: `/playlist/${playlist.id}`,
       icon:
         playlist.visibility === "private"
           ? Lock
@@ -64,7 +64,7 @@ export default function AppSidebar({
   });
 
   const watchLater = {
-    path: `/playlist?list=${watchLaterPlaylist?.id}`,
+    path: `/playlist/${watchLaterPlaylist?.id}`,
     name: "Watch Later",
     icon: Clock,
   };

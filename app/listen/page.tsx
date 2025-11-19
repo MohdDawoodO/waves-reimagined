@@ -8,6 +8,7 @@ import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { likes, playlists, playlistTracks, soundTracks } from "@/server/schema";
 import {
+  CommentType,
   LikeType,
   PlaylistTrackType,
   PlaylistWithTrackType,
@@ -30,14 +31,15 @@ export default async function Listen({
   let like: LikeType | undefined = undefined;
   let bookmarked: PlaylistTrackType | undefined = undefined;
   let userPlaylists: PlaylistWithTrackType[] = [];
+  let soundTrack: (TrackType & { trackComments: CommentType[] }) | undefined =
+    undefined;
+
+  const session = await auth();
 
   if (!trackID) redirect("/");
 
-  const soundTrack = await db.query.soundTracks.findFirst({
-    where: and(
-      eq(soundTracks.id, trackID),
-      ne(soundTracks.visibility, "private")
-    ),
+  soundTrack = await db.query.soundTracks.findFirst({
+    where: and(eq(soundTracks.id, trackID)),
     with: {
       albumCover: true,
       user: true,
@@ -49,9 +51,11 @@ export default async function Listen({
     },
   });
 
-  const session = await auth();
-
-  if (!soundTrack)
+  if (
+    !soundTrack ||
+    (soundTrack.visibility === "private" &&
+      soundTrack.userID !== session?.user.id)
+  )
     return (
       <NotFoundMessage>This track is either private or deleted</NotFoundMessage>
     );
@@ -134,7 +138,7 @@ export default async function Listen({
           <TrackCover
             albumCover={soundTrack.albumCover.imageURL}
             trackName={soundTrack.trackName}
-            userHandle={soundTrack.user.handle!}
+            userHandle={soundTrack.user?.handle!}
           />
           <TrackControls
             tracks={[soundTrack, ...suggestedTracks]}

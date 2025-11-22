@@ -206,7 +206,6 @@ export const playlists = pgTable("playlist", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   visibility: visibilityEnum().notNull().default("public"),
-  tracks: real("tracks").notNull().default(0),
   editable: boolean("editable").notNull().default(true),
   createdOn: timestamp("createdOn").notNull().defaultNow(),
 });

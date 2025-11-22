@@ -41,11 +41,6 @@ export const addToPlaylistHandler = action
             )
           );
 
-        await db
-          .update(playlists)
-          .set({ tracks: playlist.tracks - 1 })
-          .where(eq(playlists.id, playlistID));
-
         revalidatePath(`/listen?t=${trackID}`);
         return { success: "Removed track from playlist" };
       }
@@ -54,11 +49,6 @@ export const addToPlaylistHandler = action
         playlistID,
         trackID,
       });
-
-      await db
-        .update(playlists)
-        .set({ tracks: playlist.tracks + 1 })
-        .where(eq(playlists.id, playlistID));
 
       revalidatePath(`/listen?t=${trackID}`);
 

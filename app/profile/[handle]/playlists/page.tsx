@@ -26,7 +26,6 @@ export default async function UserPlaylists({
       with: {
         playlistTracks: {
           orderBy: (playlistTracks, { desc }) => desc(playlistTracks.id),
-          limit: 1,
           with: { track: { with: { albumCover: true } } },
         },
         user: true,
@@ -38,7 +37,7 @@ export default async function UserPlaylists({
       id: playlist.id,
       name: playlist.name,
       description: playlist.description,
-      tracks: playlist.tracks,
+      tracks: playlist.playlistTracks.length,
       editable: playlist.editable,
       visibility: playlist.visibility as "private" | "unlisted" | "public",
       latestTrackCover: playlist.playlistTracks[0]
@@ -69,8 +68,6 @@ export default async function UserPlaylists({
       },
     ];
 
-    //* implement likes as a playlist
-
     return (
       <Playlists
         playlists={allPlaylists}
@@ -89,7 +86,6 @@ export default async function UserPlaylists({
       with: {
         playlistTracks: {
           orderBy: (playlistTracks, { desc }) => desc(playlistTracks.id),
-          limit: 1,
           with: { track: { with: { albumCover: true } } },
         },
         user: true,
@@ -101,7 +97,7 @@ export default async function UserPlaylists({
       id: playlist.id,
       name: playlist.name,
       description: playlist.description,
-      tracks: playlist.tracks,
+      tracks: playlist.playlistTracks.length,
       editable: playlist.editable,
       visibility: playlist.visibility as "private" | "unlisted" | "public",
       latestTrackCover: playlist.playlistTracks[0]
@@ -128,7 +124,6 @@ export default async function UserPlaylists({
       with: {
         playlistTracks: {
           orderBy: (playlistTracks, { desc }) => desc(playlistTracks.id),
-          limit: 1,
           with: { track: { with: { albumCover: true } } },
         },
         user: true,
@@ -140,7 +135,7 @@ export default async function UserPlaylists({
       id: playlist.id,
       name: playlist.name,
       description: playlist.description,
-      tracks: playlist.tracks,
+      tracks: playlist.playlistTracks.length,
       editable: playlist.editable,
       visibility: playlist.visibility as "private" | "unlisted" | "public",
       latestTrackCover: playlist.playlistTracks[0]

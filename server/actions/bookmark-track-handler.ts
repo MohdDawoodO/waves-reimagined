@@ -39,13 +39,6 @@ export const bookmarkTrackHandler = action
             )
           );
 
-        await db
-          .update(playlists)
-          .set({ tracks: userPlaylist.tracks - 1 })
-          .where(
-            and(eq(playlists.userID, userID), eq(playlists.name, "Watch Later"))
-          );
-
         revalidatePath(`/listen/t=${trackID}`);
 
         return { success: "Removed track from watch later" };
@@ -54,13 +47,6 @@ export const bookmarkTrackHandler = action
       await db
         .insert(playlistTracks)
         .values({ trackID, playlistID: userPlaylist.id });
-
-      await db
-        .update(playlists)
-        .set({ tracks: userPlaylist.tracks + 1 })
-        .where(
-          and(eq(playlists.userID, userID), eq(playlists.name, "Watch Later"))
-        );
 
       revalidatePath(`/listen/t=${trackID}`);
 

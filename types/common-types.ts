@@ -61,7 +61,6 @@ export type PlaylistType = {
   name: string;
   description: string;
   visibility: "public" | "unlisted" | "private";
-  tracks: number;
   editable: boolean;
   createdOn: Date;
 };

@@ -22,7 +22,7 @@ export default async function Upload({
 
   const soundTrack = await db.query.soundTracks.findFirst({
     where: eq(soundTracks.id, trackID),
-    with: { albumCover: true, trackTags: true },
+    with: { albumCover: true, trackTags: true, user: true },
   });
 
   if (!soundTrack) {
